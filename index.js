@@ -1,5 +1,3 @@
-require('dotenv').config({path: "./.env"})
-
 var fetch = require("node-fetch"),
     striptags = require("striptags"),
     fn = require("./functions"),
@@ -38,7 +36,7 @@ async function getServerData()
 
 async function getPlayerData()
 {
-    let playerData = await fetch("https://earthmc.net" + process.env.PLAYERDATALINK).then(response => response.json()).catch(err => { return err })    
+    let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(err => { return err })    
 
     if (playerData == null || playerData == undefined) return "Error fetching player data!"
     else return playerData
@@ -46,7 +44,7 @@ async function getPlayerData()
 
 async function getMapData()
 {
-    let mapData = await fetch("https://earthmc.net" + process.env.MAPDATALINK).then(response => response.json()).catch(err => { return err })              
+    let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(err => { return err })              
 
     if (mapData == null || mapData == undefined) return "Error fetching map data!"
     else return mapData
@@ -54,7 +52,7 @@ async function getMapData()
 
 async function getBetaData()
 {
-    let betaData = await fetch("https://earthmc.net" + process.env.BETADATALINK).then(response => response.json()).catch(err => { return err }) 
+    let betaData = await fetch("https://earthmc.net/map/beta/up/world/westeros/").then(response => response.json()).catch(err => { return err }) 
 
     if (betaData == null || betaData == undefined) return "Error fetching beta data!"
     else return betaData
