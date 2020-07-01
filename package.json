@@ -1,0 +1,16 @@
+{
+  "name": "earthmc",
+  "version": "1.4.7",
+  "description": "A package providing info on the EarthMC Minecraft server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Owen77Stubbs <owen77stubbs@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "minecraft-lib": "^1.1.6",
+    "node-fetch": "^2.6.0",
+    "striptags": "^3.1.1"
+  }
+}
