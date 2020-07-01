@@ -3,6 +3,8 @@ var fetch = require("node-fetch"),
     fn = require("./functions"),
     Minecraft = require("minecraft-lib")
 
+require('dotenv').config()
+
 async function getServerData()
 {
     let serverData = await Minecraft.servers.get("play.earthmc.net").catch(err => { return err })
@@ -25,7 +27,7 @@ async function getServerData()
 
 async function getPlayerData()
 {
-    let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(err => { return err })    
+    let playerData = await fetch("https://earthmc.net" + process.env.PLAYERDATALINK).then(response => response.json()).catch(err => { return err })    
 
     if (!playerData) return "Error fetching player data!"
 
@@ -34,7 +36,7 @@ async function getPlayerData()
 
 async function getMapData()
 {
-    let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(err => { return err })              
+    let mapData = await fetch("https://earthmc.net" + process.env.MAPDATALINK).then(response => response.json()).catch(err => { return err })              
 
     if (!mapData) return "Error fetching map data!"
 
@@ -347,7 +349,6 @@ async function getServerInfo()
     let serverData = await getServerData()
     let playerData = await getPlayerData()
 
-    // Makes server data be included in the queueObj
     this["info"] = serverData
 
     if (!playerData) 
