@@ -1,4 +1,4 @@
-require('dotenv').config({path: __dirname + '/.env'})
+require('dotenv').config({path: "./.env"})
 
 var fetch = require("node-fetch"),
     striptags = require("striptags"),
