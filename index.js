@@ -1,9 +1,9 @@
+require('dotenv').config()
+
 var fetch = require("node-fetch"),
     striptags = require("striptags"),
     fn = require("./functions"),
     Minecraft = require("minecraft-lib")
-
-require('dotenv').config()
 
 async function getServerData()
 {
