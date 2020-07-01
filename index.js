@@ -9,49 +9,47 @@ async function getServerData()
 {
     let serverData = await Minecraft.servers.get("play.earthmc.net").catch(err => { return err })
 
-    this["info"] = {}
+    let dataObj = {}
 
-    if (!serverData)
+    if (serverData.players == undefined || serverData == null)
     {
-        this["info"]["serverOnline"] = false
-        this["info"]["online"] = 0
-        this["info"]["max"] = 0
+        dataObj["serverOnline"] = false
+        dataObj["online"] = 0
+        dataObj["max"] = 0
     }
     else
     {
-        this["info"]["serverOnline"] = true
+        dataObj["serverOnline"] = true
 
-        if (!serverData.players)
+        if (serverData.players != undefined || serverData != null)
         {
-            this["info"]["online"] = serverData.players.online
-            this["info"]["max"] = serverData.players.max
+            dataObj["online"] = serverData.players.online
+            dataObj["max"] = serverData.players.max
         }
         else
         {
-            this["info"]["online"] = 0
-            this["info"]["max"] = 0
+            dataObj["online"] = 0
+            dataObj["max"] = 0
         } 
     }
 
-    return this["info"]
+    return dataObj
 }
 
 async function getPlayerData()
 {
     let playerData = await fetch("https://earthmc.net" + process.env.PLAYERDATALINK).then(response => response.json()).catch(err => { return err })    
 
-    if (!playerData) return "Error fetching player data!"
-
-    return playerData
+    if (playerData == null || playerData == undefined) return "Error fetching player data!"
+    else return playerData
 }
 
 async function getMapData()
 {
     let mapData = await fetch("https://earthmc.net" + process.env.MAPDATALINK).then(response => response.json()).catch(err => { return err })              
 
-    if (!mapData) return "Error fetching map data!"
-
-    return mapData
+    if (mapData == null || mapData == undefined) return "Error fetching map data!"
+    else return mapData
 }
 
 async function getOnlinePlayer (playerNameInput)
