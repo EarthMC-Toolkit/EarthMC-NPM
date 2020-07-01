@@ -9,20 +9,31 @@ async function getServerData()
 {
     let serverData = await Minecraft.servers.get("play.earthmc.net").catch(err => { return err })
 
-    let serverObj = {}
+    this["info"] = {}
 
     if (!serverData)
     {
-        serverObj["serverOnline"] = false
+        this["info"]["serverOnline"] = false
+        this["info"]["online"] = 0
+        this["info"]["max"] = 0
     }
     else
     {
-        serverObj["serverOnline"] = true
-        serverObj["online"] = serverData.players.online
-        serverObj["max"] = serverData.players.max
+        this["info"]["serverOnline"] = true
+
+        if (!serverData.players)
+        {
+            this["info"]["online"] = serverData.players.online
+            this["info"]["max"] = serverData.players.max
+        }
+        else
+        {
+            this["info"]["online"] = 0
+            this["info"]["max"] = 0
+        } 
     }
 
-    return serverObj
+    return this["info"]
 }
 
 async function getPlayerData()
@@ -381,9 +392,8 @@ async function getServerInfo()
         this["info"]["betaOnline"] = false
     }
         
-    var queueCount = serverData.online - towny - beta
-
-    this["info"]["queue"] = queueCount
+    if (!serverData.online) this["info"]["queue"] = 0
+    else this["info"]["queue"] = serverData.online - towny - beta
 
     return this["info"]
 }
