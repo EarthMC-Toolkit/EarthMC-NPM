@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({path: __dirname + '/.env'})
 
 var fetch = require("node-fetch"),
     striptags = require("striptags"),
@@ -50,6 +50,14 @@ async function getMapData()
 
     if (mapData == null || mapData == undefined) return "Error fetching map data!"
     else return mapData
+}
+
+async function getBetaData()
+{
+    let betaData = await fetch("https://earthmc.net" + process.env.BETADATALINK).then(response => response.json()).catch(err => { return err }) 
+
+    if (betaData == null || betaData == undefined) return "Error fetching beta data!"
+    else return betaData
 }
 
 async function getOnlinePlayer (playerNameInput)
@@ -357,41 +365,17 @@ async function getServerInfo()
 {
     let serverData = await getServerData()
     let playerData = await getPlayerData()
+    let betaData = await getBetaData()
 
     this["info"] = serverData
 
-    if (!playerData) 
-    {
-        this["info"]["townyOnline"] = false
-    }
-    else
-    {           
-        var towny = playerData.currentcount
-
-        this["info"]["towny"] = towny
-        this["info"]["townyOnline"] = true
-        this["info"]["storming"] = playerData.hasStorm
-        this["info"]["thundering"] = playerData.isThundering
-    }
-
-    let betaRes = await fetch("https://earthmc.net/map/beta/up/world/westeros/").catch(err => {})
-    let betaData = await betaRes.json().catch(err => {})
-    
-    if (betaData)
-    {
-        var beta = betaData.currentcount
-
-        this["info"]["beta"] = beta
-        this["info"]["betaOnline"] = true
-    }
-    else 
-    {
-        this["info"]["beta"] = 0
-        this["info"]["betaOnline"] = false
-    }
+    this["info"]["beta"] = betaData.currentcount
+    this["info"]["towny"] = playerData.currentcount
+    this["info"]["storming"] = playerData.hasStorm
+    this["info"]["thundering"] = playerData.isThundering
         
-    if (!serverData.online) this["info"]["queue"] = 0
-    else this["info"]["queue"] = serverData.online - towny - beta
+    if (this["info"]["online"] == 0 || this["info"]["online"] == null || this["info"]["online"] == undefined) this["info"]["queue"] = 0
+    else this["info"]["queue"] = this["info"]["online"] - this["info"]["towny"] - this["info"]["beta"]
 
     return this["info"]
 }
