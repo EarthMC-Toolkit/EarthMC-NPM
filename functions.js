@@ -1,3 +1,4 @@
+var striptags = require("striptags")
 
 function calcPolygonArea(X, Y, numPoints) 
 { 
@@ -33,7 +34,7 @@ function editPlayerPropsArray(array)
         }
         player["isUnderground"] = true
 
-        player['nickname'] = player['name']
+        player['nickname'] = striptags(player['name'])
         delete player.name
 
         player['name'] = player['account']
@@ -57,7 +58,7 @@ function editPlayerProps(player)
     }
     player["isUnderground"] = true
 
-    player['nickname'] = player['name']
+    player['nickname'] = striptags(player['name'])
     delete player.name
 
     player['name'] = player['account']

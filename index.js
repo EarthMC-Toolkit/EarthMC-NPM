@@ -76,6 +76,16 @@ async function getOnlinePlayer (playerNameInput)
   else return "That player is offline or does not exist!"
 }
 
+async function getOnlinePlayers ()
+{
+  let playerData = await getPlayerData()
+  let onlinePlayers = playerData.players
+
+  fn.editPlayerPropsArray(onlinePlayers)
+
+  return onlinePlayers
+}
+
 async function getTowns()
 {
     let mapData = await getMapData()
@@ -380,13 +390,14 @@ async function getServerInfo()
 
 module.exports =    
 {
-    getOnlinePlayer,
     getTowns,
     getNations,
     getResidents,
+    getOnlinePlayers,
     getTown,
     getNation,
     getResident,
+    getOnlinePlayer,
     getTownless,
     getServerInfo
 }
