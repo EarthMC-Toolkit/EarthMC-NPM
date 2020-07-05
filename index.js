@@ -273,8 +273,8 @@ async function getResidents()
             let resident = 
             {
                 name: currentResident,
-                townName: currentTown.name,
-                townNation: currentTown.nation,
+                town: currentTown.name,
+                nation: currentTown.nation,
                 rank: rank
             }
 
