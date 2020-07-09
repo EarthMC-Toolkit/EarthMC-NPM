@@ -32,7 +32,7 @@ function editPlayerPropsArray(array)
         {
             player["isUnderground"] = true
         }
-        player["isUnderground"] = true
+        else player["isUnderground"] = false
 
         player['nickname'] = striptags(player['name'])
         delete player.name
@@ -56,7 +56,7 @@ function editPlayerProps(player)
     {
         player["isUnderground"] = true
     }
-    player["isUnderground"] = true
+    else player["isUnderground"] = false
 
     player['nickname'] = striptags(player['name'])
     delete player.name

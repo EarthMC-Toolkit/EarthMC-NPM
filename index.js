@@ -58,7 +58,7 @@ async function getBetaData()
     else return betaData
 }
 
-async function getOnlinePlayer (playerNameInput)
+async function getOnlinePlayer(playerNameInput)
 {
   if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
   else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
@@ -76,7 +76,7 @@ async function getOnlinePlayer (playerNameInput)
   else return "That player is offline or does not exist!"
 }
 
-async function getOnlinePlayers ()
+async function getOnlinePlayers()
 {
   let playerData = await getPlayerData()
   let onlinePlayers = playerData.players
