@@ -24,59 +24,64 @@ function removeStyleCharacters(string)
     return string.replace(/(&amp;.|&[0-9kmnola-z])/g, "")
 }
 
-function editPlayerPropsArray(array)
+function editPlayerProps(playerObjOrArray)
 {
-    array.forEach(player => 
+    if (playerObjOrArray instanceof Array)
     {
-        if (player.world == "-some-other-bogus-world-")
+        playerObjOrArray.forEach(player => 
         {
-            player["isUnderground"] = true
-        }
-        else player["isUnderground"] = false
-
-        player['nickname'] = striptags(player['name'])
-        delete player.name
-
-        player['name'] = player['account']
-        delete player.account
-
-        delete player.world
-        delete player.sort
-        delete player.armor
-        delete player.health
-        delete player.type
-    })
-
-    return array
-}
-
-function editPlayerProps(player)
-{
-    if (player.world == "-some-other-bogus-world-")
-    {
-        player["isUnderground"] = true
+            if (player.world == "-some-other-bogus-world-")
+            {
+                player["isUnderground"] = true
+            }
+            else player["isUnderground"] = false
+        
+            player['nickname'] = striptags(player['name'])
+            delete player.name
+        
+            player['name'] = player['account']
+            delete player.account
+        
+            delete player.world
+            delete player.sort
+            delete player.armor
+            delete player.health
+            delete player.type
+        })
+        
+        return playerObjOrArray
     }
-    else player["isUnderground"] = false
+    else if (playerObjOrArray instanceof Object)
+    {
+        if (playerObjOrArray.world == "-some-other-bogus-world-")
+        {
+            playerObjOrArray["isUnderground"] = true
+        }
+        else playerObjOrArray["isUnderground"] = false
 
-    player['nickname'] = striptags(player['name'])
-    delete player.name
+        playerObjOrArray['nickname'] = striptags(playerObjOrArray['name'])
+        delete playerObjOrArray.name
 
-    player['name'] = player['account']
-    delete player.account
+        playerObjOrArray['name'] = playerObjOrArray['account']
+        delete playerObjOrArray.account
 
-    delete player.world
-    delete player.sort
-    delete player.armor
-    delete player.health
-    delete player.type
+        delete playerObjOrArray.world
+        delete playerObjOrArray.sort
+        delete playerObjOrArray.armor
+        delete playerObjOrArray.health
+        delete playerObjOrArray.type
 
-    return player
+        return playerObjOrArray
+    }
+    else
+    {
+        throw Error("Can't edit player props! The type isn't an object or array.")
+    }
 }
 
 module.exports = 
 {
     editPlayerProps,
-    editPlayerPropsArray,
     calcPolygonArea,
     removeDuplicates,
     removeStyleCharacters

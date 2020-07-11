@@ -5,9 +5,8 @@ var fetch = require("node-fetch"),
 
 async function getServerData()
 {
-    let serverData = await Minecraft.servers.get("play.earthmc.net").catch(err => { return err })
-
-    let dataObj = {}
+    let serverData = await Minecraft.servers.get("play.earthmc.net").catch(err => { return err }),
+        dataObj = {}
 
     if (serverData.players == undefined || serverData == null)
     {
@@ -52,7 +51,7 @@ async function getMapData()
 
 async function getBetaData()
 {
-    let betaData = await fetch("https://earthmc.net/map/beta/up/world/westeros/").then(response => response.json()).catch(err => { return err }) 
+    let betaData = await fetch("https://earthmc.net/map/beta/up/world/randomworld1/").then(response => response.json()).catch(err => { return err }) 
 
     if (betaData == null || betaData == undefined) return "Error fetching beta data!"
     else return betaData
@@ -81,7 +80,7 @@ async function getOnlinePlayers()
   let playerData = await getPlayerData()
   let onlinePlayers = playerData.players
 
-  fn.editPlayerPropsArray(onlinePlayers)
+  fn.editPlayerProps(onlinePlayers)
 
   return onlinePlayers
 }
@@ -109,7 +108,7 @@ async function getTowns()
 
         rawinfo.forEach(x => 
         {
-             info.push(striptags(x)) // Strips html tags from town desc
+            info.push(striptags(x)) // Strips html tags from town desc
         })
 
         var townName = info[0].split(" (")[0].trim()          
@@ -364,7 +363,7 @@ async function getTownless()
         if (b.account.toLowerCase() > a.account.toLowerCase()) return -1
     })
 
-    fn.editPlayerPropsArray(townlessPlayers)
+    fn.editPlayerProps(townlessPlayers)
 
     return townlessPlayers
 }
