@@ -316,10 +316,8 @@ async function getResident(residentNameInput)
 
 async function getTownless()
 {
-    let playerData = await getPlayerData()
-    let mapData = await getMapData()
-
-    var onlinePlayers = playerData.players
+    let mapData = await getMapData(),
+        onlinePlayers = await getOnlinePlayers()
 
     var townData = mapData.sets["townyPlugin.markerset"].areas
     
@@ -355,15 +353,13 @@ async function getTownless()
         town.forEach(resident => allResidents.push(resident))
     })
 
-    var townlessPlayers = onlinePlayers.filter(op => !allResidents.find(resident => resident == op.account))
+    var townlessPlayers = onlinePlayers.filter(op => !allResidents.find(resident => resident == op.name))
                                                 
     townlessPlayers.sort((a, b) => 
     {
-        if (b.account.toLowerCase() < a.account.toLowerCase()) return 1
-        if (b.account.toLowerCase() > a.account.toLowerCase()) return -1
+        if (b.name.toLowerCase() < a.name.toLowerCase()) return 1
+        if (b.name.toLowerCase() > a.name.toLowerCase()) return -1
     })
-
-    fn.editPlayerProps(townlessPlayers)
 
     return townlessPlayers
 }

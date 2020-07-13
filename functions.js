@@ -28,6 +28,9 @@ function editPlayerProps(playerObjOrArray)
 {
     if (playerObjOrArray instanceof Array)
     {
+        // If empty array, return.
+        if (playerObjOrArray.length === 0) return playerObjOrArray
+
         playerObjOrArray.forEach(player => 
         {
             if (player.world == "-some-other-bogus-world-")
@@ -53,6 +56,9 @@ function editPlayerProps(playerObjOrArray)
     }
     else if (playerObjOrArray instanceof Object)
     {
+        // If empty object, return.
+        if (Object.keys(playerObjOrArray).length === 0) return playerObjOrArray
+
         if (playerObjOrArray.world == "-some-other-bogus-world-")
         {
             playerObjOrArray["isUnderground"] = true
