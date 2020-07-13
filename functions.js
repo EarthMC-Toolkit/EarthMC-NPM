@@ -26,6 +26,8 @@ function removeStyleCharacters(string)
 
 function editPlayerProps(playerObjOrArray)
 {
+    if (!playerObjOrArray) throw Error("Can't edit player props! The parameter is null or undefined.")
+
     if (playerObjOrArray instanceof Array)
     {
         // If empty array, return.
@@ -80,7 +82,7 @@ function editPlayerProps(playerObjOrArray)
         return playerObjOrArray
     }
     else
-    {
+    {  
         throw Error("Can't edit player props! The type isn't an object or array.")
     }
 }
