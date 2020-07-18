@@ -3,6 +3,7 @@ var fetch = require("node-fetch"),
     fn = require("./functions"),
     Minecraft = require("minecraft-lib")
 
+//#region Data Functions
 async function getServerData()
 {
     let serverData = await Minecraft.servers.get("play.earthmc.net").catch(err => { return err }),
@@ -56,33 +57,17 @@ async function getBetaData()
     if (betaData == null || betaData == undefined) return "Error fetching beta data!"
     else return betaData
 }
+//#endregion
 
-async function getOnlinePlayer(playerNameInput)
+//#region Usable Functions
+async function getTown(townNameInput)
 {
-  if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
-  else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
+    let towns = await getTowns()
 
-  let playerData = await getPlayerData()
+    let foundTown = towns.find(town => town.name.toLowerCase() == townNameInput.toLowerCase())
 
-  let foundPlayer = playerData.players.find(player => player.account.toLowerCase() == playerNameInput.toLowerCase())
-
-  if (foundPlayer)
-  {
-      fn.editPlayerProps(foundPlayer)
-
-      return foundPlayer
-  }
-  else return "That player is offline or does not exist!"
-}
-
-async function getOnlinePlayers()
-{
-  let playerData = await getPlayerData()
-  let onlinePlayers = playerData.players
-
-  fn.editPlayerProps(onlinePlayers)
-
-  return onlinePlayers
+    if (!foundTown) return "That town does not exist!"
+    else return foundTown
 }
 
 async function getTowns()
@@ -198,6 +183,16 @@ async function getTowns()
     return townsArrayNoDuplicates
 }
 
+async function getNation(nationNameInput)
+{
+    let nations = await getNations()
+
+    let foundNation = nations.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase())
+
+    if (!foundNation) return "That nation does not exist!"
+    else return foundNation
+}
+
 async function getNations()
 {
     let towns = await getTowns()
@@ -249,6 +244,44 @@ async function getNations()
     return nationsArray
 }
 
+async function getOnlinePlayer(playerNameInput)
+{
+  if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
+  else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
+
+  let playerData = await getPlayerData()
+
+  let foundPlayer = playerData.players.find(player => player.account.toLowerCase() == playerNameInput.toLowerCase())
+
+  if (foundPlayer)
+  {
+      fn.editPlayerProps(foundPlayer)
+
+      return foundPlayer
+  }
+  else return "That player is offline or does not exist!"
+}
+
+async function getOnlinePlayers()
+{
+  let playerData = await getPlayerData()
+  let onlinePlayers = playerData.players
+
+  fn.editPlayerProps(onlinePlayers)
+
+  return onlinePlayers
+}
+
+async function getResident(residentNameInput)
+{
+    let residents = await getResidents()
+
+    let foundResident = residents.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
+
+    if (!foundResident) return "That resident does not exist!"
+    else return foundResident
+}
+
 async function getResidents()
 {
     let towns = await getTowns()
@@ -284,34 +317,23 @@ async function getResidents()
     return residentsArray
 }
 
-async function getTown(townNameInput)
+async function getAllPlayers()
 {
-    let towns = await getTowns()
+    var onlinePlayers = await getOnlinePlayers(),
+        residents = await getResidents()
 
-    let foundTown = towns.find(town => town.name.toLowerCase() == townNameInput.toLowerCase())
+    let merged = []
+    
+    for (let i = 0; i < onlinePlayers.length; i++) 
+    {
+        merged.push
+        ({
+            ...onlinePlayers[i], 
+            ...(residents.find((itmInner) => itmInner.name === onlinePlayers[i].name))
+        })
+    }
 
-    if (!foundTown) return "That town does not exist!"
-    else return foundTown
-}
-
-async function getNation(nationNameInput)
-{
-    let nations = await getNations()
-
-    let foundNation = nations.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase())
-
-    if (!foundNation) return "That nation does not exist!"
-    else return foundNation
-}
-
-async function getResident(residentNameInput)
-{
-    let residents = await getResidents()
-
-    let foundResident = residents.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
-
-    if (!foundResident) return "That resident does not exist!"
-    else return foundResident
+    return merged
 }
 
 async function getTownless()
@@ -366,33 +388,39 @@ async function getTownless()
 
 async function getServerInfo()
 {
+    var obj = this["info"]
+
     let serverData = await getServerData()
     let playerData = await getPlayerData()
     let betaData = await getBetaData()
 
-    this["info"] = serverData
+    obj = serverData
 
-    this["info"]["beta"] = betaData.currentcount
-    this["info"]["towny"] = playerData.currentcount
-    this["info"]["storming"] = playerData.hasStorm
-    this["info"]["thundering"] = playerData.isThundering
+    obj["beta"] = betaData.currentcount
+    obj["towny"] = playerData.currentcount
+    obj["storming"] = playerData.hasStorm
+    obj["thundering"] = playerData.isThundering
         
-    if (this["info"]["online"] == 0 || this["info"]["online"] == null || this["info"]["online"] == undefined) this["info"]["queue"] = 0
-    else this["info"]["queue"] = this["info"]["online"] - this["info"]["towny"] - this["info"]["beta"]
+    if (obj["online"] == 0 || obj["online"] == null ||obj["online"] == undefined) obj["queue"] = 0
+    else obj["queue"] = obj["online"] - obj["towny"] - obj["beta"]
 
-    return this["info"]
+    return obj
 }
+//#endregion
 
+//#region Exports
 module.exports =    
 {
-    getTowns,
-    getNations,
-    getResidents,
-    getOnlinePlayers,
     getTown,
+    getTowns,
     getNation,
+    getNations,
     getResident,
+    getResidents,
     getOnlinePlayer,
+    getOnlinePlayers,
+    getAllPlayers,
     getTownless,
     getServerInfo
 }
+//#endregion
