@@ -13,11 +13,20 @@ $ npm install earthmc
 var emc = require("earthmc")
 ```
 
-## Usage Example (Discord Bot)
-
-![ A test image](https://cdn.discordapp.com/attachments/657992790449455107/725391194192085073/emcDiscordBotExample.PNG "EarthMC Code Example")
-
 ## Methods
+<details>
+<summary>Player Related</summary>
+<p>
+
+### Get All Players (Promise)
+```js
+var allPlayers = await emc.getAllPlayers().then(players => { return players })
+
+console.log(allPlayers)
+
+// Resident => {"x": 0, "y": 64, "z": 0, "isUnderground": true, "nickname": "PlayerNickname", "name": "PlayerName", "town": "TownName", "nation": "NationName", "rank": "RankName"}
+// Townless Player => {"x": 0, "y": 64, "z": 0, "isUnderground": true, "nickname": "PlayerNickname", "name": "PlayerName"}
+```
 
 ### Get Online Player (Promise)
 ```js
@@ -38,6 +47,22 @@ console.log(resident)
 // Ranks include Resident, Mayor and Nation Leader
 ```
 
+### Get Townless (Promise)
+```js
+var townless = await emc.getTownless().then(array => { return array })
+
+console.log(townless)
+
+// => [{ x: 0, y: 64, z: 0, isUnderground: true, nickname: 'TownlessPlayer', name: 'TownlessPlayer' }, ...]
+```
+
+</p>
+</details>  
+
+<details>
+<summary>Other</summary>
+<p>
+
 ### Get Town (Promise)
 ```js
 var town = await emc.getTown("TownName").then(town => { return town })
@@ -56,15 +81,6 @@ console.log(nation)
 // => { name: 'NationName', residents: ['Resident', 'OtherResident', ...], towns: ['Town', 'OtherTown', ...], king: 'KingName', capitalName: 'CapitalName', capitalX: -352, capitalZ: -9904, area: 7289 }
 ```
 
-### Get Townless (Promise)
-```js
-var townless = await emc.getTownless().then(array => { return array })
-
-console.log(townless)
-
-// => [{ x: 0, y: 64, z: 0, isUnderground: true, nickname: 'TownlessPlayer', name: 'TownlessPlayer' }, ...]
-```
-
 ### Get Server Info (Promise)
 ```js
 var serverInfo = await emc.getServerInfo().then(info => { return info })
@@ -74,3 +90,18 @@ console.log(serverInfo)
 // => { serverOnline: true, online: 190, max: 200, towny: 139, townyOnline: true, storming: false, thundering: false, beta: 0, betaOnline: true, queue: 51 }
 ```
 
+</p>
+</details>  
+
+<details>
+<summary>All (TLDR)</summary>
+<p>
+<p>getTown, getTowns
+<p>getNation, getNations
+<p>getResident, getResidents
+<p>getOnlinePlayer, getOnlinePlayers
+<p>getAllPlayers
+<p>getTownless
+<p>getServerInfo
+</p>
+</details>  

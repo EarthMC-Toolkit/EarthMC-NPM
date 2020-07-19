@@ -264,12 +264,14 @@ async function getOnlinePlayer(playerNameInput)
 
 async function getOnlinePlayers()
 {
-  let playerData = await getPlayerData()
-  let onlinePlayers = playerData.players
+    let playerData = await getPlayerData()
 
-  fn.editPlayerProps(onlinePlayers)
+    if (!playerData || !playerData.players) return
+    else onlinePlayers = playerData.players
 
-  return onlinePlayers
+    fn.editPlayerProps(onlinePlayers)
+
+    return onlinePlayers
 }
 
 async function getResident(residentNameInput)
