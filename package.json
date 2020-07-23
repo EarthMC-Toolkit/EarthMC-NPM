@@ -1,6 +1,6 @@
 {
   "name": "earthmc",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "A package providing info on the EarthMC Minecraft server.",
   "main": "index.js",
   "scripts": {

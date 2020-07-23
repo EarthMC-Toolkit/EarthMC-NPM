@@ -9,7 +9,7 @@ async function getServerData()
     let serverData = await Minecraft.servers.get("play.earthmc.net").catch(err => { return err }),
         dataObj = {}
 
-    if (serverData.players == undefined || serverData == null)
+    if (!serverData || !serverData.players)
     {
         dataObj["serverOnline"] = false
         dataObj["online"] = 0
@@ -18,17 +18,8 @@ async function getServerData()
     else
     {
         dataObj["serverOnline"] = true
-
-        if (serverData.players != undefined || serverData != null)
-        {
-            dataObj["online"] = serverData.players.online
-            dataObj["max"] = serverData.players.max
-        }
-        else
-        {
-            dataObj["online"] = 0
-            dataObj["max"] = 0
-        } 
+        dataObj["online"] = serverData.players.online
+        dataObj["max"] = serverData.players.max
     }
 
     return dataObj
@@ -38,7 +29,7 @@ async function getPlayerData()
 {
     let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(err => { return err })    
 
-    if (playerData == null || playerData == undefined) return "Error fetching player data!"
+    if (!playerData) return "Error fetching player data!"
     else return playerData
 }
 
@@ -46,7 +37,7 @@ async function getMapData()
 {
     let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(err => { return err })              
 
-    if (mapData == null || mapData == undefined) return "Error fetching map data!"
+    if (!mapData) return "Error fetching map data!"
     else return mapData
 }
 
@@ -54,7 +45,7 @@ async function getBetaData()
 {
     let betaData = await fetch("https://earthmc.net/map/beta/up/world/randomworld1/").then(response => response.json()).catch(err => { return err }) 
 
-    if (betaData == null || betaData == undefined) return "Error fetching beta data!"
+    if (!betaData) return "Error fetching beta data!"
     else return betaData
 }
 //#endregion
