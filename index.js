@@ -394,11 +394,25 @@ async function getServerInfo()
     obj["storming"] = playerData.hasStorm
     obj["thundering"] = playerData.isThundering
         
-    if (obj["online"] == 0 || obj["online"] == null ||obj["online"] == undefined) obj["queue"] = 0
+    if (obj["online"] == 0 || obj["online"] == null || obj["online"] == undefined) obj["queue"] = 0
     else obj["queue"] = obj["online"] - obj["towny"] - obj["beta"]
 
     return obj
 }
+
+async function nearTo(xInput, zInput, radius)
+{
+    let onlinePlayers = await getOnlinePlayers()
+
+    function filterNear(player)
+    {
+        return player.x <= player.x * radius &&
+               player.z <= player.z * radius
+    }
+
+    return onlinePlayers.filter(filterNear())
+}
+
 //#endregion
 
 //#region Exports
@@ -414,6 +428,7 @@ module.exports =
     getOnlinePlayers,
     getAllPlayers,
     getTownless,
-    getServerInfo
+    getServerInfo,
+    nearTo
 }
 //#endregion

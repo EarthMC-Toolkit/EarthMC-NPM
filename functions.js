@@ -1,13 +1,13 @@
 var striptags = require("striptags")
 
-function calcPolygonArea(X, Y, numPoints) 
+function calcPolygonArea(X, Z, numPoints) 
 { 
     let area = 0					
     let j = numPoints-1		
 
     for (let i = 0; i < numPoints; i++)
     { 
-        area = area +	(X[j]+X[i]) * (Y[j]-Y[i]) 
+        area = area + (X[j]+X[i]) * (Z[j]-Z[i]) 
         j = i						
     }
 
