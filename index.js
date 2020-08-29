@@ -400,17 +400,17 @@ async function getServerInfo()
     return obj
 }
 
-async function nearTo(xInput, zInput, radius)
+async function nearTo(xInput, zInput, xRadius, zRadius)
 {
     let onlinePlayers = await getOnlinePlayers()
 
     function filterNear(player)
     {
-        return player.x <= player.x * radius &&
-               player.z <= player.z * radius
+        return (player.x <= (xInput + xRadius) && player.x >= (xInput - xRadius)) &&
+               (player.z <= (zInput + zRadius) && player.z >= (zInput - zRadius))
     }
 
-    return onlinePlayers.filter(filterNear())
+    return onlinePlayers.filter(p => filterNear(p))
 }
 
 //#endregion
