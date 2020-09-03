@@ -403,16 +403,24 @@ async function getServerInfo()
 async function nearTo(xInput, zInput, xRadius, zRadius)
 {
     let onlinePlayers = await getOnlinePlayers()
+    if (!onlinePlayers) return
 
-    function filterNear(player)
+    function boxFilter(player)
     {
         return (player.x <= (xInput + xRadius) && player.x >= (xInput - xRadius)) &&
-               (player.z <= (zInput + zRadius) && player.z >= (zInput - zRadius))
-    }
+                (player.z <= (zInput + zRadius) && player.z >= (zInput - zRadius))
+    }    
 
-    return onlinePlayers.filter(p => filterNear(p))
+    return onlinePlayers.filter(p => boxFilter(p))
 }
 
+async function getNearby(playerName, xBlocks, zBlocks)
+{   
+    var player = await getOnlinePlayer(playerName).then(p => { return p }),
+        nearbyPlayers = await nearTo(player.x, player.z, xBlocks, zBlocks).then(players => { return players })
+
+    return nearbyPlayers.filter(p => p.name.toLowerCase() !== playerName.toLowerCase())
+}
 //#endregion
 
 //#region Exports
@@ -429,6 +437,7 @@ module.exports =
     getAllPlayers,
     getTownless,
     getServerInfo,
+    getNearby,
     nearTo
 }
 //#endregion
