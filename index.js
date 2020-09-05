@@ -29,7 +29,7 @@ async function getPlayerData()
 {
     let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(err => { return err })    
 
-    if (!playerData) return "Error fetching player data!"
+    if (!playerData || !playerData.players) return "Error fetching player data!"
     else return playerData
 }
 
@@ -403,7 +403,6 @@ async function getServerInfo()
 async function nearTo(xInput, zInput, xRadius, zRadius)
 {
     let onlinePlayers = await getOnlinePlayers()
-    if (!onlinePlayers) return
 
     function boxFilter(player)
     {
@@ -416,10 +415,17 @@ async function nearTo(xInput, zInput, xRadius, zRadius)
 
 async function getNearby(playerName, xBlocks, zBlocks)
 {   
-    var player = await getOnlinePlayer(playerName).then(p => { return p }),
-        nearbyPlayers = await nearTo(player.x, player.z, xBlocks, zBlocks).then(players => { return players })
+    var player = await getOnlinePlayer(playerName).then(p => { return p })
+    if (!player) return "Could not fetch player, they may be offline."
 
-    return nearbyPlayers.filter(p => p.name.toLowerCase() !== playerName.toLowerCase())
+    if (player.x != 0 && player.z != 0)
+    {
+        var nearbyPlayers = await nearTo(player.x, player.z, xBlocks, zBlocks).then(players => { return players })
+
+        return nearbyPlayers.filter(p => p.name.toLowerCase() != playerName.toLowerCase())
+    }
+
+    return "Player is underground!"
 }
 //#endregion
 
