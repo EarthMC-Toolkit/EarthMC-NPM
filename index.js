@@ -400,6 +400,39 @@ async function getServerInfo()
     return obj
 }
 
+async function getInvitableTowns(nationName, includeBelonging)
+{
+    let nation = await getNation(nationName)
+    if (nation == "That nation does not exist!") return nation
+
+    let towns = await getTowns()
+
+    function invitable(town)
+    {
+        if (includeBelonging) return Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3000 && town.nation != nationName
+        else return Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3000 && town.nation != nationName && town.nation != "No Nation"
+    }
+
+    return towns.filter(town => invitable(town))
+}
+
+async function isTownInvitable(nationName, townName, includeBelonging)
+{
+    let nation = await getNation(nationName),
+        town = await getTown(townName)
+
+    if (nation == "That nation does not exist!") return nation
+    if (town == "That town does not exist!") return town
+
+    let invitableTowns = await getInvitableTowns(nationName),
+        invitable
+    
+    if (!includeBelonging) invitable = invitableTowns.find(t => t.name == town.name && t.nation == "No Nation") ? true : false
+    else invitable = invitableTowns.find(t => t.name == town.name) ? true : false
+
+    return invitable
+}
+
 async function nearTo(xInput, zInput, xRadius, zRadius)
 {
     let onlinePlayers = await getOnlinePlayers()
@@ -443,6 +476,8 @@ module.exports =
     getAllPlayers,
     getTownless,
     getServerInfo,
+    getInvitableTowns,
+    isTownInvitable,
     getNearby,
     nearTo
 }
