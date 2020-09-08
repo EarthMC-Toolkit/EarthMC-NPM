@@ -29,7 +29,7 @@ async function getPlayerData()
 {
     let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(err => { return err })    
 
-    if (!playerData || !playerData.players) return "Error fetching player data!"
+    if (!playerData || !playerData.players) return
     else return playerData
 }
 
@@ -37,7 +37,7 @@ async function getMapData()
 {
     let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(err => { return err })              
 
-    if (!mapData) return "Error fetching map data!"
+    if (!mapData) return
     else return mapData
 }
 
@@ -45,7 +45,7 @@ async function getBetaData()
 {
     let betaData = await fetch("https://earthmc.net/map/beta/up/world/randomworld1/").then(response => response.json()).catch(err => { return err }) 
 
-    if (!betaData) return "Error fetching beta data!"
+    if (!betaData) return
     else return betaData
 }
 //#endregion
@@ -410,7 +410,7 @@ async function getInvitableTowns(nationName, includeBelonging)
     function invitable(town)
     {
         if (includeBelonging) return Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3000 && town.nation != nationName
-        else return Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3000 && town.nation != nationName && town.nation != "No Nation"
+        else return Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3000 && town.nation != nationName && town.nation == "No Nation"
     }
 
     return towns.filter(town => invitable(town))
