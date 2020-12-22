@@ -439,8 +439,11 @@ async function nearTo(xInput, zInput, xRadius, zRadius)
 
     function boxFilter(player)
     {
-        return (player.x <= (xInput + xRadius) && player.x >= (xInput - xRadius)) &&
-                (player.z <= (zInput + zRadius) && player.z >= (zInput - zRadius))
+        if (player.x != 0 && player.z != 0)
+        {
+            return (player.x <= (xInput + xRadius) && player.x >= (xInput - xRadius)) &&
+            (player.z <= (zInput + zRadius) && player.z >= (zInput - zRadius))
+        }
     }    
 
     return onlinePlayers.filter(p => boxFilter(p))
