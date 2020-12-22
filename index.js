@@ -454,14 +454,9 @@ async function getNearby(playerName, xBlocks, zBlocks)
     var player = await getOnlinePlayer(playerName).then(p => { return p })
     if (!player) return "Could not fetch player, they may be offline."
 
-    if (player.x != 0 && player.z != 0)
-    {
-        var nearbyPlayers = await nearTo(player.x, player.z, xBlocks, zBlocks).then(players => { return players })
+    var nearbyPlayers = await nearTo(player.x, player.z, xBlocks, zBlocks).then(players => { return players })
 
-        return nearbyPlayers.filter(p => p.name.toLowerCase() != playerName.toLowerCase())
-    }
-
-    return "Player is underground!"
+    return nearbyPlayers.filter(p => p.name.toLowerCase() != playerName.toLowerCase())
 }
 //#endregion
 
