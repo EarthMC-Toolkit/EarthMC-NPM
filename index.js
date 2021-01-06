@@ -54,6 +54,7 @@ async function getBetaData()
 async function getTown(townNameInput)
 {
     let towns = await getTowns()
+    if (!towns) return
 
     let foundTown = towns.find(town => town.name.toLowerCase() == townNameInput.toLowerCase())
 
@@ -65,6 +66,8 @@ async function getTowns()
 {
     let mapData = await getMapData()
     let playerData = await getPlayerData()
+
+    if (!mapData || !playerData) return
 
     let townsArray = [], townsArrayNoDuplicates = []
 
@@ -177,6 +180,7 @@ async function getTowns()
 async function getNation(nationNameInput)
 {
     let nations = await getNations()
+    if (!nations) return
 
     let foundNation = nations.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase())
 
@@ -187,6 +191,7 @@ async function getNation(nationNameInput)
 async function getNations()
 {
     let towns = await getTowns()
+    if (!towns) return
 
     let nationsArray = []
 
