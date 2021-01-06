@@ -67,8 +67,6 @@ async function getTowns()
     let mapData = await getMapData()
     let playerData = await getPlayerData()
 
-    if (!mapData || !playerData) return
-
     let townsArray = [], townsArrayNoDuplicates = []
 
     if (mapData.sets["townyPlugin.markerset"] != null || mapData.sets["townyPlugin.markerset"] != undefined)
@@ -246,16 +244,14 @@ async function getOnlinePlayer(playerNameInput)
   else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
 
   let playerData = await getPlayerData()
+  if (!playerData) throw { name: "FETCH_ERROR", message: "There was an error fetching player data!" }
 
   let foundPlayer = playerData.players.find(player => player.account.toLowerCase() == playerNameInput.toLowerCase())
+  if (!foundPlayer) return "That player is offline or does not exist!"
 
-  if (foundPlayer)
-  {
-      fn.editPlayerProps(foundPlayer)
+  fn.editPlayerProps(foundPlayer)
 
-      return foundPlayer
-  }
-  else return "That player is offline or does not exist!"
+  return foundPlayer
 }
 
 async function getOnlinePlayers()
