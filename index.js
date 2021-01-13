@@ -64,10 +64,9 @@ async function getTown(townNameInput)
 
 async function getTowns()
 {
-    let mapData = await getMapData()
-    let playerData = await getPlayerData()
-
-    let townsArray = [], townsArrayNoDuplicates = []
+    let mapData = await getMapData(),
+        playerData = await getPlayerData(),
+        townsArray = [], townsArrayNoDuplicates = []
 
     if (mapData.sets["townyPlugin.markerset"] != null || mapData.sets["townyPlugin.markerset"] != undefined)
     {
@@ -94,9 +93,8 @@ async function getTowns()
         var mayor = info[1].slice(7)
         if (mayor == "") continue
         
-        var nationName = info[0].split(" (")[1].slice(0, -1) == "" ? "No Nation" : info[0].split(" (")[1].slice(0, -1).trim()
-        
-        var residents = info[2].slice(9).split(", ")
+        var nationName = info[0].split(" (")[1].slice(0, -1) == "" ? "No Nation" : info[0].split(" (")[1].slice(0, -1).trim(),
+            residents = info[2].slice(9).split(", ")
 
         let currentTown = 
         {
@@ -268,25 +266,22 @@ async function getOnlinePlayers()
 
 async function getResident(residentNameInput)
 {
-    let residents = await getResidents()
+    let residents = await getResidents(),
+        foundResident = residents.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
 
-    let foundResident = residents.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
-
-    if (!foundResident) return "That resident does not exist!"
+    if (!foundResident) throw { name: "INVALID_RESIDENT", message: "That resident does not exist!", invalid: true }
     else return foundResident
 }
 
 async function getResidents()
 {
-    let towns = await getTowns()
-
-    let residentsArray = []
+    let towns = await getTowns(),
+        residentsArray = []
 
     for (let i = 0; i < towns.length; i++)
     {
-        var currentTown = towns[i]
-
-        var rank
+        var currentTown = towns[i],
+            rank
 
         for (let i = 0; i < currentTown.residents.length; i++)
         {
@@ -384,9 +379,9 @@ async function getServerInfo()
 {
     var obj = this["info"]
 
-    let serverData = await getServerData()
-    let playerData = await getPlayerData()
-    let betaData = await getBetaData()
+    let serverData = await getServerData(),
+        playerData = await getPlayerData(),
+        betaData = await getBetaData()
 
     obj = serverData
 
@@ -426,7 +421,7 @@ async function isTownInvitable(nationName, townName, includeBelonging)
     if (town == "That town does not exist!") return town
 
     let invitableTowns = await getInvitableTowns(nationName),
-        invitable
+        invitable = {}
     
     if (!includeBelonging) invitable = invitableTowns.find(t => t.name == town.name && t.nation == "No Nation") ? true : false
     else invitable = invitableTowns.find(t => t.name == town.name) ? true : false
