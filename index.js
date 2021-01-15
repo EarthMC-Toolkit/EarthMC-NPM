@@ -245,7 +245,7 @@ async function getOnlinePlayer(playerNameInput)
   if (!playerData) throw { name: "FETCH_ERROR", message: "There was an error fetching player data!" }
 
   let foundPlayer = playerData.players.find(player => player.account.toLowerCase() == playerNameInput.toLowerCase())
-  if (!foundPlayer) return "That player is offline or does not exist!"
+  if (!foundPlayer) throw { name: "INVALID_PLAYER", message: "That player is offline or does not exist!" }
 
   fn.editPlayerProps(foundPlayer)
 
@@ -269,7 +269,7 @@ async function getResident(residentNameInput)
     let residents = await getResidents(),
         foundResident = residents.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
 
-    if (!foundResident) throw { name: "INVALID_RESIDENT", message: "That resident does not exist!", invalid: true }
+    if (!foundResident) throw { name: "INVALID_RESIDENT", message: "That resident does not exist!" }
     else return foundResident
 }
 
@@ -431,7 +431,7 @@ async function isTownInvitable(nationName, townName, includeBelonging)
 
 async function nearTo(xInput, zInput, xRadius, zRadius)
 {
-    let onlinePlayers = await getOnlinePlayers()
+    let allPlayers = await getAllPlayers()
 
     function boxFilter(player)
     {
@@ -440,17 +440,15 @@ async function nearTo(xInput, zInput, xRadius, zRadius)
             return (player.x <= (xInput + xRadius) && player.x >= (xInput - xRadius)) &&
             (player.z <= (zInput + zRadius) && player.z >= (zInput - zRadius))
         }
-    }    
+    }
 
-    return onlinePlayers.filter(p => boxFilter(p))
+    return allPlayers.filter(p => boxFilter(p))
 }
 
 async function getNearby(playerName, xBlocks, zBlocks)
 {   
-    var player = await getOnlinePlayer(playerName).then(p => { return p })
-    if (!player) return "Could not fetch player, they may be offline."
-
-    var nearbyPlayers = await nearTo(player.x, player.z, xBlocks, zBlocks).then(players => { return players })
+    var player = await getOnlinePlayer(playerName).then(p => { return p }),
+        nearbyPlayers = await nearTo(player.x, player.z, xBlocks, zBlocks).then(players => { return players })
 
     return nearbyPlayers.filter(p => p.name.toLowerCase() != playerName.toLowerCase())
 }
