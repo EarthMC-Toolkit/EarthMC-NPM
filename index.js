@@ -68,11 +68,12 @@ async function getTowns()
         playerData = await getPlayerData(),
         townsArray = [], townsArrayNoDuplicates = []
 
+    if (!mapData || !playerData) return null
+
     if (mapData.sets["townyPlugin.markerset"] != null || mapData.sets["townyPlugin.markerset"] != undefined)
     {
         var townData = mapData.sets["townyPlugin.markerset"].areas
     }
-    else return
 
     let townAreaNames = Object.keys(townData)
 
@@ -178,10 +179,8 @@ async function getNation(nationNameInput)
     let nations = await getNations()
     if (!nations) return
 
-    let foundNation = nations.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase())
-
-    if (!foundNation) return "That nation does not exist!"
-    else return foundNation
+    let foundNation = nations.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase()) 
+    !foundNation ? "That nation does not exist!" : foundNation
 }
 
 async function getNations()
@@ -330,6 +329,8 @@ async function getTownless()
     let mapData = await getMapData(),
         onlinePlayers = await getOnlinePlayers()
 
+    if (!onlinePlayers) getTownless()
+
     var townData = mapData.sets["townyPlugin.markerset"].areas
     
     let townAreaNames = Object.keys(townData)
@@ -385,10 +386,13 @@ async function getServerInfo()
 
     obj = serverData
 
-    obj["beta"] = betaData.currentcount
-    obj["towny"] = playerData.currentcount
-    obj["storming"] = playerData.hasStorm
-    obj["thundering"] = playerData.isThundering
+    if (betaData != null) obj["beta"] = betaData.currentcount
+    if (playerData != null)
+    {
+        obj["towny"] = playerData.currentcount
+        obj["storming"] = playerData.hasStorm
+        obj["thundering"] = playerData.isThundering
+    }
         
     if (obj["online"] == 0 || obj["online"] == null || obj["online"] == undefined) obj["queue"] = 0
     else obj["queue"] = obj["online"] - obj["towny"] - obj["beta"]
@@ -402,6 +406,7 @@ async function getInvitableTowns(nationName, includeBelonging)
     if (nation == "That nation does not exist!") return nation
 
     let towns = await getTowns()
+    if (!towns) return
 
     function invitable(town)
     {
@@ -421,7 +426,7 @@ async function isTownInvitable(nationName, townName, includeBelonging)
     if (town == "That town does not exist!") return town
 
     let invitableTowns = await getInvitableTowns(nationName),
-        invitable = {}
+        invitable
     
     if (!includeBelonging) invitable = invitableTowns.find(t => t.name == town.name && t.nation == "No Nation") ? true : false
     else invitable = invitableTowns.find(t => t.name == town.name) ? true : false
