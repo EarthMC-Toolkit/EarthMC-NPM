@@ -27,15 +27,23 @@ async function getServerData()
 
 async function getPlayerData()
 {
-    let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(err => { return err })    
+    let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(err => {})  
 
     if (!playerData || !playerData.players) return
     else return playerData
 }
 
+async function getOnlinePlayerData()
+{
+    let playerData = await getPlayerData() 
+
+    if (!playerData || !playerData.players) return
+    else return fn.editPlayerProps(playerData.players)
+}
+
 async function getMapData()
 {
-    let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(err => { return err })              
+    let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(err => {})   
 
     if (!mapData) return
     else return mapData
@@ -43,7 +51,7 @@ async function getMapData()
 
 async function getBetaData()
 {
-    let betaData = await fetch("https://earthmc.net/map/beta/up/world/randomworld1/").then(response => response.json()).catch(err => { return err }) 
+    let betaData = await fetch("https://earthmc.net/map/beta/up/world/randomworld1/").then(response => response.json()).catch(err => {})   
 
     if (!betaData) return
     else return betaData
@@ -65,10 +73,10 @@ async function getTown(townNameInput)
 async function getTowns()
 {
     let mapData = await getMapData(),
-        playerData = await getPlayerData(),
+        ops = await getOnlinePlayerData(),
         townsArray = [], townsArrayNoDuplicates = []
 
-    if (!mapData || !playerData) return null
+    if (!mapData || !ops) return null
 
     if (mapData.sets["townyPlugin.markerset"] != null || mapData.sets["townyPlugin.markerset"] != undefined)
     {
@@ -106,7 +114,7 @@ async function getTowns()
             nation: fn.removeStyleCharacters(nationName),
             mayor: info[1].slice(7),
             residents: residents,
-            onlineResidents: playerData.players.filter(op => residents.find(resident => resident == op.account)),
+            onlineResidents: ops.filter(op => residents.find(resident => resident == op.name)),
             pvp: info[5].slice(5) == "true" ? true : false,
             mobs:info[6].slice(6) == "true" ? true : false,
             public: info[7].slice(8) == "true" ? true : false,
@@ -240,27 +248,33 @@ async function getOnlinePlayer(playerNameInput)
   if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
   else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
 
-  let playerData = await getPlayerData()
-  if (!playerData) throw { name: "FETCH_ERROR", message: "There was an error fetching player data!" }
+  var ops = await getOnlinePlayers()
 
-  let foundPlayer = playerData.players.find(player => player.account.toLowerCase() == playerNameInput.toLowerCase())
+  let foundPlayer = ops.find(op => op.name.toLowerCase() == playerNameInput.toLowerCase())
   if (!foundPlayer) throw { name: "INVALID_PLAYER", message: "That player is offline or does not exist!" }
-
-  fn.editPlayerProps(foundPlayer)
 
   return foundPlayer
 }
 
-async function getOnlinePlayers()
+async function getOnlinePlayers(includeResidentInfo)
 {
-    let playerData = await getPlayerData()
+    var onlinePlayers = await getOnlinePlayerData()
+    
+    if (!includeResidentInfo) return onlinePlayers
 
-    if (!playerData || !playerData.players) return
-    else onlinePlayers = playerData.players
+    let residents = await getResidents(),
+        merged = []
+    
+    for (let i = 0; i < onlinePlayers.length; i++) 
+    {
+        merged.push
+        ({
+            ...onlinePlayers[i], 
+            ...(residents.find((itmInner) => itmInner.name === onlinePlayers[i].name))
+        })
+    }
 
-    fn.editPlayerProps(onlinePlayers)
-
-    return onlinePlayers
+    return merged
 }
 
 async function getResident(residentNameInput)
@@ -307,21 +321,27 @@ async function getResidents()
 
 async function getAllPlayers()
 {
-    var onlinePlayers = await getOnlinePlayers(),
+    var onlinePlayers = await getOnlinePlayerData()
         residents = await getResidents()
 
     let merged = []
     
-    for (let i = 0; i < onlinePlayers.length; i++) 
+    for (let i = 0; i < residents.length; i++) 
     {
         merged.push
         ({
-            ...onlinePlayers[i], 
-            ...(residents.find((itmInner) => itmInner.name === onlinePlayers[i].name))
+            ...residents[i], 
+            ...(onlinePlayers.find((itmInner) => itmInner.name === residents[i].name))
         })
     }
 
     return merged
+}
+
+async function getPlayer(playerNameInput)
+{
+    var allPlayers = await getAllPlayers()
+    return allPlayers.find(p => p.name.toLowerCase() == playerNameInput.toLowerCase())
 }
 
 async function getTownless()
@@ -329,7 +349,7 @@ async function getTownless()
     let mapData = await getMapData(),
         onlinePlayers = await getOnlinePlayers()
 
-    if (!onlinePlayers) getTownless()
+    if (!onlinePlayers || !mapData) return
 
     var townData = mapData.sets["townyPlugin.markerset"].areas
     
@@ -434,28 +454,50 @@ async function isTownInvitable(nationName, townName, includeBelonging)
     return invitable
 }
 
-async function nearTo(xInput, zInput, xRadius, zRadius)
+async function getJoinableNations(townName)
+{
+
+}
+
+async function isNationJoinable(townName, nationName)
+{
+
+}
+
+async function getNearbyPlayers(xInput, zInput, xRadius, zRadius)
 {
     let allPlayers = await getAllPlayers()
 
-    function boxFilter(player)
-    {
-        if (player.x != 0 && player.z != 0)
+    return allPlayers.filter(p => 
+    {            
+        if (p.x != 0 && p.z != 0)
         {
-            return (player.x <= (xInput + xRadius) && player.x >= (xInput - xRadius)) &&
-            (player.z <= (zInput + zRadius) && player.z >= (zInput - zRadius))
+            return (p.x <= (xInput + xRadius) && p.x >= (xInput - xRadius)) &&
+                   (p.z <= (zInput + zRadius) && p.z >= (zInput - zRadius))
         }
-    }
-
-    return allPlayers.filter(p => boxFilter(p))
+    })
 }
 
-async function getNearby(playerName, xBlocks, zBlocks)
-{   
-    var player = await getOnlinePlayer(playerName).then(p => { return p }),
-        nearbyPlayers = await nearTo(player.x, player.z, xBlocks, zBlocks).then(players => { return players })
+async function getNearbyTowns(xInput, zInput, xRadius, zRadius)
+{
+    let towns = await getTowns()
 
-    return nearbyPlayers.filter(p => p.name.toLowerCase() != playerName.toLowerCase())
+    return towns.filter(t => 
+    {            
+        return (t.x <= (xInput + xRadius) && t.x >= (xInput - xRadius)) &&
+               (t.z <= (zInput + zRadius) && t.z >= (zInput - zRadius))
+    })
+}
+
+async function getNearbyNations(xInput, zInput, xRadius, zRadius)
+{
+    let nations = await getNations()
+
+    return nations.filter(n => 
+    {            
+        return (n.capitalX <= (xInput + xRadius) && n.capitalX >= (xInput - xRadius)) &&
+               (n.capitalZ <= (zInput + zRadius) && n.capitalZ >= (zInput - zRadius))
+    })
 }
 //#endregion
 
@@ -471,11 +513,15 @@ module.exports =
     getOnlinePlayer,
     getOnlinePlayers,
     getAllPlayers,
+    getPlayer,
     getTownless,
     getServerInfo,
     getInvitableTowns,
     isTownInvitable,
-    getNearby,
-    nearTo
+    getJoinableNations,
+    isNationJoinable,
+    getNearbyPlayers,
+    getNearbyTowns,
+    getNearbyNations
 }
 //#endregion
