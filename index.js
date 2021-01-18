@@ -248,7 +248,7 @@ async function getOnlinePlayer(playerNameInput)
   if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
   else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
 
-  var ops = await getOnlinePlayers()
+  var ops = await getOnlinePlayers(true)
 
   let foundPlayer = ops.find(op => op.name.toLowerCase() == playerNameInput.toLowerCase())
   if (!foundPlayer) throw { name: "INVALID_PLAYER", message: "That player is offline or does not exist!" }
