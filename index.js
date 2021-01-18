@@ -437,31 +437,20 @@ async function getInvitableTowns(nationName, includeBelonging)
     return towns.filter(town => invitable(town))
 }
 
-async function isTownInvitable(nationName, townName, includeBelonging)
-{
-    let nation = await getNation(nationName),
-        town = await getTown(townName)
-
-    if (nation == "That nation does not exist!") return nation
-    if (town == "That town does not exist!") return town
-
-    let invitableTowns = await getInvitableTowns(nationName),
-        invitable
-    
-    if (!includeBelonging) invitable = invitableTowns.find(t => t.name == town.name && t.nation == "No Nation") ? true : false
-    else invitable = invitableTowns.find(t => t.name == town.name) ? true : false
-
-    return invitable
-}
-
 async function getJoinableNations(townName)
 {
+    let town = await getTown(townName)
+    if (town == "That town does not exist!") return town
+    
+    let nations = await getNations()
+    if (!nations) return
 
-}
+    function joinable(nation)
+    {
+        return Math.hypot(nation.capitalX - town.x, nation.capitalZ - town.z) <= 3000 && town.nation == "No Nation"
+    }
 
-async function isNationJoinable(townName, nationName)
-{
-
+    return nations.filter(n => joinable(n))
 }
 
 async function getNearbyPlayers(xInput, zInput, xRadius, zRadius)
@@ -517,9 +506,7 @@ module.exports =
     getTownless,
     getServerInfo,
     getInvitableTowns,
-    isTownInvitable,
     getJoinableNations,
-    isNationJoinable,
     getNearbyPlayers,
     getNearbyTowns,
     getNearbyNations
