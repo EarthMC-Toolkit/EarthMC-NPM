@@ -7,22 +7,42 @@ var fetch = require("node-fetch"),
 async function getServerData()
 {
     let serverData = await Minecraft.servers.get("play.earthmc.net").catch(err => { return err }),
-        dataObj = {}
+        emcData = {}
 
     if (!serverData || !serverData.players)
     {
-        dataObj["serverOnline"] = false
-        dataObj["online"] = 0
-        dataObj["max"] = 0
+        emcData["serverOnline"] = false
+        emcData["online"] = 0
+        emcData["max"] = 0
     }
     else
     {
-        dataObj["serverOnline"] = true
-        dataObj["online"] = serverData.players.online
-        dataObj["max"] = serverData.players.max
+        emcData["serverOnline"] = true
+        emcData["online"] = serverData.players.online
+        emcData["max"] = serverData.players.max
     }
 
-    return dataObj
+    return emcData
+}
+
+async function getServerInfo()
+{
+    let serverData = await getServerData(),
+        playerData = await getPlayerData()
+
+    info = serverData
+
+    if (playerData != null)
+    {
+        info["towny"] = playerData.currentcount
+        info["storming"] = playerData.hasStorm
+        info["thundering"] = playerData.isThundering
+    }
+        
+    if (!info["online"] == 0 || !info["online"]) info["queue"] = 0
+    else info["queue"] = info["online"] - info["towny"]
+
+    return info
 }
 
 async function getPlayerData()
@@ -47,14 +67,6 @@ async function getMapData()
 
     if (!mapData) return
     else return mapData
-}
-
-async function getBetaData()
-{
-    let betaData = await fetch("https://earthmc.net/map/beta/up/world/randomworld1/").then(response => response.json()).catch(err => {})   
-
-    if (!betaData) return
-    else return betaData
 }
 //#endregion
 
@@ -394,30 +406,6 @@ async function getTownless()
     })
 
     return townlessPlayers
-}
-
-async function getServerInfo()
-{
-    var obj = this["info"]
-
-    let serverData = await getServerData(),
-        playerData = await getPlayerData(),
-        betaData = await getBetaData()
-
-    obj = serverData
-
-    if (betaData != null) obj["beta"] = betaData.currentcount
-    if (playerData != null)
-    {
-        obj["towny"] = playerData.currentcount
-        obj["storming"] = playerData.hasStorm
-        obj["thundering"] = playerData.isThundering
-    }
-        
-    if (obj["online"] == 0 || obj["online"] == null || obj["online"] == undefined) obj["queue"] = 0
-    else obj["queue"] = obj["online"] - obj["towny"] - obj["beta"]
-
-    return obj
 }
 
 async function getInvitableTowns(nationName, includeBelonging)
