@@ -39,7 +39,7 @@ async function getServerInfo()
         info["thundering"] = playerData.isThundering
     }
         
-    if (!info["online"] == 0 || !info["online"]) info["queue"] = 0
+    if (info["online"] == 0 || !info["online"]) info["queue"] = 0
     else info["queue"] = info["online"] - info["towny"]
 
     return info
