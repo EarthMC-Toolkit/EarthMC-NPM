@@ -1,6 +1,6 @@
 # EarthMC Package
 
-Provides info on the EarthMC Minecraft server. 
+Provides data about people, places and more on the Minecraft server 'EarthMC'.
 
 ## Installation
 ```bash
