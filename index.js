@@ -410,7 +410,7 @@ async function getInvitableTowns(nationName, includeBelonging)
 {
     let nation = await getNation(nationName)
 
-    if (nation = null)
+    if (nation == null)
         return "Fetch error. Nation appears to be null."
 
     if (nation == "That nation does not exist!") 
