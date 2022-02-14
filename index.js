@@ -363,11 +363,9 @@ async function getTownless()
 
     if (!onlinePlayers || !mapData) return
 
-    var townData = mapData.sets["townyPlugin.markerset"].areas
-    
-    let townAreaNames = Object.keys(townData)
-
     var allTowns = [], allResidents = []
+    var townData = mapData.sets["townyPlugin.markerset"].areas
+    let townAreaNames = Object.keys(townData)
     
     for (let i = 0; i < townAreaNames.length; i++)
     {
@@ -411,9 +409,12 @@ async function getTownless()
 async function getInvitableTowns(nationName, includeBelonging)
 {
     let nation = await getNation(nationName)
-    console.log(nation)
 
-    if (nation == "That nation does not exist!") return nation
+    if (nation = null)
+        return "Fetch error. Nation appears to be null."
+
+    if (nation == "That nation does not exist!") 
+        return nation
 
     let towns = await getTowns()
     if (!towns) return
