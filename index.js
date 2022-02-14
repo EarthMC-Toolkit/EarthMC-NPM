@@ -411,6 +411,8 @@ async function getTownless()
 async function getInvitableTowns(nationName, includeBelonging)
 {
     let nation = await getNation(nationName)
+    console.log(nation)
+
     if (nation == "That nation does not exist!") return nation
 
     let towns = await getTowns()
