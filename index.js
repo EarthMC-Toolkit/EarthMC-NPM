@@ -200,7 +200,7 @@ async function getNation(nationNameInput)
     if (!nations) return
 
     let foundNation = nations.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase()) 
-    !foundNation ? "That nation does not exist!" : foundNation
+    return !foundNation ? "That nation does not exist!" : foundNation
 }
 
 async function getNations()
@@ -409,9 +409,6 @@ async function getTownless()
 async function getInvitableTowns(nationName, includeBelonging)
 {
     let nation = await getNation(nationName)
-
-    if (nation == null)
-        return "Fetch error. Nation appears to be null."
 
     if (nation == "That nation does not exist!") 
         return nation
