@@ -88,7 +88,7 @@ async function getTowns()
         ops = await getOnlinePlayerData(),
         townsArray = [], townsArrayNoDuplicates = []
 
-    if (!mapData || !ops) return null
+    if (!mapData || !ops) return
 
     if (mapData.sets["townyPlugin.markerset"] != null || mapData.sets["townyPlugin.markerset"] != undefined)
     {
