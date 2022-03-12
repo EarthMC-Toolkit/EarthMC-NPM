@@ -90,12 +90,11 @@ async function getTowns()
 
     if (!mapData || !ops) return
 
-    if (mapData.sets["townyPlugin.markerset"] != null || mapData.sets["townyPlugin.markerset"] != undefined)
-    {
-        var townData = mapData.sets["townyPlugin.markerset"].areas
-    }
+    if (mapData.sets["townyPlugin.markerset"] == null ||
+        mapData.sets["townyPlugin.markerset"] != undefined) return
 
-    let townAreaNames = Object.keys(townData)
+    var townData = mapData.sets["townyPlugin.markerset"].areas,
+        townAreaNames = Object.keys(townData)
 
     for (let i = 0; i < townAreaNames.length; i++)
     {      
@@ -337,6 +336,8 @@ async function getAllPlayers()
 {
     var onlinePlayers = await getOnlinePlayerData()
         residents = await getResidents()
+
+    if (!onlinePlayers || !residents) return
 
     let merged = []
     
