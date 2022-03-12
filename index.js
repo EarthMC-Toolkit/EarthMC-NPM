@@ -302,6 +302,8 @@ async function getResidents()
 {
     let towns = await getTowns(),
         residentsArray = []
+    
+    if (!towns) return
 
     for (let i = 0; i < towns.length; i++)
     {
