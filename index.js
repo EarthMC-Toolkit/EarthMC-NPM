@@ -14,13 +14,13 @@ async function getServerData()
         emcData["serverOnline"] = false
         emcData["online"] = 0
         emcData["max"] = 0
+
+        return emcData
     }
-    else
-    {
-        emcData["serverOnline"] = true
-        emcData["online"] = serverData.players.online
-        emcData["max"] = serverData.players.max
-    }
+
+    emcData["serverOnline"] = true
+    emcData["online"] = serverData.players.online
+    emcData["max"] = serverData.players.max
 
     return emcData
 }
@@ -28,9 +28,8 @@ async function getServerData()
 async function getServerInfo()
 {
     let serverData = await getServerData(),
-        playerData = await getPlayerData()
-
-    info = serverData
+        playerData = await getPlayerData(),
+        info = serverData
 
     if (playerData != null)
     {
@@ -47,26 +46,26 @@ async function getServerInfo()
 
 async function getPlayerData()
 {
-    let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(err => {})  
-
+    let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(() => {})  
     if (!playerData || !playerData.players) return
-    else return playerData
+
+    return playerData
 }
 
 async function getOnlinePlayerData()
 {
     let playerData = await getPlayerData() 
-
     if (!playerData || !playerData.players) return
-    else return fn.editPlayerProps(playerData.players)
+
+    return fn.editPlayerProps(playerData.players)
 }
 
 async function getMapData()
 {
-    let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(err => {})   
-
+    let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(() => {})   
     if (!mapData) return
-    else return mapData
+    
+    return mapData
 }
 //#endregion
 
@@ -85,10 +84,12 @@ async function getTown(townNameInput)
 async function getTowns()
 {
     let mapData = await getMapData(),
-        ops = await getOnlinePlayerData(),
-        townsArray = [], townsArrayNoDuplicates = []
+        ops = await getOnlinePlayerData()
 
     if (!mapData || !ops) return
+
+    var townsArray = [], 
+        townsArrayNoDuplicates = []
 
     if (mapData.sets["townyPlugin.markerset"] == null ||
         mapData.sets["townyPlugin.markerset"] != undefined) return
@@ -98,14 +99,13 @@ async function getTowns()
 
     for (let i = 0; i < townAreaNames.length; i++)
     {      
-        let town = townData[townAreaNames[i]]
-        let rawinfo = town.desc.split("<br />")
+        let town = townData[townAreaNames[i]],
+            rawinfo = town.desc.split("<br />")
+
         var info = []
 
-        rawinfo.forEach(x => 
-        {
-            info.push(striptags(x)) // Strips html tags from town desc
-        })
+        // Strips html tags from town desc
+        rawinfo.forEach(x => { info.push(striptags(x)) })
 
         var townName = info[0].split(" (")[0].trim()          
         if (townName.endsWith("(Shop)")) continue
@@ -184,10 +184,7 @@ async function getTowns()
 
               townsArrayNoDuplicates.push(this[a.name])
           }
-          else
-          {                         
-              this[a.name].area += a.area
-          }
+          else this[a.name].area += a.area
     }, Object.create(null))
 
     return townsArrayNoDuplicates
@@ -260,6 +257,7 @@ async function getOnlinePlayer(playerNameInput)
   else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
 
   var ops = await getOnlinePlayers(true)
+  if (!ops) throw { name: "FETCH_ERROR", message: "Error fetching data, please try again." }
 
   let foundPlayer = ops.find(op => op.name.toLowerCase() == playerNameInput.toLowerCase())
   if (!foundPlayer) throw { name: "INVALID_PLAYER", message: "That player is offline or does not exist!" }
@@ -273,8 +271,10 @@ async function getOnlinePlayers(includeResidentInfo)
     
     if (!includeResidentInfo) return onlinePlayers
 
-    let residents = await getResidents(),
-        merged = []
+    let residents = await getResidents()
+    if (!residents) return
+
+    let merged = []
     
     for (let i = 0; i < onlinePlayers.length; i++) 
     {
@@ -290,7 +290,9 @@ async function getOnlinePlayers(includeResidentInfo)
 
 async function getResident(residentNameInput)
 {
-    let residents = await getResidents(),
+    let residents = await getResidents()
+
+    if (!residents)
         foundResident = residents.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
 
     if (!foundResident) throw { name: "INVALID_RESIDENT", message: "That resident does not exist!" }
@@ -299,10 +301,10 @@ async function getResident(residentNameInput)
 
 async function getResidents()
 {
-    let towns = await getTowns(),
-        residentsArray = []
-    
-    if (!towns) return
+    let towns = await getTowns()
+    if (!towns) return []
+
+    let residentsArray = []
 
     for (let i = 0; i < towns.length; i++)
     {
@@ -461,6 +463,7 @@ async function getNearbyPlayers(xInput, zInput, xRadius, zRadius)
 async function getNearbyTowns(xInput, zInput, xRadius, zRadius)
 {
     let towns = await getTowns()
+    if (!towns) return
 
     return towns.filter(t => 
     {            
@@ -472,6 +475,7 @@ async function getNearbyTowns(xInput, zInput, xRadius, zRadius)
 async function getNearbyNations(xInput, zInput, xRadius, zRadius)
 {
     let nations = await getNations()
+    if (!nations) return
 
     return nations.filter(n => 
     {            
