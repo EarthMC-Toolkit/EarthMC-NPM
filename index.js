@@ -62,7 +62,9 @@ async function getOnlinePlayerData()
 
 async function getMapData()
 {
-    let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json").then(response => response.json()).catch(() => {})   
+    let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json")
+                        .then(response => response.json()).catch(err => console.log(err))   
+
     if (!mapData) return
     
     return mapData
@@ -72,10 +74,8 @@ async function getMapData()
 //#region Usable Functions
 async function getTown(townNameInput)
 {
-    let towns = await getTowns()
-    if (!towns) return
-
-    let foundTown = towns.find(town => town.name.toLowerCase() == townNameInput.toLowerCase())
+    let towns = await getTowns(),
+        foundTown = towns.find(town => town.name.toLowerCase() == townNameInput.toLowerCase())
 
     if (!foundTown) return "That town does not exist!"
     else return foundTown
@@ -87,14 +87,11 @@ async function getTowns()
         ops = await getOnlinePlayerData()
 
     if (!mapData || !ops) return
+    if (!mapData.sets["townyPlugin.markerset"]) return
 
     var townsArray = [], 
-        townsArrayNoDuplicates = []
-
-    if (mapData.sets["townyPlugin.markerset"] == null ||
-        mapData.sets["townyPlugin.markerset"] != undefined) return
-
-    var townData = mapData.sets["townyPlugin.markerset"].areas,
+        townsArrayNoDuplicates = [],
+        townData = mapData.sets["townyPlugin.markerset"].areas,
         townAreaNames = Object.keys(townData)
 
     for (let i = 0; i < townAreaNames.length; i++)
