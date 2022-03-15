@@ -302,7 +302,7 @@ async function getResident(residentNameInput)
 async function getResidents()
 {
     let towns = await getTowns()
-    if (!towns) return []
+    if (!towns) return
 
     let residentsArray = []
 
