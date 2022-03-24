@@ -128,7 +128,11 @@ async function getTowns()
             public: info[7].slice(8) == "true" ? true : false,
             explosion: info[8].slice(11) == "true" ? true : false,
             fire: info[9].slice(6) == "true" ? true : false,
-            capital: info[10].slice(9) == "true" ? true : false
+            capital: info[10].slice(9) == "true" ? true : false,
+            colourCodes: {
+                fill: town.fillcolor,
+                outline: town.color
+            }
         }
         
         townsArray.push(currentTown)
@@ -176,7 +180,8 @@ async function getTowns()
                   fire: a.fire,
                   capital: a.capital,
                   x: a.x,
-                  z: a.z
+                  z: a.z,
+                  colourCodes: a.colourCodes
               }    
 
               townsArrayNoDuplicates.push(this[a.name])
@@ -210,8 +215,7 @@ async function getNations()
             // If nation doesn't exist
             if (!this[town.nation]) 
             {          
-                this[town.nation] = 
-                { 
+                this[town.nation] = { 
                     name: town.nation,
                     residents: town.residents,
                     towns: [],
@@ -231,9 +235,7 @@ async function getNations()
 
             // If the nation name is equal to the current towns nation
             if (this[town.nation].name == town.nation)
-            {
                 this[town.nation].towns.push(town.name) // Push it to nation towns
-            }
 
             if (town.capital) 
             {
@@ -250,16 +252,16 @@ async function getNations()
 
 async function getOnlinePlayer(playerNameInput)
 {
-  if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
-  else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
+    if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
+    else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
 
-  var ops = await getOnlinePlayers(true)
-  if (!ops) throw { name: "FETCH_ERROR", message: "Error fetching data, please try again." }
+    var ops = await getOnlinePlayers(true)
+    if (!ops) throw { name: "FETCH_ERROR", message: "Error fetching data, please try again." }
 
-  let foundPlayer = ops.find(op => op.name.toLowerCase() == playerNameInput.toLowerCase())
-  if (!foundPlayer) throw { name: "INVALID_PLAYER", message: "That player is offline or does not exist!" }
+    let foundPlayer = ops.find(op => op.name.toLowerCase() == playerNameInput.toLowerCase())
+    if (!foundPlayer) throw { name: "INVALID_PLAYER", message: "That player is offline or does not exist!" }
 
-  return foundPlayer
+    return foundPlayer
 }
 
 async function getOnlinePlayers(includeResidentInfo)
@@ -316,8 +318,7 @@ async function getResidents()
             else if (currentTown.mayor == currentResident) rank = "Mayor"
             else rank = "Resident"
 
-            let resident = 
-            {
+            let resident = {
                 name: currentResident,
                 town: currentTown.name,
                 nation: currentTown.nation,
@@ -392,10 +393,7 @@ async function getTownless()
     }
 
     // Push every resident in every town
-    allTowns.forEach(town => 
-    {
-        town.forEach(resident => allResidents.push(resident))
-    })
+    allTowns.forEach(town => { town.forEach(resident => allResidents.push(resident)) })
 
     var townlessPlayers = onlinePlayers.filter(op => !allResidents.find(resident => resident == op.name))
                                                 
