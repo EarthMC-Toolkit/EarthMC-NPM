@@ -1,6 +1,7 @@
 var fetch = require("node-fetch"),
     striptags = require("striptags"),
     fn = require("./functions"),
+    // @ts-ignore
     Minecraft = require("minecraft-lib")
 
 //#region Data Functions
@@ -46,6 +47,7 @@ async function getServerInfo()
 
 async function getPlayerData()
 {
+    // @ts-ignore
     let playerData = await fetch("https://earthmc.net/map/up/world/earth/").then(response => response.json()).catch(() => {})  
     if (!playerData || !playerData.players) return
 
@@ -62,6 +64,7 @@ async function getOnlinePlayerData()
 
 async function getMapData()
 {
+    // @ts-ignore
     let mapData = await fetch("https://earthmc.net/map/tiles/_markers_/marker_earth.json")
                         .then(response => response.json()).catch(err => console.log(err))   
 
@@ -289,7 +292,8 @@ async function getOnlinePlayers(includeResidentInfo)
 
 async function getResident(residentNameInput)
 {
-    let residents = await getResidents()
+    let residents = await getResidents(),
+        foundResident = {}
 
     if (!residents)
         foundResident = residents.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
@@ -334,7 +338,7 @@ async function getResidents()
 
 async function getAllPlayers()
 {
-    var onlinePlayers = await getOnlinePlayerData()
+    var onlinePlayers = await getOnlinePlayerData(),
         residents = await getResidents()
 
     if (!onlinePlayers || !residents) return
