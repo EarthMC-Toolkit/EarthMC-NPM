@@ -29,8 +29,6 @@ async function getServerInfo() {
 
     return serverData
 }
-    
-// Nova.getOnlinePlayers().then(e => console.log(e))
 
 module.exports = {
     getServerInfo,

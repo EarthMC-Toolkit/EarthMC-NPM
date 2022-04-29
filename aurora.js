@@ -13,10 +13,9 @@ async function getOnlinePlayerData() {
 //#region Usable Functions
 async function getTown(townNameInput) {
     let towns = await getTowns(),
-        foundTown = towns.find(town => town.name.toLowerCase() == townNameInput.toLowerCase())
+        foundTown = towns?.find(town => town.name.toLowerCase() == townNameInput.toLowerCase())
 
-    if (!foundTown) return "That town does not exist!"
-    else return foundTown
+    return foundTown ?? "That town does not exist!"
 }
 
 async function getTowns() {
@@ -30,8 +29,7 @@ async function getTowns() {
         townData = mapData.sets["townyPlugin.markerset"].areas,
         townAreaNames = Object.keys(townData)
 
-    for (let i = 0; i < townAreaNames.length; i++)
-    {      
+    for (let i = 0; i < townAreaNames.length; i++) {      
         let town = townData[townAreaNames[i]],
             rawinfo = town.desc.split("<br />")
 
@@ -121,11 +119,10 @@ async function getTowns() {
 }
 
 async function getNation(nationNameInput) {
-    let nations = await getNations()
-    if (!nations) return null
+    let nations = await getNations(),
+        foundNation = nations?.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase()) 
 
-    let foundNation = nations.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase()) 
-    return !foundNation ? "That nation does not exist!" : foundNation
+    return foundNation ?? "That nation does not exist!"
 }
 
 async function getNations() {
@@ -174,8 +171,7 @@ async function getNations() {
     return nationsArray
 }
 
-async function getOnlinePlayer(playerNameInput)
-{
+async function getOnlinePlayer(playerNameInput) {
     if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
     else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
 
@@ -208,12 +204,10 @@ async function getOnlinePlayers(includeResidentInfo) {
 }
 
 async function getResident(residentNameInput) {
-    let residents = await getResidents()
-    if (!residents) return null
+    let residents = await getResidents(),
+        foundResident = residents?.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
 
-    var foundResident = residents.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
     if (!foundResident) throw { name: "INVALID_RESIDENT", message: "That resident does not exist!" }
-    
     return foundResident
 }
 
@@ -223,13 +217,11 @@ async function getResidents() {
 
     let residentsArray = []
 
-    for (let i = 0; i < towns.length; i++)
-    {
+    for (let i = 0; i < towns.length; i++) {
         var currentTown = towns[i],
             rank
 
-        for (let i = 0; i < currentTown.residents.length; i++)
-        {
+        for (let i = 0; i < currentTown.residents.length; i++) {
             var currentResident = currentTown.residents[i]
 
             if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"
@@ -270,9 +262,7 @@ async function getAllPlayers() {
 
 async function getPlayer(playerNameInput) {
     var allPlayers = await getAllPlayers()
-    if (!allPlayers) return null
-
-    return allPlayers.find(p => p.name.toLowerCase() == playerNameInput.toLowerCase())
+    return allPlayers?.find(p => p.name.toLowerCase() == playerNameInput.toLowerCase()) ?? null
 }
 
 async function getTownless() {
