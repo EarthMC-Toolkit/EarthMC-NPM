@@ -270,8 +270,8 @@ async function getPlayer(playerNameInput) {
 }
 
 async function getTownless() {
-    let mapData = endpoint.mapData("nova"),
-        onlinePlayers = await getOnlinePlayers()
+    let mapData = await endpoint.mapData("nova"),
+        onlinePlayers = await getOnlinePlayerData()
 
     if (!onlinePlayers || !mapData) return
 

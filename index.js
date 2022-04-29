@@ -16,16 +16,23 @@ async function getServerData() {
     
 async function getServerInfo() {
     let serverData = await getServerData(),
-        townyData = endpoint.mapData("nova")
+        novaData = await endpoint.playerData("nova"),
+        auroraData = await endpoint.playerData("aurora")
 
-    if (townyData != null) {
-        serverData["towny"] = townyData.currentcount
-        serverData["storming"] = townyData.hasStorm
-        serverData["thundering"] = townyData.isThundering
+    if (novaData != null) {
+        serverData["nova"] = novaData.currentcount
+        serverData["storming"] = novaData.hasStorm
+        serverData["thundering"] = novaData.isThundering
+    }
+
+    if (auroraData != null) {
+        serverData["aurora"] = auroraData.currentcount
+        serverData["storming"] = auroraData.hasStorm
+        serverData["thundering"] = auroraData.isThundering
     }
         
     if (serverData["online"] == 0 || !serverData["online"]) serverData["queue"] = 0
-    else serverData["queue"] = serverData["online"] - serverData["towny"]
+    else serverData["queue"] = serverData["online"] - serverData["nova"] - serverData["aurora"]
 
     return serverData
 }

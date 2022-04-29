@@ -4,7 +4,7 @@ var striptags = require("striptags"),
     endpoint = require("./endpoint")
 
 async function getOnlinePlayerData() {
-    let playerData = endpoint.playerData("aurora")
+    let playerData = await endpoint.playerData("aurora")
     if (!playerData || !playerData.players) return null
 
     return fn.editPlayerProps(playerData.players)
@@ -19,7 +19,7 @@ async function getTown(townNameInput) {
 }
 
 async function getTowns() {
-    let mapData = endpoint.mapData("aurora"),
+    let mapData = await endpoint.mapData("aurora"),
         ops = await getOnlinePlayerData()
 
     if (!ops || !mapData?.sets["townyPlugin.markerset"]) return null
@@ -266,8 +266,8 @@ async function getPlayer(playerNameInput) {
 }
 
 async function getTownless() {
-    let mapData = endpoint.mapData("aurora"),
-        onlinePlayers = await getOnlinePlayers()
+    let mapData = await endpoint.mapData("aurora"),
+        onlinePlayers = await getOnlinePlayerData()
 
     if (!onlinePlayers || !mapData) return
 
