@@ -315,7 +315,7 @@ async function getInvitableTowns(nationName, includeBelonging) {
     if (!towns) return null
 
     function invitable(town) {
-        var sqr = Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3000 && town.nation != nation.name
+        var sqr = Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3500 && town.nation != nation.name
         return includeBelonging ? sqr : sqr && town.nation == "No Nation"
     }
 
@@ -329,7 +329,7 @@ async function getJoinableNations(townName) {
     let nations = await getNations()
     if (!nations) return null
 
-    function joinable(n) { return Math.hypot(n.capitalX - town.x, n.capitalZ - town.z) <= 3000 && town.nation == "No Nation" }
+    function joinable(n) { return Math.hypot(n.capitalX - town.x, n.capitalZ - town.z) <= 3500 && town.nation == "No Nation" }
     return nations.filter(nation => joinable(nation))
 }
 
