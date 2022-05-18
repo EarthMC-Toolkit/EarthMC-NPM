@@ -217,15 +217,15 @@ async function getResidents() {
     let towns = await getTowns()
     if (!towns) return null
 
-    let residentsArray = []
+    let residentsArray = [],
+        i = 0, len = towns.length
 
-    for (let i = 0; i < towns.length; i++)
+    for (; i < len; i++)
     {
         var currentTown = towns[i],
             rank
 
-        for (let i = 0; i < currentTown.residents.length; i++)
-        {
+        for (let i = 0; i < currentTown.residents.length; i++) {
             var currentResident = currentTown.residents[i]
 
             if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"

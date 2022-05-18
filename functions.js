@@ -1,7 +1,8 @@
-var striptags = require("striptags")
+var striptags = require("striptags"),
+    Diacritics = require('diacritic')
 
 function removeDuplicates(array) { return array.filter((a, b) => array.indexOf(a) === b) }
-function removeStyleCharacters(string) { return string.replace(/(&amp;.|&[0-9kmnola-z])/g, "") }
+function removeStyleCharacters(string) { return Diacritics.clean(string.replace(/(&amp;.|&[0-9kmnola-z])/g, "")) }
 
 function editPlayerProps(playerObjOrArray) {
     if (!playerObjOrArray) throw Error("Can't edit player props! The parameter is null or undefined.")
@@ -38,9 +39,9 @@ function editPlayerProp(player) {
 }
 
 function calcPolygonArea(X, Z, numPoints) { 
-    let area = 0, j = numPoints-1		
+    let i = area = 0, j = numPoints-1		
 
-    for (let i = 0; i < numPoints; i++) { 
+    for (; i < numPoints; i++) { 
         area = area + (X[j] + X[i]) * (Z[j] - Z[i]) 
         j = i						
     }

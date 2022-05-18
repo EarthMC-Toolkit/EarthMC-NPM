@@ -29,7 +29,9 @@ async function getTowns() {
         townData = mapData.sets["townyPlugin.markerset"].areas,
         townAreaNames = Object.keys(townData)
 
-    for (let i = 0; i < townAreaNames.length; i++) {      
+    let i = 0, len = townAreaNames.length
+
+    for (; i < len; i++) {      
         let town = townData[townAreaNames[i]],
             rawinfo = town.desc.split("<br />")
 
@@ -191,9 +193,10 @@ async function getOnlinePlayers(includeResidentInfo) {
     if (!onlinePlayers || !residents) return null
     if (!includeResidentInfo) return onlinePlayers
 
-    let merged = []
+    let merged = [],
+        i = 0, len = onlinePlayers.length
     
-    for (let i = 0; i < onlinePlayers.length; i++) {
+    for (; i < len; i++) {
         merged.push({ 
             ...onlinePlayers[i], 
             ...(residents.find((itmInner) => itmInner.name === onlinePlayers[i].name)) 
@@ -215,18 +218,19 @@ async function getResidents() {
     let towns = await getTowns()
     if (!towns) return null
 
-    let residentsArray = []
+    let residentsArray = [],
+        i = 0, len = towns.length
 
-    for (let i = 0; i < towns.length; i++) {
+    for (; i < len; i++) {
         var currentTown = towns[i],
-            rank
+            rank = "Resident", 
+            j = 0, resLength = currentTown.residents.length
 
-        for (let i = 0; i < currentTown.residents.length; i++) {
+        for (; j < resLength; j++) {
             var currentResident = currentTown.residents[i]
 
             if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"
             else if (currentTown.mayor == currentResident) rank = "Mayor"
-            else rank = "Resident"
 
             let resident = {
                 name: currentResident,
@@ -275,7 +279,9 @@ async function getTownless() {
         townData = mapData.sets["townyPlugin.markerset"].areas,
         townAreaNames = Object.keys(townData)
     
-    for (let i = 0; i < townAreaNames.length; i++) {
+    let i = 0, len = townAreaNames.length
+
+    for (; i < len; i++) {
         let town = townData[townAreaNames[i]],
             rawinfo = town.desc.split("<br />")
 

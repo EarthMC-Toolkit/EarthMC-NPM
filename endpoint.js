@@ -1,4 +1,3 @@
-// @ts-nocheck
 var fetch = require('node-fetch')
 
 var endpoints = async function() {
