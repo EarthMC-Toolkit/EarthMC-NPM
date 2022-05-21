@@ -223,11 +223,11 @@ async function getResidents() {
 
     for (; i < len; i++) {
         var currentTown = towns[i],
-            rank = "Resident", 
             j = 0, resLength = currentTown.residents.length
 
         for (; j < resLength; j++) {
-            var currentResident = currentTown.residents[i]
+            var currentResident = currentTown.residents[j],
+                rank = "Resident"
 
             if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"
             else if (currentTown.mayor == currentResident) rank = "Mayor"
