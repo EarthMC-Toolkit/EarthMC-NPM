@@ -20,11 +20,6 @@ async function getTown(townNameInput) {
     return foundTown ?? "That town does not exist!"
 }
 
-const formatString = (str, removeAccents = false) => {
-    str = fn.removeStyleCharacters(str) 
-    return removeAccents ? Diacritics.clean(str) : str
-}
-
 async function getTowns(removeAccents = false) {
     let mapData = await endpoint.mapData("nova"),
         ops = await getOnlinePlayerData()
@@ -60,8 +55,8 @@ async function getTowns(removeAccents = false) {
             area: fn.calcPolygonArea(town.x, town.z, town.x.length) / 16 / 16,
             x: Math.round((Math.max(...town.x) + Math.min(...town.x)) / 2),
             z: Math.round((Math.max(...town.z) + Math.min(...town.z)) / 2),
-            name: formatString(townName, removeAccents),
-            nation: formatString(nationName, removeAccents),
+            name: fn.formatString(townName, removeAccents),
+            nation: fn.formatString(nationName, removeAccents),
             mayor: info[1].slice(7),
             residents: residents,
             onlineResidents: ops.filter(op => residents.find(resident => resident == op.name)),

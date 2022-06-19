@@ -17,7 +17,7 @@ async function getTown(townNameInput) {
     return foundTown ?? "That town does not exist!"
 }
 
-async function getTowns() {
+async function getTowns(removeAccents = false) {
     let mapData = await endpoint.mapData("aurora"),
         ops = await getOnlinePlayerData()
 
@@ -52,13 +52,13 @@ async function getTowns() {
             area: fn.calcPolygonArea(town.x, town.z, town.x.length) / 16 / 16,
             x: Math.round((Math.max(...town.x) + Math.min(...town.x)) / 2),
             z: Math.round((Math.max(...town.z) + Math.min(...town.z)) / 2),
-            name: fn.removeStyleCharacters(townName),
-            nation: fn.removeStyleCharacters(nationName),
+            name: fn.formatString(townName, removeAccents),
+            nation: fn.formatString(nationName, removeAccents),
             mayor: info[1].slice(7),
             residents: residents,
             onlineResidents: ops.filter(op => residents.find(resident => resident == op.name)),
             pvp: info[5].slice(5) == "true" ? true : false,
-            mobs:info[6].slice(6) == "true" ? true : false,
+            mobs: info[6].slice(6) == "true" ? true : false,
             public: info[7].slice(8) == "true" ? true : false,
             explosion: info[8].slice(11) == "true" ? true : false,
             fire: info[9].slice(6) == "true" ? true : false,
@@ -78,8 +78,7 @@ async function getTowns() {
           if (!this[a.name]) {      
               let nationResidents = []
             
-              if (a.capital || a.nation != "No Nation") 
-              {
+              if (a.capital || a.nation != "No Nation") {
                   for (let i = 0; i < townsArray.length; i++) {
                       var currentNation = townsArray[i].nation,
                           residents = townsArray[i].residents
@@ -133,11 +132,9 @@ async function getNations() {
     let nationsArray = []
 
     towns.forEach(function (town) {        
-        if (town.nation != "No Nation")
-        {
+        if (town.nation != "No Nation") {
             // If nation doesn't exist
-            if (!this[town.nation]) 
-            {          
+            if (!this[town.nation]) {          
                 this[town.nation] = { 
                     name: town.nation,
                     residents: town.residents,

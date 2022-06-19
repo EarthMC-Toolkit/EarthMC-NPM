@@ -1,7 +1,12 @@
 var striptags = require("striptags")
 
-function removeDuplicates(array) { return array.filter((a, b) => array.indexOf(a) === b) }
-function removeStyleCharacters(string) { return string.replace(/(&amp;.|&[0-9kmnola-z])/g, "") }
+const removeDuplicates = array => array.filter((a, b) => array.indexOf(a) === b),
+      removeStyleCharacters = string => string.replace(/(&amp;.|&[0-9kmnola-z])/g, "")
+
+function formatString(str, removeAccents = false) {
+    str = removeStyleCharacters(str) 
+    return removeAccents ? Diacritics.clean(str) : str
+}
 
 function editPlayerProps(playerObjOrArray) {
     if (!playerObjOrArray) throw Error("Can't edit player props! The parameter is null or undefined.")
@@ -49,6 +54,7 @@ function calcPolygonArea(X, Z, numPoints) {
 }
 
 module.exports = {
+    formatString,
     editPlayerProps,
     calcPolygonArea,
     removeDuplicates,
