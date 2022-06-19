@@ -374,7 +374,6 @@ async function getNearbyNations(xInput, zInput, xRadius, zRadius) {
 
 //#region Exports
 module.exports = {
-    formatString,
     getTown,
     getTowns,
     getNation,
