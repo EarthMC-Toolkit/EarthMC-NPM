@@ -1,7 +1,6 @@
 var striptags = require("striptags"),
     fn = require("./functions"),
-    endpoint = require("./endpoint"),
-    Diacritics = require("diacritic")
+    endpoint = require("./endpoint")
 
 //#region Data Functions
 async function getOnlinePlayerData() {

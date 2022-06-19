@@ -1,4 +1,5 @@
-var striptags = require("striptags")
+var striptags = require("striptags"),
+    Diacritics = require("diacritic")
 
 const removeDuplicates = array => array.filter((a, b) => array.indexOf(a) === b),
       removeStyleCharacters = string => string.replace(/(&amp;.|&[0-9kmnola-z])/g, "")
