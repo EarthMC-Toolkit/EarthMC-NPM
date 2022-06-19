@@ -1,4 +1,3 @@
-// @ts-nocheck
 var striptags = require("striptags"),
     fn = require("./functions"),
     endpoint = require("./endpoint")

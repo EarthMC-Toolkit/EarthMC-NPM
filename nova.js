@@ -1,7 +1,7 @@
-// @ts-nocheck
 var striptags = require("striptags"),
     fn = require("./functions"),
-    endpoint = require("./endpoint")
+    endpoint = require("./endpoint"),
+    Diacritics = require("diacritic")
 
 //#region Data Functions
 async function getOnlinePlayerData() {
@@ -20,7 +20,12 @@ async function getTown(townNameInput) {
     return foundTown ?? "That town does not exist!"
 }
 
-async function getTowns() {
+const formatString = (str, removeAccents = false) => {
+    str = fn.removeStyleCharacters(str) 
+    return removeAccents ? Diacritics.clean(str) : str
+}
+
+async function getTowns(removeAccents = false) {
     let mapData = await endpoint.mapData("nova"),
         ops = await getOnlinePlayerData()
 
@@ -31,7 +36,9 @@ async function getTowns() {
         townData = mapData.sets["townyPlugin.markerset"].areas,
         townAreaNames = Object.keys(townData)
 
-    for (let i = 0; i < townAreaNames.length; i++) {      
+    let i = 0, len = townAreaNames.length
+
+    for (; i < len; i++) {      
         let town = townData[townAreaNames[i]],
             rawinfo = town.desc.split("<br />")
 
@@ -40,7 +47,7 @@ async function getTowns() {
         // Strips html tags from town desc
         rawinfo.forEach(x => { info.push(striptags(x)) })
 
-        var townName = info[0].split(" (")[0].trim()          
+        var townName = info[0].split(" (")[0].trim()
         if (townName.endsWith("(Shop)")) continue
       
         var mayor = info[1].slice(7)
@@ -53,13 +60,13 @@ async function getTowns() {
             area: fn.calcPolygonArea(town.x, town.z, town.x.length) / 16 / 16,
             x: Math.round((Math.max(...town.x) + Math.min(...town.x)) / 2),
             z: Math.round((Math.max(...town.z) + Math.min(...town.z)) / 2),
-            name: fn.removeStyleCharacters(townName),
-            nation: fn.removeStyleCharacters(nationName),
+            name: formatString(townName, removeAccents),
+            nation: formatString(nationName, removeAccents),
             mayor: info[1].slice(7),
             residents: residents,
             onlineResidents: ops.filter(op => residents.find(resident => resident == op.name)),
             pvp: info[5].slice(5) == "true" ? true : false,
-            mobs:info[6].slice(6) == "true" ? true : false,
+            mobs: info[6].slice(6) == "true" ? true : false,
             public: info[7].slice(8) == "true" ? true : false,
             explosion: info[8].slice(11) == "true" ? true : false,
             fire: info[9].slice(6) == "true" ? true : false,
@@ -79,8 +86,7 @@ async function getTowns() {
           if (!this[a.name]) {      
               let nationResidents = []
             
-              if (a.capital || a.nation != "No Nation") 
-              {
+              if (a.capital || a.nation != "No Nation") {
                   for (let i = 0; i < townsArray.length; i++) {
                       var currentNation = townsArray[i].nation,
                           residents = townsArray[i].residents
@@ -134,11 +140,9 @@ async function getNations() {
     let nationsArray = []
 
     towns.forEach(function (town) {        
-        if (town.nation != "No Nation")
-        {
+        if (town.nation != "No Nation") {
             // If nation doesn't exist
-            if (!this[town.nation]) 
-            {          
+            if (!this[town.nation]) {          
                 this[town.nation] = { 
                     name: town.nation,
                     residents: town.residents,
@@ -193,9 +197,10 @@ async function getOnlinePlayers(includeResidentInfo) {
     if (!onlinePlayers || !residents) return null
     if (!includeResidentInfo) return onlinePlayers
 
-    let merged = []
+    let merged = [],
+        i = 0, len = onlinePlayers.length
     
-    for (let i = 0; i < onlinePlayers.length; i++) {
+    for (; i < len; i++) {
         merged.push({ 
             ...onlinePlayers[i], 
             ...(residents.find((itmInner) => itmInner.name === onlinePlayers[i].name)) 
@@ -220,8 +225,7 @@ async function getResidents() {
     let residentsArray = [],
         i = 0, len = towns.length
 
-    for (; i < len; i++)
-    {
+    for (; i < len; i++) {
         var currentTown = towns[i],
             rank
 
@@ -252,9 +256,10 @@ async function getAllPlayers() {
 
     if (!onlinePlayers || !residents) return null
 
-    let merged = []
+    let merged = [],
+        i = 0, len = residents.length
     
-    for (let i = 0; i < residents.length; i++) {
+    for (; i < len; i++) {
         merged.push({
             ...residents[i], 
             ...(onlinePlayers.find((itmInner) => itmInner.name === residents[i].name))
@@ -279,7 +284,9 @@ async function getTownless() {
         townData = mapData.sets["townyPlugin.markerset"].areas,
         townAreaNames = Object.keys(townData)
     
-    for (let i = 0; i < townAreaNames.length; i++) {
+    let i = 0, len = townAreaNames.length
+
+    for (; i < len; i++) {
         let town = townData[townAreaNames[i]],
             rawinfo = town.desc.split("<br />")
 
@@ -372,6 +379,7 @@ async function getNearbyNations(xInput, zInput, xRadius, zRadius) {
 
 //#region Exports
 module.exports = {
+    formatString,
     getTown,
     getTowns,
     getNation,
