@@ -40,7 +40,7 @@ function editPlayerProp(player) {
     delete player.type
 }
 
-function calcPolygonArea(X, Z, numPoints, inChunks = true) { 
+function calcArea(X, Z, numPoints, inChunks = true) { 
     let i = area = 0, 
         j = numPoints-1		
 
@@ -56,7 +56,7 @@ function calcPolygonArea(X, Z, numPoints, inChunks = true) {
 module.exports = {
     formatString,
     editPlayerProps,
-    calcPolygonArea,
+    calcArea,
     removeDuplicates,
     removeStyleCharacters
 }
