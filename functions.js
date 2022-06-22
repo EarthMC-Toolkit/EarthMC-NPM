@@ -13,10 +13,7 @@ function editPlayerProps(playerObjOrArray) {
     if (!playerObjOrArray) throw Error("Can't edit player props! The parameter is null or undefined.")
 
     if (playerObjOrArray instanceof Array) {
-        if (playerObjOrArray.length === 0) return playerObjOrArray
-
-        playerObjOrArray.forEach(player => { editPlayerProp(player) })
-
+        if (playerObjOrArray.length > 0) playerObjOrArray.map(p => editPlayerProp(p))
         return playerObjOrArray
     }
     else if (playerObjOrArray instanceof Object) {
@@ -43,15 +40,17 @@ function editPlayerProp(player) {
     delete player.type
 }
 
-function calcPolygonArea(X, Z, numPoints) { 
-    let i = area = 0, j = numPoints-1		
+function calcPolygonArea(X, Z, numPoints, inChunks = true) { 
+    let i = area = 0, 
+        j = numPoints-1		
 
     for (; i < numPoints; i++) { 
-        area = area + (X[j] + X[i]) * (Z[j] - Z[i]) 
+        area += (X[j] + X[i]) * (Z[j] - Z[i]) 
         j = i						
     }
 
-    return Math.abs(area/2)
+    area = Math.abs(area/2)
+    return inChunks ? area/256 : area
 }
 
 module.exports = {

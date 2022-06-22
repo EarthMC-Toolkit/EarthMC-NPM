@@ -5,9 +5,7 @@ var striptags = require("striptags"),
 //#region Data Functions
 async function getOnlinePlayerData() {
     let playerData = await endpoint.playerData("nova")
-    if (!playerData || !playerData.players) return null
-
-    return fn.editPlayerProps(playerData.players)
+    return playerData?.players ?? null
 }
 //#endregion
 
@@ -51,7 +49,7 @@ async function getTowns(removeAccents = false) {
             residents = info[2].slice(9).split(", ")
 
         let currentTown = {
-            area: fn.calcPolygonArea(town.x, town.z, town.x.length) / 16 / 16,
+            area: fn.calcArea(town.x, town.z, town.x.length),
             x: Math.round((Math.max(...town.x) + Math.min(...town.x)) / 2),
             z: Math.round((Math.max(...town.z) + Math.min(...town.z)) / 2),
             name: fn.formatString(townName, removeAccents),

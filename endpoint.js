@@ -1,24 +1,23 @@
-var fetch = require('node-fetch')
+const fn = require('./functions'),
+      fetch = require('node-fetch'),
+      endpoints = () => await fetch('https://raw.githubusercontent.com/Owen3H/EarthMC-API/master/endpoints.json').then(res => res.json()),
+      get = (dataKey, worldKey) => await endpoints().then(obj => obj[dataKey][worldKey].toString())
 
-var endpoints = async function() {
-    var res = await fetch('https://raw.githubusercontent.com/Owen3H/EarthMC-API/master/endpoints.json')
-    return await res.json()
+async function playerData(map, modified = true) {
+    var playerData = await fetch(get("players", map))
+        .then(res => res.json()).catch(console.error)
+        
+    if (modified) playerData.players = fn.editPlayerProps(playerData.players)
+    return playerData
 }
 
-async function get(dataKey, worldKey) {
-    return await endpoints().then(obj => obj[dataKey][worldKey])
-}
+async function mapData(map, modified = false) {
+    let mapData = await fetch(get("map", map))
+        .then(res => res.json()).catch(console.error)
 
-async function playerData(map) {
-    let ep = await get("players", map),
-        data = await fetch(ep.toString()).then(res => res.json()).catch(console.error)
-
-    return data
-}
-
-async function mapData(map) {
-    let ep = await get("map", map),
-        mapData = await fetch(ep.toString()).then(res => res.json()).catch(console.error)
+    if (modified) {
+        // Do modification
+    }
 
     return mapData
 }
