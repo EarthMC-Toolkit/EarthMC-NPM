@@ -364,6 +364,18 @@ async function getNearbyNations(xInput, zInput, xRadius, zRadius) {
                (n.capitalZ <= (zInput + zRadius) && n.capitalZ >= (zInput - zRadius))
     })
 }
+
+async function getAveragePos(nationName, towns) {
+    if (!towns) towns = await getTowns()
+
+    let nationTowns = towns.filter(t => t.nation?.toLowerCase() == nationName.toLowerCase())
+    const average = (arr, key) => arr.map(obj => obj[key]).reduce((a, b) => a+b) / arr.length
+    
+    return {
+        x: average(nationTowns, 'x'),
+        z: average(nationTowns, 'z')
+    } 
+}
 //#endregion
 
 //#region Exports

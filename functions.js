@@ -41,8 +41,7 @@ function editPlayerProp(player) {
 }
 
 function calcArea(X, Z, numPoints, inChunks = true) { 
-    let i = area = 0, 
-        j = numPoints-1		
+    let i = area = 0, j = numPoints-1		
 
     for (; i < numPoints; i++) { 
         area += (X[j] + X[i]) * (Z[j] - Z[i]) 
