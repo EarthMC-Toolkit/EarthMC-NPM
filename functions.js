@@ -52,10 +52,23 @@ function calcArea(X, Z, numPoints, inChunks = true) {
     return inChunks ? area/256 : area
 }
 
+async function getAveragePos(nationName, towns) {
+    if (!towns) return "Error getting average position: 'towns' parameter not defined!"
+
+    let nationTowns = towns.filter(t => t.nation?.toLowerCase() == nationName.toLowerCase())
+    const average = (arr, key) => arr.map(obj => obj[key]).reduce((a, b) => a+b) / arr.length
+    
+    return {
+        x: average(nationTowns, 'x'),
+        z: average(nationTowns, 'z')
+    } 
+}
+
 module.exports = {
     formatString,
     editPlayerProps,
     calcArea,
     removeDuplicates,
-    removeStyleCharacters
+    removeStyleCharacters,
+    getAveragePos
 }
