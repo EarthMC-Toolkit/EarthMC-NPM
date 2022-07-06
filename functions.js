@@ -40,7 +40,13 @@ function editPlayerProp(player) {
     delete player.type
 }
 
-function calcArea(X, Z, numPoints, inChunks = true) { 
+/**
+ * Get the average position of all towns in a nation.
+ * @param  {String} nationName Name of the nation.
+ * @param  {Object[]} towns An array of towns.
+ * @return {Object} Object with x, z keys.
+ */
+function calcArea(X, Z, numPoints, divisor = 256) { 
     let i = area = 0, j = numPoints-1		
 
     for (; i < numPoints; i++) { 
@@ -48,10 +54,15 @@ function calcArea(X, Z, numPoints, inChunks = true) {
         j = i						
     }
 
-    area = Math.abs(area/2)
-    return inChunks ? area/256 : area
+    return Math.abs(area/2) / divisor
 }
 
+/**
+ * Get the average position of all towns in a nation.
+ * @param  {String} nationName Name of the nation.
+ * @param  {Object[]} towns An array of towns.
+ * @return {Object} Object with x, z keys.
+ */
 async function getAveragePos(nationName, towns) {
     if (!towns) return "Error getting average position: 'towns' parameter not defined!"
 

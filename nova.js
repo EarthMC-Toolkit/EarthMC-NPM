@@ -371,21 +371,14 @@ async function getNearbyNations(xInput, zInput, xRadius, zRadius) {
 
 //#region Exports
 module.exports = {
-    getTown,
-    getTowns,
-    getNation,
-    getNations,
-    getResident,
-    getResidents,
-    getOnlinePlayer,
-    getOnlinePlayers,
-    getAllPlayers,
-    getPlayer,
+    getTown, getTowns,
+    getNation, getNations,
+    getResident, getResidents,
+    getOnlinePlayer, getOnlinePlayers,
+    getAllPlayers, getPlayer,
     getTownless,
     getInvitableTowns,
     getJoinableNations,
-    getNearbyPlayers,
-    getNearbyTowns,
-    getNearbyNations
+    getNearbyPlayers, getNearbyTowns, getNearbyNations
 }
 //#endregion
