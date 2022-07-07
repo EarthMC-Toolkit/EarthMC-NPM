@@ -4,13 +4,13 @@
   "description": "Provides data about people, places and more on the Minecraft server 'EarthMC'.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "aurora": "node aurora.js",
+    "nova": "node nova.js"
   },
   "author": "Owen77Stubbs <owen77stubbs@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "diacritic": "0.0.2",
-    "earthmc-dynmap-plus": "^1.1.2",
     "minecraft-lib": "^1.1.6",
     "node-fetch": "^2.6.7",
     "striptags": "^3.1.1"

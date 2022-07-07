@@ -1,5 +1,4 @@
-const fn = require('./functions'),
-      fetch = require('node-fetch'),
+const fetch = require('node-fetch'),
       endpoints = () => fetch(`https://raw.githubusercontent.com/Owen3H/EarthMC-API/master/endpoints.json`).then(res => res.json()),
       get = (dataKey, worldKey) => endpoints().then(obj => obj[dataKey][worldKey].toString())
 
