@@ -252,9 +252,10 @@ async function getAllPlayers() {
         i = 0, len = residents.length
     
     for (; i < len; i++) {
+        let resident = residents[i].name
         merged.push({
             ...residents[i], 
-            ...(onlinePlayers.find((itmInner) => itmInner.name === residents[i].name))
+            ...(onlinePlayers.find(op => op.name === resident))
         })
     }
 

@@ -30,6 +30,7 @@ async function getServerInfo() {
 
 module.exports = {
     formatString: fn.formatString,
+    endpoint,
     getServerInfo,
     Aurora,
     Nova
