@@ -1,6 +1,6 @@
 {
   "name": "earthmc",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "Provides data about people, places and more on the Minecraft server 'EarthMC'.",
   "main": "index.js",
   "scripts": {
