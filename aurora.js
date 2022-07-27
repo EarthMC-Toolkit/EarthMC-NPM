@@ -46,6 +46,8 @@ async function getTowns(removeAccents = false) {
         var nationName = info[0].split(" (")[1].slice(0, -1) == "" ? "No Nation" : info[0].split(" (")[1].slice(0, -1).trim(),
             residents = info[2].slice(9).split(", ")
 
+        const asBool = str => str == "true" ? true : false
+
         let currentTown = {
             area: fn.calcArea(town.x, town.z, town.x.length),
             x: Math.round((Math.max(...town.x) + Math.min(...town.x)) / 2),
@@ -54,13 +56,12 @@ async function getTowns(removeAccents = false) {
             nation: fn.formatString(nationName, removeAccents),
             mayor: info[1].slice(7),
             residents: residents,
-            onlineResidents: ops.filter(op => residents.find(resident => resident == op.name)),
-            pvp: info[5].slice(5) == "true" ? true : false,
-            mobs: info[6].slice(6) == "true" ? true : false,
-            public: info[7].slice(8) == "true" ? true : false,
-            explosion: info[8].slice(11) == "true" ? true : false,
-            fire: info[9].slice(6) == "true" ? true : false,
-            capital: info[10].slice(9) == "true" ? true : false,
+            pvp: asBool(info[5].slice(5)),
+            mobs: asBool(info[6].slice(6)),
+            public: asBool(info[7].slice(8)),
+            explosion: asBool(info[8].slice(11)),
+            fire: asBool(info[9].slice(6)),
+            capital: asBool(info[10].slice(9)),
             colourCodes: {
                 fill: town.fillcolor,
                 outline: town.color
@@ -72,45 +73,12 @@ async function getTowns(removeAccents = false) {
     
     // TOWN LOGIC \\  
     townsArray.forEach(function (a) {                   
-          // If town doesnt exist, add it.
-          if (!this[a.name]) {      
-              let nationResidents = []
-            
-              if (a.capital || a.nation != "No Nation") {
-                  for (let i = 0; i < townsArray.length; i++) {
-                      var currentNation = townsArray[i].nation,
-                          residents = townsArray[i].residents
-                      
-                      if (currentNation == a.nation) {
-                          for (let i = 0; i < residents.length; i++) {
-                              let currentResident = residents[i]  
-                              nationResidents.push(currentResident)
-                          }
-                      }
-                  }
-              }
-            
-              this[a.name] = { 
-                  name: a.name, 
-                  nation: a.nation,
-                  residents: a.residents,
-                  nationResidents: fn.removeDuplicates(nationResidents),
-                  area: a.area,
-                  mayor: a.mayor,
-                  pvp: a.pvp,
-                  mobs: a.mobs,
-                  public: a.public,
-                  explosion: a.explosion,
-                  fire: a.fire,
-                  capital: a.capital,
-                  x: a.x,
-                  z: a.z,
-                  colourCodes: a.colourCodes
-              }    
-
-              townsArrayNoDuplicates.push(this[a.name])
-          }
-          else this[a.name].area += a.area
+        // If town doesnt exist, add it.
+        if (!this[a.name]) {      
+            this[a.name] = { ...a }
+            townsArrayNoDuplicates.push(this[a.name])
+        }
+        else this[a.name].area += a.area
     }, Object.create(null))
 
     return townsArrayNoDuplicates
