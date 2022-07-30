@@ -4,7 +4,7 @@ var striptags = require("striptags"),
 
 async function getOnlinePlayerData() {
     let playerData = await endpoint.playerData("aurora")
-    return playerData?.players ?? null
+    return playerData?.players ? fn.editPlayerProps(playerData?.players) : null
 }
 
 //#region Usable Functions
@@ -214,15 +214,11 @@ async function getAllPlayers() {
 
     if (!onlinePlayers || !residents) return null
 
-    let merged = []
+    let i = 0, len = residents.length,
+        ops = onlinePlayers.find(op => op.name === residents[i].name),
+        merged = []
     
-    for (let i = 0; i < residents.length; i++) {
-        merged.push({
-            ...residents[i], 
-            ...(onlinePlayers.find((itmInner) => itmInner.name === residents[i].name))
-        })
-    }
-
+    for (; i < len; i++) merged.push({ ...residents[i], ...ops })
     return merged
 }
 

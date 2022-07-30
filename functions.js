@@ -13,32 +13,20 @@ function editPlayerProps(playerObjOrArray) {
     if (!playerObjOrArray) throw Error("Can't edit player props! The parameter is null or undefined.")
 
     if (playerObjOrArray instanceof Array) {
-        if (playerObjOrArray.length > 0) playerObjOrArray.map(p => editPlayerProp(p))
-        return playerObjOrArray
+        if (playerObjOrArray.length > 0) 
+            return playerObjOrArray.map(p => editPlayerProp(p))
     }
-    else if (playerObjOrArray instanceof Object) {
-        if (Object.keys(playerObjOrArray).length === 0) return playerObjOrArray
-        return editPlayerProp(playerObjOrArray)
-    }
-    else throw Error("Can't edit player props! The type isn't an object or array.")
+    else return Object.keys(playerObjOrArray).length == 0 ? {} : editPlayerProp(playerObjOrArray)
+
+    throw Error("Can't edit player props! The type isn't an object or array.")
 }
 
-function editPlayerProp(player) {
-    if (player.world == "-some-other-bogus-world-") player["isUnderground"] = true
-    else player["isUnderground"] = false
-
-    player['nickname'] = striptags(player['name'])
-    delete player.name
-
-    player['name'] = player['account']
-    delete player.account
-
-    delete player.world
-    delete player.sort
-    delete player.armor
-    delete player.health
-    delete player.type
-}
+const editPlayerProp = player => ({
+    name: player.account,
+    nickname: striptags(player.name),
+    x: player.x, y: player.y, z: player.z,
+    underground: player.world == 'earth' ? false : true
+})
 
 /**
  * Get the average position of all towns in a nation.
