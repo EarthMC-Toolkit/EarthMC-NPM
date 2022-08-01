@@ -16,10 +16,8 @@ async function getTown(townNameInput) {
 }
 
 async function getTowns(removeAccents = false) {
-    let mapData = await endpoint.mapData("aurora"),
-        ops = await getOnlinePlayerData()
-
-    if (!ops || !mapData?.sets["townyPlugin.markerset"]) return null
+    let mapData = await endpoint.mapData("aurora")
+    if (!mapData?.sets["townyPlugin.markerset"]) return null
 
     var townsArray = [], 
         townsArrayNoDuplicates = [],
@@ -215,10 +213,10 @@ async function getAllPlayers() {
     if (!onlinePlayers || !residents) return null
 
     let i = 0, len = residents.length,
-        ops = onlinePlayers.find(op => op.name === residents[i].name),
+        ops = index => onlinePlayers.find(op => op.name === residents[index].name),
         merged = []
     
-    for (; i < len; i++) merged.push({ ...residents[i], ...ops })
+    for (; i < len; i++) merged.push({ ...residents[i], ...ops(i) })
     return merged
 }
 
