@@ -5,7 +5,7 @@ const fetch = require('node-fetch'),
 
 module.exports = {
     get, asJSON,
-    getArchive: async (url, unixTs=Date.now()) => await asJSON(`https://web.archive.org/web/${unixTs.toString()}id_/${url}`),
+    getArchive: async (url, unixTs=Date.now()) => await asJSON(`https://web.archive.org/web/${unixTs.toString()}id_/${decodeURIComponent(url)}`),
     playerData: async mapName => {
         let url = await get("players", mapName)
         return await asJSON(url)
