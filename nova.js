@@ -56,12 +56,12 @@ async function getTowns(removeAccents = false) {
             nation: fn.formatString(nationName, removeAccents),
             mayor: info[1].slice(7),
             residents: residents,
-            pvp: asBool(info[5].slice(5)),
-            mobs: asBool(info[6].slice(6)),
-            public: asBool(info[7].slice(8)),
-            explosion: asBool(info[8].slice(11)),
-            fire: asBool(info[9].slice(6)),
-            capital: asBool(info[10].slice(9)),
+            pvp: asBool(info[4]?.slice(5)),
+            mobs: asBool(info[5]?.slice(6)),
+            public: asBool(info[6]?.slice(8)),
+            explosion: asBool(info[7]?.slice(11)),
+            fire: asBool(info[8]?.slice(6)),
+            capital: asBool(info[9]?.slice(9)),
             colourCodes: {
                 fill: town.fillcolor,
                 outline: town.color
