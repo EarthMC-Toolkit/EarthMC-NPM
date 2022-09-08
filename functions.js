@@ -1,7 +1,7 @@
 var striptags = require("striptags"),
     Diacritics = require("diacritic")
 
-const removeDuplicates = array => array.filter((a, b) => array.indexOf(a) === b),
+const removeDuplicates = arr => [...new Set(arr)],
       removeStyleCharacters = string => string.replace(/(&amp;.|&[0-9kmnola-z])/g, "")
 
 function formatString(str, removeAccents = false) {
@@ -28,12 +28,6 @@ const editPlayerProp = player => ({
     underground: player.world == 'earth' ? false : true
 })
 
-/**
- * Get the average position of all towns in a nation.
- * @param  {String} nationName Name of the nation.
- * @param  {Object[]} towns An array of towns.
- * @return {Object} Object with x, z keys.
- */
 function calcArea(X, Z, numPoints, divisor = 256) { 
     let i = area = 0, j = numPoints-1		
 

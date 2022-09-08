@@ -27,12 +27,12 @@ async function getTowns(removeAccents = false) {
         townAreaNames = Object.keys(townData)
 
     let i = 0, len = townAreaNames.length
+    const asBool = str => str == "true" ? true : false
 
     for (; i < len; i++) {      
         let town = townData[townAreaNames[i]],
-            rawinfo = town.desc.split("<br />")
-
-        var info = []
+            rawinfo = town.desc.split("<br />"),
+            info = []
 
         // Strips html tags from town desc
         rawinfo.forEach(x => { info.push(striptags(x)) })
@@ -43,17 +43,15 @@ async function getTowns(removeAccents = false) {
         var mayor = info[1].slice(7)
         if (mayor == "") continue
         
-        var nationName = info[0].split(" (")[1].slice(0, -1) == "" ? "No Nation" : info[0].split(" (")[1].slice(0, -1).trim(),
+        var nationName = (info[0].split(" (")[2] ?? info[0].split(" (")[1]).slice(0, -1),
             residents = info[2].slice(9).split(", ")
-
-        const asBool = str => str == "true" ? true : false
 
         let currentTown = {
             area: fn.calcArea(town.x, town.z, town.x.length),
             x: Math.round((Math.max(...town.x) + Math.min(...town.x)) / 2),
             z: Math.round((Math.max(...town.z) + Math.min(...town.z)) / 2),
             name: fn.formatString(townName, removeAccents),
-            nation: fn.formatString(nationName, removeAccents),
+            nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
             mayor: info[1].slice(7),
             residents: residents,
             pvp: asBool(info[4]?.slice(5)),
@@ -67,7 +65,7 @@ async function getTowns(removeAccents = false) {
                 outline: town.color
             }
         }
-        
+    
         townsArray.push(currentTown)
     }
     
@@ -105,10 +103,6 @@ async function getNations() {
                     name: town.nation,
                     residents: town.residents,
                     towns: [],
-                    king: "Unavailable",
-                    capitalName: "Unavailable",
-                    capitalX: 0,
-                    capitalZ: 0,
                     area: 0
                 }
 
@@ -135,15 +129,16 @@ async function getNations() {
     return nationsArray
 }
 
+const error = (_name, _message) => ({ name: _name, message: _message })
 async function getOnlinePlayer(playerNameInput) {
-    if (!playerNameInput) throw { name: "NO_PLAYER_INPUT", message: "No player was inputted!" }
-    else if (!isNaN(playerNameInput)) throw { name: "INVALID_PLAYER_TYPE", message: "Player cannot be an integer." }
+    if (!playerNameInput) return error("NO_PLAYER_INPUT", "No player was inputted!")
+    else if (!isNaN(playerNameInput)) return error("INVALID_PLAYER_TYPE", "Player cannot be an integer.")
 
     var ops = await getOnlinePlayers(true)
-    if (!ops) throw { name: "FETCH_ERROR", message: "Error fetching data, please try again." }
+    if (!ops) return error("FETCH_ERROR", "Error fetching data, please try again.")
 
     let foundPlayer = ops.find(op => op.name.toLowerCase() == playerNameInput.toLowerCase())
-    if (!foundPlayer) throw { name: "INVALID_PLAYER", message: "That player is offline or does not exist!" }
+    if (!foundPlayer) return error("INVALID_PLAYER", "That player is offline or does not exist!")
 
     return foundPlayer
 }
@@ -185,10 +180,10 @@ async function getResidents() {
 
     for (; i < len; i++) {
         var currentTown = towns[i],
-            rank
+            rank, j = 0, resLen = currentTown.residents.length
 
-        for (let i = 0; i < currentTown.residents.length; i++) {
-            var currentResident = currentTown.residents[i]
+        for (; j < resLen; j++) {
+            var currentResident = currentTown.residents[j]
 
             if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"
             else if (currentTown.mayor == currentResident) rank = "Mayor"
