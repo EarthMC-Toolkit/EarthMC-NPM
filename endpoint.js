@@ -6,7 +6,7 @@ const fetch = require('node-fetch'),
 
 var archiveTs = false
 module.exports = {
-    get, asJSON,
+    get, asJSON, getArchive,
     useArchive: ts => archiveTs = ts,
     playerData: async mapName => {
         let url = await get("players", mapName)
