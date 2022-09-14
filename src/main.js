@@ -27,9 +27,11 @@ async function getServerInfo() {
     return serverData
 }
 
+
 module.exports = {
     formatString: fn.formatString,
     endpoint, getServerInfo,
     Aurora: new Map('aurora'),
-    Nova: new Map('nova')
+    Nova: new Map('nova'),
+    Errors: require('../utils/Errors')
 }

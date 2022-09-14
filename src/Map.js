@@ -1,5 +1,6 @@
 const fn = require('../utils/functions'),
       endpoint = require('../utils/endpoint'),
+      { NotFound, FetchError } = require('../utils/Errors'),
       striptags = require("striptags")
 
 class Map {
@@ -20,9 +21,10 @@ class Map {
     Towns = {
         get: async (...townList) => {
             let towns = await this.Towns.all()
-            if (!towns) return Error('Error fetching towns! Please try again.')
+            if (!towns) return new FetchError('Error fetching towns! Please try again.')
             
-            return townList.flat().map(t => towns.find(town => t.toLowerCase() == town.name.toLowerCase()))
+            let filter = t => towns.find(town => t.toLowerCase() == town.name.toLowerCase()) ?? NotFound(t)
+            return townList.flat().map(t => filter(t))
         },
         all: async (removeAccents=false) => {
             let mapData = await this.mapData()
@@ -87,6 +89,56 @@ class Map {
         
             return townsArrayNoDuplicates
         }
+    }
+
+    Nations = {
+        get: async (...nationList) => {
+            let nations = await this.Nations.all()
+            if (!nations) return new FetchError('Error fetching nations! Please try again.')
+        
+            let filter = n => nations.find(nation => n.toLowerCase() == nation.name.toLowerCase()) ?? NotFound(n)
+            return nationList.flat().map(n => filter(n))
+        },
+        all: async () => {
+            let towns = await this.Towns.all(true)
+            if (!towns) return null
+        
+            let nations = [],
+                i = 0, len = towns.length
+        
+            for (; i < len; i++) {
+                let town = towns[i] 
+                if (town.nation == "No Nation") continue
+        
+                if (!this[town.nation]) {          
+                    this[town.nation] = { 
+                        name: town.nation,
+                        residents: town.residents,
+                        towns: [],
+                        area: 0
+                    }
+        
+                    nations.push(this[town.nation])
+                }
+        
+                // If it already exists, add up stuff.
+                this[town.nation].residents = fn.removeDuplicates(this[town.nation].residents.concat(town.residents))       
+                this[town.nation].area += town.area // Add up the area
+        
+                // If the nation name is equal to the current towns nation
+                if (this[town.nation].name == town.nation)
+                    this[town.nation].towns.push(town.name) // Push it to nation towns
+        
+                if (town.capital) {
+                    this[town.nation].capitalX = town.x
+                    this[town.nation].capitalZ = town.z
+                    this[town.nation].capitalName = town.name
+                    this[town.nation].king = town.mayor
+                }   
+            }
+        
+            return nations
+        }        
     }
 }
 
