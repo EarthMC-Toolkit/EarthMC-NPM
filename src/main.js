@@ -1,7 +1,6 @@
-const Aurora = require("./aurora"),
-      Nova = require("./nova"),
-      endpoint = require("./endpoint"),
-      fn = require("./functions")
+const Map = require('./Map'),
+      endpoint = require("../utils/endpoint"),
+      fn = require("../utils/functions")
 
 async function getServerData() {
     var Minecraft = require("minecraft-lib"),
@@ -30,8 +29,7 @@ async function getServerInfo() {
 
 module.exports = {
     formatString: fn.formatString,
-    endpoint,
-    getServerInfo,
-    Aurora,
-    Nova
+    endpoint, getServerInfo,
+    Aurora: new Map('aurora'),
+    Nova: new Map('nova')
 }

@@ -57,7 +57,10 @@ async function getAveragePos(nationName, towns) {
     } 
 }
 
+const asBool = str => str == "true" ? true : false
+
 module.exports = {
+    asBool,
     formatString,
     editPlayerProps,
     calcArea,

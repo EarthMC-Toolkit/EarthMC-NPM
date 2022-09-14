@@ -1,13 +1,11 @@
 var striptags = require("striptags"),
-    fn = require("./functions"),
-    endpoint = require("./endpoint")
+    fn = require("../utils/functions"),
+    endpoint = require("../utils/endpoint")
 
-//#region Data Functions
 async function getOnlinePlayerData() {
-    let playerData = await endpoint.playerData("nova")
+    let playerData = await endpoint.playerData("aurora")
     return playerData?.players ? fn.editPlayerProps(playerData?.players) : null
 }
-//#endregion
 
 //#region Usable Functions
 async function getTown(townNameInput) {
@@ -18,7 +16,7 @@ async function getTown(townNameInput) {
 }
 
 async function getTowns(removeAccents = false) {
-    let mapData = await endpoint.mapData("nova")
+    let mapData = await endpoint.mapData("aurora")
     if (!mapData?.sets["townyPlugin.markerset"]) return null
 
     var townsArray = [], 
@@ -37,7 +35,7 @@ async function getTowns(removeAccents = false) {
         // Strips html tags from town desc
         rawinfo.forEach(x => { info.push(striptags(x)) })
 
-        var townName = info[0].split(" (")[0].trim()
+        var townName = info[0].split(" (")[0].trim()          
         if (townName.endsWith("(Shop)")) continue
       
         var mayor = info[1].slice(7)
@@ -65,7 +63,7 @@ async function getTowns(removeAccents = false) {
                 outline: town.color
             }
         }
-    
+        
         townsArray.push(currentTown)
     }
     
@@ -73,7 +71,7 @@ async function getTowns(removeAccents = false) {
     townsArray.forEach(function (a) {                   
         // If town doesnt exist, add it.
         if (!this[a.name]) {      
-            this[a.name] = { ...a }    
+            this[a.name] = { ...a }
             townsArrayNoDuplicates.push(this[a.name])
         }
         else this[a.name].area += a.area
@@ -84,7 +82,7 @@ async function getTowns(removeAccents = false) {
 
 async function getNation(nationNameInput) {
     let nations = await getNations(),
-        foundNation = nations?.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase())
+        foundNation = nations?.find(nation => nation.name.toLowerCase() == nationNameInput.toLowerCase()) 
 
     return foundNation ?? "That nation does not exist!"
 }
@@ -93,40 +91,41 @@ async function getNations() {
     let towns = await getTowns()
     if (!towns) return null
 
-    let nationsArray = []
+    let nations = [],
+        i = 0, len = towns.length
 
-    towns.forEach(function (town) {        
-        if (town.nation != "No Nation") {
-            // If nation doesn't exist
-            if (!this[town.nation]) {          
-                this[town.nation] = { 
-                    name: town.nation,
-                    residents: town.residents,
-                    towns: [],
-                    area: 0
-                }
+    for (; i < len; i++) {
+        let town = towns[i] 
+        if (town.nation == "No Nation") continue
 
-                nationsArray.push(this[town.nation])
+        if (!this[town.nation]) {          
+            this[town.nation] = { 
+                name: town.nation,
+                residents: town.residents,
+                towns: [],
+                area: 0
             }
 
-            // If it already exists, add up stuff.
-            this[town.nation].residents = fn.removeDuplicates(this[town.nation].residents.concat(town.residents))       
-            this[town.nation].area += town.area // Add up the area
-
-            // If the nation name is equal to the current towns nation
-            if (this[town.nation].name == town.nation)
-                this[town.nation].towns.push(town.name) // Push it to nation towns
-
-            if (town.capital) {
-                this[town.nation].capitalX = town.x
-                this[town.nation].capitalZ = town.z
-                this[town.nation].capitalName = town.name
-                this[town.nation].king = town.mayor
-            }   
+            nations.push(this[town.nation])
         }
-    }, Object.create(null))
 
-    return nationsArray
+        // If it already exists, add up stuff.
+        this[town.nation].residents = fn.removeDuplicates(this[town.nation].residents.concat(town.residents))       
+        this[town.nation].area += town.area // Add up the area
+
+        // If the nation name is equal to the current towns nation
+        if (this[town.nation].name == town.nation)
+            this[town.nation].towns.push(town.name) // Push it to nation towns
+
+        if (town.capital) {
+            this[town.nation].capitalX = town.x
+            this[town.nation].capitalZ = town.z
+            this[town.nation].capitalName = town.name
+            this[town.nation].king = town.mayor
+        }   
+    }
+
+    return nations
 }
 
 const error = (_name, _message) => ({ name: _name, message: _message })
@@ -180,14 +179,14 @@ async function getResidents() {
 
     for (; i < len; i++) {
         var currentTown = towns[i],
-            rank, j = 0, resLen = currentTown.residents.length
+            j = 0, resLength = currentTown.residents.length
 
-        for (; j < resLen; j++) {
-            var currentResident = currentTown.residents[j]
+        for (; j < resLength; j++) {
+            var currentResident = currentTown.residents[j],
+                rank = "Resident"
 
             if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"
             else if (currentTown.mayor == currentResident) rank = "Mayor"
-            else rank = "Resident"
 
             let resident = {
                 name: currentResident,
@@ -223,7 +222,7 @@ async function getPlayer(playerNameInput) {
 }
 
 async function getTownless() {
-    let mapData = await endpoint.mapData("nova"),
+    let mapData = await endpoint.mapData("aurora"),
         onlinePlayers = await getOnlinePlayerData()
 
     if (!onlinePlayers || !mapData) return
@@ -274,7 +273,7 @@ async function getInvitableTowns(nationName, includeBelonging) {
     if (!towns) return null
 
     function invitable(town) {
-        var sqr = Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3000 && town.nation != nation.name
+        var sqr = Math.hypot(town.x - nation.capitalX, town.z - nation.capitalZ) <= 3500 && town.nation != nation.name
         return includeBelonging ? sqr : sqr && town.nation == "No Nation"
     }
 
@@ -288,7 +287,7 @@ async function getJoinableNations(townName) {
     let nations = await getNations()
     if (!nations) return null
 
-    function joinable(n) { return Math.hypot(n.capitalX - town.x, n.capitalZ - town.z) <= 3000 && town.nation == "No Nation" }
+    function joinable(n) { return Math.hypot(n.capitalX - town.x, n.capitalZ - town.z) <= 3500 && town.nation == "No Nation" }
     return nations.filter(nation => joinable(nation))
 }
 
@@ -327,14 +326,21 @@ async function getNearbyNations(xInput, zInput, xRadius, zRadius) {
 
 //#region Exports
 module.exports = {
-    getTown, getTowns,
-    getNation, getNations,
-    getResident, getResidents,
-    getOnlinePlayer, getOnlinePlayers,
-    getAllPlayers, getPlayer,
+    getTown,
+    getTowns,
+    getNation,
+    getNations,
+    getResident,
+    getResidents,
+    getOnlinePlayer,
+    getOnlinePlayers,
+    getAllPlayers,
+    getPlayer,
     getTownless,
     getInvitableTowns,
     getJoinableNations,
-    getNearbyPlayers, getNearbyTowns, getNearbyNations
+    getNearbyPlayers,
+    getNearbyTowns,
+    getNearbyNations
 }
 //#endregion
