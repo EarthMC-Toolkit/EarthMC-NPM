@@ -44,9 +44,9 @@ class Map {
         
                 // Strips html tags from town desc
                 rawinfo.forEach(x => { info.push(striptags(x)) })
-        
-                var townName = info[0].split(" (")[0].trim()          
-                if (townName.endsWith("(Shop)")) continue
+
+                if (info[0].inludes("(Shop)")) continue
+                var townName = info[0].split(" (")[0].trim()   
               
                 var mayor = info[1].slice(7)
                 if (mayor == "") continue
