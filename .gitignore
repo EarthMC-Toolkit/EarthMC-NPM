@@ -11,3 +11,5 @@ node_modules/
 
 # Output of 'npm pack'
 *.tgz
+
+src/test.js

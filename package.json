@@ -4,7 +4,7 @@
   "description": "Provides data about people, places and more on the Minecraft server 'EarthMC'.",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node src/test.js"
   },
   "author": "Owen77Stubbs <owen77stubbs@gmail.com>",
   "license": "ISC",
