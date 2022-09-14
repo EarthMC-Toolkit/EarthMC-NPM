@@ -1,9 +1,7 @@
 var striptags = require("striptags"),
-    fn = require("../utils/functions"),
     endpoint = require("../utils/endpoint")
 
 //#region Usable Functions
-
 const error = (_name, _message) => ({ name: _name, message: _message })
 async function getOnlinePlayer(playerNameInput) {
     if (!playerNameInput) return error("NO_PLAYER_INPUT", "No player was inputted!")
