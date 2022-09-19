@@ -18,15 +18,17 @@ async function getServerInfo() {
         novaData = await endpoint.playerData("nova"),
         auroraData = await endpoint.playerData("aurora")
 
-    if (!!novaData) serverData["nova"] = novaData.currentcount
-    if (!!auroraData) serverData["aurora"] = auroraData.currentcount
+    let info = {
+        ...serverData,
+        nova: novaData.currentcount ?? 0,
+        aurora: auroraData.currentcount ?? 0
+    }
     
-    if (serverData["online"] == 0 || !serverData["online"]) serverData["queue"] = 0
-    else serverData["queue"] = serverData["online"] - serverData["nova"] - serverData["aurora"]
-
-    return serverData
+    return {
+        queue: info.online < 1 ? 0 : info.online - info.aurora - info.nova,
+        ...info
+    }
 }
-
 
 module.exports = {
     formatString: fn.formatString,
