@@ -27,47 +27,47 @@ class Map {
             return townList.flat().map(t => filter(t))
         },
         all: async (removeAccents=false) => {
-            let mapData = await this.mapData()
-            if (!mapData?.sets["townyPlugin.markerset"]) return null
-        
-            var townsArray = [], 
-                townsArrayNoDuplicates = [],
-                townData = mapData.sets["townyPlugin.markerset"].areas,
-                townAreaNames = Object.keys(townData)
-        
-            let i = 0, len = townAreaNames.length
-        
-            for (; i < len; i++) {      
-                let town = townData[townAreaNames[i]],
-                    rawinfo = town.desc.split("<br />"),
-                    info = []
-        
-                // Strips html tags from town desc
-                rawinfo.forEach(x => { info.push(striptags(x)) })
+            let mapData = await this.mapData(),
+                markerset = mapData?.sets["townyPlugin.markerset"]
 
-                if (info[0].inludes("(Shop)")) continue
-                var townName = info[0].split(" (")[0].trim()   
+            if (!markerset) return null
+        
+            let townsArray = [], 
+                townsArrayNoDuplicates = [],
+                townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
+                i = 0, len = townData.length
+
+            for (; i < len; i++) {      
+                let town = townData[i],
+                    rawinfo = town.desc.split("<br />"),
+                    info = rawinfo.map(i => striptags(i))
+
+                if (info[0].includes("(Shop)")) continue
               
-                var mayor = info[1].slice(7)
+                let mayor = info[1].slice(7)
                 if (mayor == "") continue
-                
-                var nationName = (info[0].split(" (")[2] ?? info[0].split(" (")[1]).slice(0, -1),
+
+                let split = info[0].split(" ("),
+                    townName = split[0].trim(),
+                    nationName = (split[2] ?? split[1]).slice(0, -1),
                     residents = info[2].slice(9).split(", ")
         
                 let currentTown = {
-                    area: fn.calcArea(town.x, town.z, town.x.length),
-                    x: Math.round((Math.max(...town.x) + Math.min(...town.x)) / 2),
-                    z: Math.round((Math.max(...town.z) + Math.min(...town.z)) / 2),
                     name: fn.formatString(townName, removeAccents),
                     nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
                     mayor: info[1].slice(7),
+                    area: fn.calcArea(town.x, town.z, town.x.length),
+                    x: fn.range(...town.x),
+                    z: fn.range(...town.z),
                     residents: residents,
-                    pvp: fn.asBool(info[4]?.slice(5)),
-                    mobs: fn.asBool(info[5]?.slice(6)),
-                    public: fn.asBool(info[6]?.slice(8)),
-                    explosion: fn.asBool(info[7]?.slice(11)),
-                    fire: fn.asBool(info[8]?.slice(6)),
-                    capital: fn.asBool(info[9]?.slice(9)),
+                    flags: {
+                        pvp: fn.asBool(info[4]?.slice(5)),
+                        mobs: fn.asBool(info[5]?.slice(6)),
+                        public: fn.asBool(info[6]?.slice(8)),
+                        explosion: fn.asBool(info[7]?.slice(11)),
+                        fire: fn.asBool(info[8]?.slice(6)),
+                        capital: fn.asBool(info[9]?.slice(9))
+                    },
                     colourCodes: {
                         fill: town.fillcolor,
                         outline: town.color

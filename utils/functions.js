@@ -57,14 +57,16 @@ async function getAveragePos(nationName, towns) {
     } 
 }
 
-const asBool = str => str == "true" ? true : false
+const asBool = str => str == "true" ? true : false,
+      range = args => Math.round((Math.max(args) + Math.min(args)) / 2)
 
 module.exports = {
+    range,
     asBool,
     formatString,
     editPlayerProps,
     calcArea,
     removeDuplicates,
     removeStyleCharacters,
-    getAveragePos
+    getAveragePos,
 }
