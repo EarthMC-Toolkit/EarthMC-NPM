@@ -10,8 +10,9 @@ class Map {
         this.name = map
     }
 
-    playerData = async () => await endpoint.playerData(this.name)
-    mapData = async () => await endpoint.mapData(this.name)
+    mapData = () => endpoint.mapData(this.name)
+    playerData = () => endpoint.playerData(this.name)
+    configData = () => endpoint.configData(this.name)
 
     getOnlinePlayers = async () => {
         let pData = await this.playerData()
