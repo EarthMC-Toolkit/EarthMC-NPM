@@ -111,6 +111,7 @@ class Map {
                 let town = towns[i] 
                 if (town.nation == "No Nation") continue
         
+                // Doesn't already exist, create new.
                 if (!this[town.nation]) {          
                     this[town.nation] = { 
                         name: town.nation,
@@ -122,24 +123,39 @@ class Map {
                     nations.push(this[town.nation])
                 }
         
-                // If it already exists, add up stuff.
+                //#region Add extra stuff
                 this[town.nation].residents = fn.removeDuplicates(this[town.nation].residents.concat(town.residents))       
-                this[town.nation].area += town.area // Add up the area
+                this[town.nation].area += town.area
         
-                // If the nation name is equal to the current towns nation
                 if (this[town.nation].name == town.nation)
-                    this[town.nation].towns.push(town.name) // Push it to nation towns
+                    this[town.nation].towns.push(town.name)
         
-                if (town.capital) {
-                    this[town.nation].capitalX = town.x
-                    this[town.nation].capitalZ = town.z
-                    this[town.nation].capitalName = town.name
+                if (town.flags.capital) {
                     this[town.nation].king = town.mayor
+                    this[town.nation].capital = {
+                        name: town.name,
+                        x: town.x,
+                        z: town.z
+                    }
                 }   
+                //#endregion
             }
         
             return nations
         }        
+    }
+
+    Residents = {
+        // all
+        // get
+    }
+
+    Players = {
+        // townless
+        // online
+        // all
+        // get
+        // nearby
     }
 }
 

@@ -1,16 +1,9 @@
-# EarthMC Package
+# **EarthMC-NPM**
 
-Provides data about people, places and more on the Minecraft server 'EarthMC'.
+> **Note** </br>
+> This is an unofficial package! All data is gathered from the [Dynmap](https://earthmc.net/map/aurora/).
 
-## Installation
-```bash
-$ npm install earthmc
-```
-
-### Require the package
-
-```js
-var emc = require("earthmc")
-```
-
-## Updated documentation coming soon..
+## About
+#### Provides data on people, places and more on the Minecraft server 'EarthMC'.
+#
+## Documentation available [here](https://emctoolkit.vercel.app/npm).

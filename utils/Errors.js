@@ -13,7 +13,7 @@ class FetchError extends Error {
 }
 
 module.exports = {
+    FetchError,
     NotFoundError,
     NotFound: input => new NotFoundError(`${input} does not exist.`),
-    FetchError
 }
