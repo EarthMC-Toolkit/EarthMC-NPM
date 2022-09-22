@@ -1,13 +1,19 @@
 const fn = require('../utils/functions'),
       endpoint = require('../utils/endpoint'),
-      { NotFound, FetchError } = require('../utils/Errors'),
+      { FetchError } = require('../utils/Errors'),
       striptags = require("striptags")
 
 class Map {
     name = ''
+    inviteRange = 0
+
+    cachedTowns = []
+    cachedNations = []
+    cachedPlayers = []
 
     constructor(map='aurora') {
         this.name = map
+        this.inviteRange = map == 'nova' ? 3000 : 3500
     }
 
     mapData = () => endpoint.mapData(this.name)
@@ -24,8 +30,7 @@ class Map {
             let towns = await this.Towns.all()
             if (!towns) return new FetchError('Error fetching towns! Please try again.')
             
-            let filter = t => towns.find(town => t.toLowerCase() == town.name.toLowerCase()) ?? NotFound(t)
-            return townList.flat().map(t => filter(t))
+            return fn.getExisting(towns, townList)
         },
         all: async (removeAccents=false) => {
             let mapData = await this.mapData(),
@@ -89,11 +94,33 @@ class Map {
             }, {})
             //#endregion
         
+            this.cachedTowns = towns
             return towns
         },
-        invitable: async (...nationList) => {
-            
-        }  
+        nearby: async (xInput, zInput, xRadius, zRadius, towns=null) => {
+            if (!towns) {
+                towns = await this.Towns.all()
+                if (!towns) return null
+            }
+        
+            return towns.filter(t => 
+                fn.hypot(t.x, [xInput, xRadius]) && 
+                fn.hypot(t.z, [zInput, zRadius]))
+        },
+        invitable: async (nationName, includeBelonging=false) => {
+            let nation = await this.Nations.get(nationName)
+            if (!nation || nation instanceof Error) return nation
+
+            if (!this.cachedTowns) return new FetchError('Error fetching towns! Please try again.')
+            let ir = this.inviteRange
+
+            function invitable(town) {
+                let sqr = Math.hypot(town.x - nation.capital.x, town.z - nation.capital.z) <= ir && town.nation != nation.name
+                return includeBelonging ? sqr : sqr && town.nation == "No Nation"
+            }
+
+            return this.cachedTowns.filter(t => invitable(t))
+        }
     }
 
     Nations = {
@@ -101,15 +128,14 @@ class Map {
             let nations = await this.Nations.all()
             if (!nations) return new FetchError('Error fetching nations! Please try again.')
         
-            let filter = n => nations.find(nation => n.toLowerCase() == nation.name.toLowerCase()) ?? NotFound(n)
-            return nationList.flat().map(n => filter(n))
+            return fn.getExisting(nations, nationList)
         },
         all: async towns => {
             if (!towns) {
                 towns = await this.Towns.all()
                 if (!towns) return null
             }
-        
+            
             let nations = [],
                 i = 0, len = towns.length
         
@@ -134,7 +160,7 @@ class Map {
                 this[town.nation].area += town.area
         
                 if (this[town.nation].name == town.nation)
-                    this[town.nation].towns.push(town.name)
+                    this[town.nation].towns?.push(town.name)
         
                 if (town.flags.capital) {
                     this[town.nation].king = town.mayor
@@ -147,7 +173,18 @@ class Map {
                 //#endregion
             }
         
+            this.cachedNations = nations
             return nations
+        },
+        nearby: async (xInput, zInput, xRadius, zRadius, nations=null) => {
+            if (!nations) {
+                nations = await this.Nations.all()
+                if (!nations) return null
+            }
+        
+            return nations.filter(n => 
+                fn.hypot(n.capital.x, [xInput, xRadius]) && 
+                fn.hypot(n.capital.z, [zInput, zRadius]))
         },
         joinable: async (...townList) => {
             
@@ -156,7 +193,10 @@ class Map {
 
     Residents = {
         get: async (...residentList) => {
+            let residents = await this.Residents.all()
+            if (!residents) return new FetchError('Error fetching residents! Please try again.')
             
+            return fn.getExisting(residents, residentList)
         },
         all: async towns => {
             if (!towns) {
@@ -198,8 +238,7 @@ class Map {
             let players = await this.Players.all()
             if (!players) return new FetchError('Error fetching players! Please try again.')
             
-            let filter = p => players.find(player => p.toLowerCase() == player.name.toLowerCase()) ?? NotFound(p)
-            return playerList.flat().map(p => filter(p))
+            return fn.getExisting(players, playerList)
         },
         all: async () => {
             let onlinePlayers = await this.#onlinePlayerData()
@@ -264,8 +303,16 @@ class Map {
         
             return merged
         },
-        nearby: async () => {
-            
+        nearby: async (xInput, zInput, xRadius, zRadius, players=null) => {
+            if (!players) {
+                players = await this.Players.all()
+                if (!players) return null
+            }
+
+            return players.filter(p => {            
+                if (p.x == 0 && p.z == 0) return
+                return fn.hypot(p.x, [xInput, xRadius]) && fn.hypot(p.z, [zInput, zRadius])
+            })
         }
     }
 }

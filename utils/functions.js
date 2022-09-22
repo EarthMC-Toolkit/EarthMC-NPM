@@ -1,5 +1,6 @@
 var striptags = require("striptags"),
-    Diacritics = require("diacritic")
+    Diacritics = require("diacritic"),
+    { NotFound } = require("./Errors")
 
 const removeDuplicates = arr => [...new Set(arr)],
       removeStyleCharacters = string => string.replace(/(&amp;.|&[0-9kmnola-z])/g, "")
@@ -60,6 +61,13 @@ async function getAveragePos(nationName, towns) {
 const asBool = str => str == "true" ? true : false,
       range = args => Math.round((Math.max(args) + Math.min(args)) / 2)
 
+const getExisting = (a1, a2) => {
+    const filter = x => a1.find(e => x.toLowerCase() == e.name.toLowerCase()) ?? NotFound(x)
+    let arr = a2.flat().map(x => filter(x))
+
+    return arr.length > 1 ? arr : arr[0] 
+}
+
 const hypot = (num, args) => {
     let [input, radius] = args
     return num <= (input + radius) && num >= (input - radius)
@@ -69,6 +77,7 @@ module.exports = {
     range,
     hypot,
     asBool,
+    getExisting,
     formatString,
     editPlayerProps,
     calcArea,
