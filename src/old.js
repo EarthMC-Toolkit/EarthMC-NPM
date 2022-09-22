@@ -16,64 +16,12 @@ async function getOnlinePlayer(playerNameInput) {
     return foundPlayer
 }
 
-async function getOnlinePlayers(includeResidentInfo) {
-    var onlinePlayers = await getOnlinePlayerData(),
-        residents = await getResidents()
-
-    if (!onlinePlayers || !residents) return null
-    if (!includeResidentInfo) return onlinePlayers
-
-    let merged = [],
-        i = 0, len = onlinePlayers.length
-    
-    for (; i < len; i++) {
-        merged.push({ 
-            ...onlinePlayers[i], 
-            ...(residents.find((itmInner) => itmInner.name === onlinePlayers[i].name)) 
-        })
-    }
-
-    return merged
-}
-
 async function getResident(residentNameInput) {
     let residents = await getResidents(),
         foundResident = residents?.find(resident => resident.name.toLowerCase() == residentNameInput.toLowerCase())
 
     if (!foundResident) throw { name: "INVALID_RESIDENT", message: "That resident does not exist!" }
     return foundResident
-}
-
-async function getResidents() {
-    let towns = await getTowns()
-    if (!towns) return null
-
-    let residentsArray = [],
-        i = 0, len = towns.length
-
-    for (; i < len; i++) {
-        var currentTown = towns[i],
-            j = 0, resLength = currentTown.residents.length
-
-        for (; j < resLength; j++) {
-            var currentResident = currentTown.residents[j],
-                rank = "Resident"
-
-            if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"
-            else if (currentTown.mayor == currentResident) rank = "Mayor"
-
-            let resident = {
-                name: currentResident,
-                town: currentTown.name,
-                nation: currentTown.nation,
-                rank: rank
-            }
-
-            residentsArray.push(resident)
-        }
-    }
-
-    return residentsArray
 }
 
 async function getAllPlayers() {
@@ -93,50 +41,6 @@ async function getAllPlayers() {
 async function getPlayer(playerNameInput) {
     var allPlayers = await getAllPlayers()
     return allPlayers?.find(p => p.name.toLowerCase() == playerNameInput.toLowerCase()) ?? null
-}
-
-async function getTownless() {
-    let mapData = await endpoint.mapData("aurora"),
-        onlinePlayers = await getOnlinePlayerData()
-
-    if (!onlinePlayers || !mapData) return
-
-    var allTowns = [], allResidents = [],
-        townData = mapData.sets["townyPlugin.markerset"].areas,
-        townAreaNames = Object.keys(townData)
-    
-    let i = 0, len = townAreaNames.length
-
-    for (; i < len; i++) {
-        let town = townData[townAreaNames[i]],
-            rawinfo = town.desc.split("<br />")
-
-        var info = []
-
-        rawinfo.forEach(x => { info.push(striptags(x)) })
-
-        var name = info[0].split(" (")[0].replace(/_/gi, " ").trim()
-        if (name.endsWith("(Shop)")) continue
-                
-        var mayor = info[1].slice(7)
-        if (mayor == "") continue
-        
-        let residents = info[2].slice(9).split(", ")
-
-        allTowns.push(residents)
-    }
-
-    // Push every resident in every town
-    allTowns.forEach(town => { town.forEach(resident => allResidents.push(resident)) })
-
-    var townlessPlayers = onlinePlayers.filter(op => !allResidents.find(resident => resident == op.name))
-                                                
-    townlessPlayers.sort((a, b) => {
-        if (b.name.toLowerCase() < a.name.toLowerCase()) return 1
-        if (b.name.toLowerCase() > a.name.toLowerCase()) return -1
-    })
-
-    return townlessPlayers
 }
 
 async function getInvitableTowns(nationName, includeBelonging) {
@@ -171,9 +75,7 @@ async function getNearbyPlayers(xInput, zInput, xRadius, zRadius) {
 
     return allPlayers.filter(p => {            
         if (p.x == 0 && p.z == 0) return
-
-        return (p.x <= (xInput + xRadius) && p.x >= (xInput - xRadius)) && 
-               (p.z <= (zInput + zRadius) && p.z >= (zInput - zRadius))
+        return fn.hypot(p.x, [xInput, xRadius]) && fn.hypot(p.z, [zInput, zRadius])
     })
 }
 
@@ -196,25 +98,3 @@ async function getNearbyNations(xInput, zInput, xRadius, zRadius) {
                (n.capitalZ <= (zInput + zRadius) && n.capitalZ >= (zInput - zRadius))
     })
 }
-//#endregion
-
-//#region Exports
-module.exports = {
-    getTown,
-    getTowns,
-    getNation,
-    getNations,
-    getResident,
-    getResidents,
-    getOnlinePlayer,
-    getOnlinePlayers,
-    getAllPlayers,
-    getPlayer,
-    getTownless,
-    getInvitableTowns,
-    getJoinableNations,
-    getNearbyPlayers,
-    getNearbyTowns,
-    getNearbyNations
-}
-//#endregion

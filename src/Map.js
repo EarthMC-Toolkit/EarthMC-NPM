@@ -14,7 +14,7 @@ class Map {
     playerData = () => endpoint.playerData(this.name)
     configData = () => endpoint.configData(this.name)
 
-    getOnlinePlayers = async () => {
+    #onlinePlayerData = async () => {
         let pData = await this.playerData()
         return pData?.players ? fn.editPlayerProps(pData.players) : null
     }
@@ -104,9 +104,11 @@ class Map {
             let filter = n => nations.find(nation => n.toLowerCase() == nation.name.toLowerCase()) ?? NotFound(n)
             return nationList.flat().map(n => filter(n))
         },
-        all: async () => {
-            let towns = await this.Towns.all(true)
-            if (!towns) return null
+        all: async towns => {
+            if (!towns) {
+                towns = await this.Towns.all()
+                if (!towns) return null
+            }
         
             let nations = [],
                 i = 0, len = towns.length
@@ -153,7 +155,7 @@ class Map {
     }
 
     Residents = {
-        get: async (...resList) => {
+        get: async (...residentList) => {
             
         },
         all: async towns => {
@@ -192,17 +194,75 @@ class Map {
     }
 
     Players = {
-        get: async (...resList) => {
+        get: async (...playerList) => {
+            let players = await this.Players.all()
+            if (!players) return new FetchError('Error fetching players! Please try again.')
             
+            let filter = p => players.find(player => p.toLowerCase() == player.name.toLowerCase()) ?? NotFound(p)
+            return playerList.flat().map(p => filter(p))
         },
         all: async () => {
+            let onlinePlayers = await this.#onlinePlayerData()
+            if (!onlinePlayers) return null
+
+            let residents = await this.Residents.all()
+            if (!residents) return null
+        
+            let i = 0, len = residents.length,
+                ops = index => onlinePlayers.find(op => op.name === residents[index].name),
+                merged = []
             
+            for (; i < len; i++) merged.push({ ...residents[i], ...ops(i) })
+            return merged
         },
         townless: async () => {
+            let mapData = await endpoint.mapData("aurora")
+            if (!mapData) return new FetchError('Error fetching townless! Please try again.')
+        
+            let onlinePlayers = await this.Players.online()
+            if (!onlinePlayers) return
+
+            var allResidents = [],
+                markerset = mapData.sets["townyPlugin.markerset"],
+                townData = Object.keys(markerset.areas).map(key => markerset.areas[key])
             
+            let i = 0, len = townData.length
+            for (; i < len; i++) {
+                let town = townData[i],
+                    rawinfo = town.desc.split("<br />"),
+                    info = rawinfo.map(x => striptags(x))
+
+                if (info[0].endsWith("(Shop)")) continue
+
+                let mayor = info[1].slice(7)
+                if (mayor == "") continue
+                
+                let residents = info[2].slice(9).split(", ")
+                allResidents.push(...residents)
+            }
+
+            // Filter out residents & sort alphabetically
+            return onlinePlayers.filter(op => !allResidents.find(resident => resident == op.name)).sort((a, b) => {
+                if (b.name.toLowerCase() < a.name.toLowerCase()) return 1
+                if (b.name.toLowerCase() > a.name.toLowerCase()) return -1
+            })
         },
-        online: async () => {
+        online: async (includeResidentInfo=false) => {
+            let onlinePlayers = await this.#onlinePlayerData()
+            if (!onlinePlayers) return null
+            if (!includeResidentInfo) return onlinePlayers
+
+            let residents = await this.Residents.all(),
+                merged = [], i = 0, len = onlinePlayers.length
             
+            for (; i < len; i++) {
+                merged.push({ 
+                    ...onlinePlayers[i], 
+                    ...(residents.find((itmInner) => itmInner.name === onlinePlayers[i].name)) 
+                })
+            }
+        
+            return merged
         },
         nearby: async () => {
             
