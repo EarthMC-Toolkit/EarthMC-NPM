@@ -60,8 +60,14 @@ async function getAveragePos(nationName, towns) {
 const asBool = str => str == "true" ? true : false,
       range = args => Math.round((Math.max(args) + Math.min(args)) / 2)
 
+const hypot = (num, args) => {
+    let [input, radius] = args
+    return num <= (input + radius) && num >= (input - radius)
+}
+
 module.exports = {
     range,
+    hypot,
     asBool,
     formatString,
     editPlayerProps,

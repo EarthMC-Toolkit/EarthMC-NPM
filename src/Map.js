@@ -34,7 +34,6 @@ class Map {
             if (!markerset) return null
         
             let townsArray = [], 
-                townsArrayNoDuplicates = [],
                 townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
                 i = 0, len = townData.length
 
@@ -77,19 +76,24 @@ class Map {
                 
                 townsArray.push(currentTown)
             }
-            
-            // TOWN LOGIC \\  
-            townsArray.forEach(function (a) {                   
+
+            //#region Remove duplicates & add to area
+            let towns = []  
+            townsArray.forEach(a => {                   
                 // If town doesnt exist, add it.
-                if (!this[a.name]) {      
-                    this[a.name] = { ...a }
-                    townsArrayNoDuplicates.push(this[a.name])
+                if (!this[a.name]) {
+                    this[a.name] = a
+                    towns.push(this[a.name])
                 }
                 else this[a.name].area += a.area
-            }, Object.create(null))
+            }, {})
+            //#endregion
         
-            return townsArrayNoDuplicates
-        }
+            return towns
+        },
+        invitable: async (...nationList) => {
+            
+        }  
     }
 
     Nations = {
@@ -142,20 +146,67 @@ class Map {
             }
         
             return nations
-        }        
+        },
+        joinable: async (...townList) => {
+            
+        }
     }
 
     Residents = {
-        // all
-        // get
+        get: async (...resList) => {
+            
+        },
+        all: async towns => {
+            if (!towns) {
+                towns = await this.Towns.all()
+                if (!towns) return null
+            }
+        
+            let residentsArray = [],
+                i = 0, len = towns.length
+        
+            for (; i < len; i++) {
+                var currentTown = towns[i],
+                    j = 0, resLength = currentTown.residents.length
+        
+                for (; j < resLength; j++) {
+                    var currentResident = currentTown.residents[j],
+                        rank = "Resident"
+        
+                    if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"
+                    else if (currentTown.mayor == currentResident) rank = "Mayor"
+        
+                    let resident = {
+                        name: currentResident,
+                        town: currentTown.name,
+                        nation: currentTown.nation,
+                        rank: rank
+                    }
+        
+                    residentsArray.push(resident)
+                }
+            }
+        
+            return residentsArray
+        }
     }
 
     Players = {
-        // townless
-        // online
-        // all
-        // get
-        // nearby
+        get: async (...resList) => {
+            
+        },
+        all: async () => {
+            
+        },
+        townless: async () => {
+            
+        },
+        online: async () => {
+            
+        },
+        nearby: async () => {
+            
+        }
     }
 }
 
