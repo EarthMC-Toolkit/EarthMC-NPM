@@ -8,8 +8,6 @@ class Map {
     inviteRange = 0
 
     cachedTowns = []
-    cachedNations = []
-    cachedPlayers = []
 
     constructor(map='aurora') {
         this.name = map
@@ -53,12 +51,11 @@ class Map {
                 if (mayor == "") continue
 
                 let split = info[0].split(" ("),
-                    townName = split[0].trim(),
                     nationName = (split[2] ?? split[1]).slice(0, -1),
                     residents = info[2].slice(9).split(", ")
         
                 let currentTown = {
-                    name: fn.formatString(townName, removeAccents),
+                    name: fn.formatString(town.label, removeAccents),
                     nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
                     mayor: info[1].slice(7),
                     area: fn.calcArea(town.x, town.z, town.x.length),
@@ -78,7 +75,7 @@ class Map {
                         outline: town.color
                     }
                 }
-                
+
                 townsArray.push(currentTown)
             }
 
@@ -124,6 +121,7 @@ class Map {
     }
 
     Nations = {
+        raw: {},
         get: async (...nationList) => {
             let nations = await this.Nations.all()
             if (!nations) return new FetchError('Error fetching nations! Please try again.')
@@ -135,45 +133,48 @@ class Map {
                 towns = await this.Towns.all()
                 if (!towns) return null
             }
-            
-            let nations = [],
-                i = 0, len = towns.length
-        
+
+            const curNation = this.Nations.raw,
+                  nations = []
+
+            let i = 0, len = towns.length
             for (; i < len; i++) {
-                let town = towns[i] 
-                if (town.nation == "No Nation") continue
+                let town = towns[i],
+                    nationName = town.nation
+
+                if (nationName == "No Nation") continue
         
                 // Doesn't already exist, create new.
-                if (!this[town.nation]) {          
-                    this[town.nation] = { 
+                if (!curNation[nationName]) {          
+                    curNation[nationName] = { 
                         name: town.nation,
                         residents: town.residents,
                         towns: [],
                         area: 0
                     }
         
-                    nations.push(this[town.nation])
+                    nations.push(curNation[nationName])
                 }
         
                 //#region Add extra stuff
-                this[town.nation].residents = fn.removeDuplicates(this[town.nation].residents.concat(town.residents))       
-                this[town.nation].area += town.area
+                curNation[nationName].residents = fn.removeDuplicates(curNation[nationName].residents.concat(town.residents))       
+                curNation[nationName].area += town.area
         
-                if (this[town.nation].name == town.nation)
-                    this[town.nation].towns?.push(town.name)
+                // Current town is in existing nation
+                if (curNation[nationName].name == nationName) 
+                    curNation[nationName].towns?.push(town.name)
         
                 if (town.flags.capital) {
-                    this[town.nation].king = town.mayor
-                    this[town.nation].capital = {
+                    curNation[nationName].king = town.mayor
+                    curNation[nationName].capital = {
                         name: town.name,
                         x: town.x,
                         z: town.z
                     }
-                }   
+                }
                 //#endregion
             }
-        
-            this.cachedNations = nations
+
             return nations
         },
         nearby: async (xInput, zInput, xRadius, zRadius, nations=null) => {
@@ -187,7 +188,16 @@ class Map {
                 fn.hypot(n.capital.z, [zInput, zRadius]))
         },
         joinable: async (...townList) => {
+            // TODO
+
+            let town = await getTown(townName)
+            if (!town || town == "That town does not exist!") return town
             
+            let nations = await getNations()
+            if (!nations) return null
+        
+            function joinable(n) { return Math.hypot(n.capitalX - town.x, n.capitalZ - town.z) <= 3500 && town.nation == "No Nation" }
+            return nations.filter(nation => joinable(nation))
         }
     }
 
