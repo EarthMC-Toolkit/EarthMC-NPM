@@ -23,7 +23,7 @@ const editPlayerProp = player => ({
     name: player.account,
     nickname: striptags(player.name),
     x: player.x, y: player.y, z: player.z,
-    underground: player.world == 'earth' ? false : true
+    underground: player.world != 'earth'
 })
 
 function calcArea(X, Z, numPoints, divisor = 256) { 

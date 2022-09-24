@@ -8,7 +8,8 @@ class Map {
     inviteRange = 0
 
     cachedTowns = []
-    cachedPlayers = []
+    //cachedNations = []
+    //cachedPlayers = []
 
     constructor(map='aurora') {
         this.name = map
@@ -134,7 +135,7 @@ class Map {
                 if (!towns) return null
             }
 
-            const curNation = this.Nations.raw,
+            const nationList = this.Nations.raw,
                   nations = []
 
             let i = 0, len = towns.length
@@ -145,28 +146,28 @@ class Map {
                 if (nationName == "No Nation") continue
         
                 // Doesn't already exist, create new.
-                if (!curNation[nationName]) {          
-                    curNation[nationName] = { 
+                if (!nationList[nationName]) {          
+                    nationList[nationName] = { 
                         name: town.nation,
                         residents: town.residents,
                         towns: [],
                         area: 0
                     }
         
-                    nations.push(curNation[nationName])
+                    nations.push(nationList[nationName])
                 }
         
                 //#region Add extra stuff
-                curNation[nationName].residents = fn.removeDuplicates(curNation[nationName].residents.concat(town.residents))       
-                curNation[nationName].area += town.area
+                nationList[nationName].residents = fn.removeDuplicates(nationList[nationName].residents.concat(town.residents))       
+                nationList[nationName].area += town.area
         
                 // Current town is in existing nation
-                if (curNation[nationName].name == nationName) 
-                    curNation[nationName].towns?.push(town.name)
+                if (nationList[nationName].name == nationName) 
+                    nationList[nationName].towns?.push(town.name)
         
                 if (town.flags.capital) {
-                    curNation[nationName].king = town.mayor
-                    curNation[nationName].capital = {
+                    nationList[nationName].king = town.mayor
+                    nationList[nationName].capital = {
                         name: town.name,
                         x: town.x,
                         z: town.z
@@ -261,7 +262,7 @@ class Map {
             
             for (; i < len; i++) merged.push({ ...residents[i], ...ops(i) })
 
-            this.cachedPlayers = merged
+            //this.cachedPlayers = merged
             return merged
         },
         townless: async () => {
