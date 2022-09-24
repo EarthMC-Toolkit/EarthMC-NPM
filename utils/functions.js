@@ -10,16 +10,13 @@ function formatString(str, removeAccents = false) {
     return removeAccents ? Diacritics.clean(str) : str
 }
 
-function editPlayerProps(playerObjOrArray) {
-    if (!playerObjOrArray) throw Error("Can't edit player props! The parameter is null or undefined.")
+function editPlayerProps(props) {
+    if (!props) return Error("Can't edit player props! The parameter is null or undefined.")
 
-    if (playerObjOrArray instanceof Array) {
-        if (playerObjOrArray.length > 0) 
-            return playerObjOrArray.map(p => editPlayerProp(p))
-    }
-    else return Object.keys(playerObjOrArray).length == 0 ? {} : editPlayerProp(playerObjOrArray)
+    if (props instanceof Array) return props.length > 0 ? props.map(p => editPlayerProp(p)) : []
+    if (props instanceof Object) return Object.keys(props).length == 0 ? editPlayerProp(props) : {}
 
-    throw Error("Can't edit player props! The type isn't an object or array.")
+    return new TypeError("Can't edit player props! Type isn't of object or array.")
 }
 
 const editPlayerProp = player => ({
@@ -31,21 +28,14 @@ const editPlayerProp = player => ({
 
 function calcArea(X, Z, numPoints, divisor = 256) { 
     let i = area = 0, j = numPoints-1		
-
     for (; i < numPoints; i++) { 
         area += (X[j] + X[i]) * (Z[j] - Z[i]) 
         j = i						
     }
 
-    return Math.abs(area/2) / divisor
+    return Math.abs(area / 2) / divisor
 }
 
-/**
- * Get the average position of all towns in a nation.
- * @param  {String} nationName Name of the nation.
- * @param  {Object[]} towns An array of towns.
- * @return {Object} Object with x, z keys.
- */
 async function getAveragePos(nationName, towns) {
     if (!towns) return "Error getting average position: 'towns' parameter not defined!"
 
@@ -59,7 +49,8 @@ async function getAveragePos(nationName, towns) {
 }
 
 const asBool = str => str == "true" ? true : false,
-      range = args => Math.round((Math.max(args) + Math.min(args)) / 2)
+      range = args => Math.round((Math.max(args) + Math.min(args)) / 2),
+      sqr = (a, b, range) => Math.hypot(a.x - b.x, a.z - b.z) <= range
 
 const getExisting = (a1, a2) => {
     const filter = x => a1.find(e => x.toLowerCase() == e.name.toLowerCase()) ?? NotFound(x)
@@ -74,6 +65,7 @@ const hypot = (num, args) => {
 }
 
 module.exports = {
+    sqr,
     range,
     hypot,
     asBool,

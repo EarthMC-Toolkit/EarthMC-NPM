@@ -8,6 +8,7 @@ class Map {
     inviteRange = 0
 
     cachedTowns = []
+    cachedPlayers = []
 
     constructor(map='aurora') {
         this.name = map
@@ -109,10 +110,9 @@ class Map {
             if (!nation || nation instanceof Error) return nation
 
             if (!this.cachedTowns) return new FetchError('Error fetching towns! Please try again.')
-            let ir = this.inviteRange
 
-            function invitable(town) {
-                let sqr = Math.hypot(town.x - nation.capital.x, town.z - nation.capital.z) <= ir && town.nation != nation.name
+            const invitable = town => {
+                let sqr = fn.sqr(town, nation.capital, this.inviteRange) && town.nation != nation.name
                 return includeBelonging ? sqr : sqr && town.nation == "No Nation"
             }
 
@@ -187,16 +187,14 @@ class Map {
                 fn.hypot(n.capital.x, [xInput, xRadius]) && 
                 fn.hypot(n.capital.z, [zInput, zRadius]))
         },
-        joinable: async (...townList) => {
-            // TODO
-
-            let town = await getTown(townName)
+        joinable: async townName => {
+            let town = await this.Towns.get(townName)
             if (!town || town == "That town does not exist!") return town
             
-            let nations = await getNations()
+            let nations = await this.Nations.all(this.cachedTowns)
             if (!nations) return null
         
-            function joinable(n) { return Math.hypot(n.capitalX - town.x, n.capitalZ - town.z) <= 3500 && town.nation == "No Nation" }
+            const joinable = n => fn.sqr(n.capital, town, this.inviteRange) && town.nation == "No Nation"
             return nations.filter(nation => joinable(nation))
         }
     }
@@ -262,6 +260,8 @@ class Map {
                 merged = []
             
             for (; i < len; i++) merged.push({ ...residents[i], ...ops(i) })
+
+            this.cachedPlayers = merged
             return merged
         },
         townless: async () => {
