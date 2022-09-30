@@ -1,4 +1,4 @@
-const fetch = require('node-fetch'),
+const { fetch } = require('undici'),
       endpoints = () => fetch(`https://raw.githubusercontent.com/EarthMC-Toolkit/Toolkit-Website/main/endpoints.json`).then(res => res.json()),
       get = (dataType, map) => endpoints().then(obj => obj[dataType][map].toString()),
       asJSON = url => fetch(new URL(url)).then(res => res.json()).catch(e => console.log(e)),

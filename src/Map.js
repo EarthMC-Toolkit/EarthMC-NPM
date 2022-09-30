@@ -37,7 +37,7 @@ class Map {
                 markerset = mapData?.sets["townyPlugin.markerset"]
 
             if (!markerset) return null
-        
+
             let townsArray = [], 
                 townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
                 i = 0, len = townData.length
@@ -55,14 +55,18 @@ class Map {
                 let split = info[0].split(" ("),
                     nationName = (split[2] ?? split[1]).slice(0, -1),
                     residents = info[2].slice(9).split(", ")
+                
+                let home = null
+                if (nationName != "")
+                    home = markerset.markers[`${town.label}__home`]
         
                 let currentTown = {
                     name: fn.formatString(town.label, removeAccents),
                     nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
-                    mayor: info[1].slice(7),
+                    mayor: mayor,
                     area: fn.calcArea(town.x, town.z, town.x.length),
-                    x: fn.range(town.x),
-                    z: fn.range(town.z),
+                    x: home?.x ?? fn.range(town.x), 
+                    z: home?.z ?? fn.range(town.z),
                     residents: residents,
                     flags: {
                         pvp: fn.asBool(info[4]?.slice(5)),
@@ -72,9 +76,9 @@ class Map {
                         fire: fn.asBool(info[8]?.slice(6)),
                         capital: fn.asBool(info[9]?.slice(9))
                     },
-                    colourCodes: {
-                        fill: town.fillcolor,
-                        outline: town.color
+                    colourCodes: { 
+                        fill: town.fillcolor, 
+                        outline: town.color 
                     }
                 }
 
@@ -82,19 +86,18 @@ class Map {
             }
 
             //#region Remove duplicates & add to area
-            let towns = []  
+            this.cachedTowns = []
             townsArray.forEach(a => {                   
                 // If town doesnt exist, add it.
                 if (!this[a.name]) {
                     this[a.name] = a
-                    towns.push(this[a.name])
+                    this.cachedTowns.push(this[a.name])
                 }
                 else this[a.name].area += a.area
             }, {})
             //#endregion
-        
-            this.cachedTowns = towns
-            return towns
+
+            return this.cachedTowns
         },
         nearby: async (xInput, zInput, xRadius, zRadius, towns=null) => {
             if (!towns) {
@@ -122,7 +125,6 @@ class Map {
     }
 
     Nations = {
-        raw: {},
         get: async (...nationList) => {
             let nations = await this.Nations.all()
             if (!nations) return new FetchError('Error fetching nations! Please try again.')
@@ -135,10 +137,9 @@ class Map {
                 if (!towns) return null
             }
 
-            const nationList = this.Nations.raw,
-                  nations = []
+            let raw = {}, nations = [],
+                i = 0, len = towns.length
 
-            let i = 0, len = towns.length
             for (; i < len; i++) {
                 let town = towns[i],
                     nationName = town.nation
@@ -146,28 +147,28 @@ class Map {
                 if (nationName == "No Nation") continue
         
                 // Doesn't already exist, create new.
-                if (!nationList[nationName]) {          
-                    nationList[nationName] = { 
+                if (!raw[nationName]) {          
+                    raw[nationName] = { 
                         name: town.nation,
                         residents: town.residents,
                         towns: [],
                         area: 0
                     }
         
-                    nations.push(nationList[nationName])
+                    nations.push(raw[nationName])
                 }
         
                 //#region Add extra stuff
-                nationList[nationName].residents = fn.removeDuplicates(nationList[nationName].residents.concat(town.residents))       
-                nationList[nationName].area += town.area
+                raw[nationName].residents = fn.removeDuplicates(raw[nationName].residents.concat(town.residents))       
+                raw[nationName].area += town.area
         
                 // Current town is in existing nation
-                if (nationList[nationName].name == nationName) 
-                    nationList[nationName].towns?.push(town.name)
+                if (raw[nationName].name == nationName) 
+                raw[nationName].towns?.push(town.name)
         
                 if (town.flags.capital) {
-                    nationList[nationName].king = town.mayor
-                    nationList[nationName].capital = {
+                    raw[nationName].king = town.mayor
+                    raw[nationName].capital = {
                         name: town.name,
                         x: town.x,
                         z: town.z
@@ -191,10 +192,10 @@ class Map {
         joinable: async townName => {
             let town = await this.Towns.get(townName)
             if (!town || town == "That town does not exist!") return town
-            
+
             let nations = await this.Nations.all(this.cachedTowns)
             if (!nations) return null
-        
+
             const joinable = n => fn.sqr(n.capital, town, this.inviteRange) && town.nation == "No Nation"
             return nations.filter(nation => joinable(nation))
         }
