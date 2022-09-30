@@ -61,8 +61,8 @@ class Map {
                     nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
                     mayor: info[1].slice(7),
                     area: fn.calcArea(town.x, town.z, town.x.length),
-                    x: fn.range(...town.x),
-                    z: fn.range(...town.z),
+                    x: fn.range(town.x),
+                    z: fn.range(town.z),
                     residents: residents,
                     flags: {
                         pvp: fn.asBool(info[4]?.slice(5)),

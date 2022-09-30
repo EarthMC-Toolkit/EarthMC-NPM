@@ -49,7 +49,7 @@ async function getAveragePos(nationName, towns) {
 }
 
 const asBool = str => str == "true" ? true : false,
-      range = args => Math.round((Math.max(args) + Math.min(args)) / 2),
+      range = args => Math.round((Math.max(...args) + Math.min(...args)) / 2),
       sqr = (a, b, range) => Math.hypot(a.x - b.x, a.z - b.z) <= range
 
 const getExisting = (a1, a2) => {
