@@ -3,7 +3,7 @@ const Map = require('./Map'),
       fn = require("../utils/functions")
 
 async function getServerData() {
-    var Minecraft = require("minecraft-lib"),
+    let Minecraft = require("minecraft-lib"),
         serverData = await Minecraft.servers.get("play.earthmc.net").catch(console.error)
     
     return {
@@ -12,7 +12,7 @@ async function getServerData() {
         max: serverData?.players?.max ?? 0
     }
 }
-    
+
 async function getServerInfo() {
     let serverData = await getServerData(),
         novaData = await endpoint.playerData("nova"),
@@ -33,7 +33,7 @@ async function getServerInfo() {
 module.exports = {
     formatString: fn.formatString,
     endpoint, getServerInfo,
+    Errors: require('../utils/Errors'),
     Aurora: new Map('aurora'),
-    Nova: new Map('nova'),
-    Errors: require('../utils/Errors')
+    Nova: new Map('nova')
 }

@@ -6,10 +6,7 @@ const fn = require('../utils/functions'),
 class Map {
     name = ''
     inviteRange = 0
-
-    cachedTowns = []
-    //cachedNations = []
-    //cachedPlayers = []
+    cachedTowns = null
 
     constructor(map='aurora') {
         this.name = map
@@ -30,7 +27,7 @@ class Map {
             let towns = await this.Towns.all()
             if (!towns) return new FetchError('Error fetching towns! Please try again.')
             
-            return fn.getExisting(towns, townList)
+            return fn.getExisting(towns, townList, 'name')
         },
         all: async (removeAccents=false) => {
             let mapData = await this.mapData(),
@@ -48,17 +45,14 @@ class Map {
                     info = rawinfo.map(i => striptags(i))
 
                 if (info[0].includes("(Shop)")) continue
-              
+               
                 let mayor = info[1].slice(7)
                 if (mayor == "") continue
 
                 let split = info[0].split(" ("),
                     nationName = (split[2] ?? split[1]).slice(0, -1),
-                    residents = info[2].slice(9).split(", ")
-                
-                let home = null
-                if (nationName != "")
-                    home = markerset.markers[`${town.label}__home`]
+                    residents = info[2].slice(9).split(", "),
+                    home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
         
                 let currentTown = {
                     name: fn.formatString(town.label, removeAccents),
@@ -129,7 +123,7 @@ class Map {
             let nations = await this.Nations.all()
             if (!nations) return new FetchError('Error fetching nations! Please try again.')
         
-            return fn.getExisting(nations, nationList)
+            return fn.getExisting(nations, nationList, 'name')
         },
         all: async towns => {
             if (!towns) {
@@ -206,7 +200,7 @@ class Map {
             let residents = await this.Residents.all()
             if (!residents) return new FetchError('Error fetching residents! Please try again.')
             
-            return fn.getExisting(residents, residentList)
+            return fn.getExisting(residents, residentList, 'name')
         },
         all: async towns => {
             if (!towns) {
@@ -248,7 +242,7 @@ class Map {
             let players = await this.Players.all()
             if (!players) return new FetchError('Error fetching players! Please try again.')
             
-            return fn.getExisting(players, playerList)
+            return fn.getExisting(players, playerList, 'name')
         },
         all: async () => {
             let onlinePlayers = await this.#onlinePlayerData()
@@ -273,7 +267,7 @@ class Map {
             let onlinePlayers = await this.Players.online()
             if (!onlinePlayers) return
 
-            var allResidents = [],
+            let allResidents = [],
                 markerset = mapData.sets["townyPlugin.markerset"],
                 townData = Object.keys(markerset.areas).map(key => markerset.areas[key])
             
