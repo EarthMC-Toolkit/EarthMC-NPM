@@ -22,9 +22,11 @@ class Map {
     mapData = async () => {
         if (!this.cache) await this.#createCache()
 
-        if (!this.cache?.get('mapData')) {
+        if (!this.cache.get('mapData')) {
             let md = await endpoint.mapData(this.name)
             this.cache.put('mapData', md)
+
+            console.log('Put map data')
         }
 
         this.unref('mapData')
@@ -152,10 +154,7 @@ class Map {
         },
         all: async towns => {
             if (!towns) {
-                if (!this.cache?.get('towns')) 
-                    towns = await this.Towns.all()
-
-                towns = this.cache?.get('towns')
+                towns = await this.Towns.all()
                 if (!towns) return null
             }
 
