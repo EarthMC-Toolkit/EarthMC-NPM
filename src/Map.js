@@ -6,14 +6,31 @@ const fn = require('../utils/functions'),
 class Map {
     name = ''
     inviteRange = 0
-    cachedTowns = null
+
+    cache = null
 
     constructor(map='aurora') {
         this.name = map
         this.inviteRange = map == 'nova' ? 3000 : 3500
     }
 
-    mapData = () => endpoint.mapData(this.name)
+    unref = key => this.cache?.cache[`__cache__${key}`]?.handle.unref()
+    #createCache = () => import('timed-cache').then(file => {
+        this.cache = new file.default({ defaultTtl: 120*1000 })
+    })
+
+    mapData = async () => {
+        if (!this.cache) await this.#createCache()
+
+        if (!this.cache?.get('mapData')) {
+            let md = await endpoint.mapData(this.name)
+            this.cache.put('mapData', md)
+        }
+
+        this.unref('mapData')
+        return this.cache.get('mapData')
+    }
+
     playerData = () => endpoint.playerData(this.name)
     configData = () => endpoint.configData(this.name)
 
@@ -30,6 +47,11 @@ class Map {
             return fn.getExisting(towns, townList, 'name')
         },
         all: async (removeAccents=false) => {
+            let cachedTowns = this.cache?.get('towns')
+
+            if (cachedTowns) return cachedTowns
+            else cachedTowns = []
+
             let mapData = await this.mapData(),
                 markerset = mapData?.sets["townyPlugin.markerset"]
 
@@ -80,18 +102,20 @@ class Map {
             }
 
             //#region Remove duplicates & add to area
-            this.cachedTowns = []
             townsArray.forEach(a => {                   
                 // If town doesnt exist, add it.
                 if (!this[a.name]) {
                     this[a.name] = a
-                    this.cachedTowns.push(this[a.name])
+                    cachedTowns.push(this[a.name])
                 }
                 else this[a.name].area += a.area
             }, {})
             //#endregion
 
-            return this.cachedTowns
+            this.cache.put('towns', cachedTowns)
+            this.unref('towns')
+
+            return cachedTowns
         },
         nearby: async (xInput, zInput, xRadius, zRadius, towns=null) => {
             if (!towns) {
@@ -107,14 +131,15 @@ class Map {
             let nation = await this.Nations.get(nationName)
             if (!nation || nation instanceof Error) return nation
 
-            if (!this.cachedTowns) return new FetchError('Error fetching towns! Please try again.')
+            let towns = this.cache.get('towns')
+            if (!towns) return new FetchError('Error fetching towns! Please try again.')
 
             const invitable = town => {
                 let sqr = fn.sqr(town, nation.capital, this.inviteRange) && town.nation != nation.name
                 return includeBelonging ? sqr : sqr && town.nation == "No Nation"
             }
 
-            return this.cachedTowns.filter(t => invitable(t))
+            return towns.filter(t => invitable(t))
         }
     }
 
@@ -127,7 +152,10 @@ class Map {
         },
         all: async towns => {
             if (!towns) {
-                towns = await this.Towns.all()
+                if (!this.cache?.get('towns')) 
+                    towns = await this.Towns.all()
+
+                towns = this.cache?.get('towns')
                 if (!towns) return null
             }
 
@@ -187,7 +215,7 @@ class Map {
             let town = await this.Towns.get(townName)
             if (!town || town == "That town does not exist!") return town
 
-            let nations = await this.Nations.all(this.cachedTowns)
+            let nations = await this.Nations.all(this.cache.get('towns'))
             if (!nations) return null
 
             const joinable = n => fn.sqr(n.capital, town, this.inviteRange) && town.nation == "No Nation"
@@ -256,8 +284,6 @@ class Map {
                 merged = []
             
             for (; i < len; i++) merged.push({ ...residents[i], ...ops(i) })
-
-            //this.cachedPlayers = merged
             return merged
         },
         townless: async () => {

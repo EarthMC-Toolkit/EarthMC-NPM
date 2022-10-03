@@ -1,13 +1,13 @@
 const Map = require('./Map'),
       endpoint = require("../utils/endpoint"),
-      fn = require("../utils/functions")
+      fn = require("../utils/functions"),
+      mclib = require("minecraft-lib")
 
 async function getServerData() {
-    let Minecraft = require("minecraft-lib"),
-        serverData = await Minecraft.servers.get("play.earthmc.net").catch(console.error)
+    let serverData = await mclib.servers.get("play.earthmc.net").catch(err => console.error(err))
     
     return {
-        serverOnline: !serverData ? false : true,
+        serverOnline: !!serverData,
         online: serverData?.players?.online ?? 0,
         max: serverData?.players?.max ?? 0
     }
