@@ -14,7 +14,7 @@ class Map {
         this.inviteRange = map == 'nova' ? 3000 : 3500
     }
 
-    unref = key => this.cache?.cache[`__cache__${key}`]?.handle.unref()
+    #unref = key => this.cache?.cache[`__cache__${key}`]?.handle.unref()
     #createCache = () => import('timed-cache').then(file => {
         this.cache = new file.default({ defaultTtl: 120*1000 })
     })
@@ -25,11 +25,9 @@ class Map {
         if (!this.cache.get('mapData')) {
             let md = await endpoint.mapData(this.name)
             this.cache.put('mapData', md)
-
-            console.log('Put map data')
         }
 
-        this.unref('mapData')
+        this.#unref('mapData')
         return this.cache.get('mapData')
     }
 
@@ -115,7 +113,7 @@ class Map {
             //#endregion
 
             this.cache.put('towns', cachedTowns)
-            this.unref('towns')
+            this.#unref('towns')
 
             return cachedTowns
         },
