@@ -208,15 +208,17 @@ class Map {
                 fn.hypot(n.capital.x, [xInput, xRadius]) && 
                 fn.hypot(n.capital.z, [zInput, zRadius]))
         },
-        joinable: async townName => {
+        joinable: async (townName, nationless=true) => {
             let town = await this.Towns.get(townName)
             if (!town || town == "That town does not exist!") return town
 
             let nations = await this.Nations.all(this.cache.get('towns'))
-            if (!nations) return null
+            if (!nations) return new FetchError('Error fetching nations! Please try again.')
 
-            const joinable = n => fn.sqr(n.capital, town, this.inviteRange) && town.nation == "No Nation"
-            return nations.filter(nation => joinable(nation))
+            return nations.filter(n => {
+                let joinable = fn.sqr(n.capital, town, this.inviteRange)
+                return nationless ? joinable && town.nation == "No Nation" : joinable
+            })
         }
     }
 
@@ -237,24 +239,24 @@ class Map {
                 i = 0, len = towns.length
         
             for (; i < len; i++) {
-                var currentTown = towns[i],
-                    j = 0, resLength = currentTown.residents.length
+                let town = towns[i],
+                    j = 0, resLen = town.residents.length
         
-                for (; j < resLength; j++) {
-                    var currentResident = currentTown.residents[j],
+                for (; j < resLen; j++) {
+                    let res = town.residents[j],
                         rank = "Resident"
         
-                    if (currentTown.capital && currentTown.mayor == currentResident) rank = "Nation Leader"
-                    else if (currentTown.mayor == currentResident) rank = "Mayor"
-        
-                    let resident = {
-                        name: currentResident,
-                        town: currentTown.name,
-                        nation: currentTown.nation,
-                        rank: rank
+                    if (town.mayor == res) {
+                        rank = "Mayor"
+                        if (town.capital) rank = "Nation Leader"
                     }
-        
-                    residentsArray.push(resident)
+
+                    residentsArray.push({
+                        name: res,
+                        town: town.name,
+                        nation: town.nation,
+                        rank: rank
+                    })
                 }
             }
         
