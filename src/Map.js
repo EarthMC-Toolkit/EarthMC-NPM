@@ -183,7 +183,7 @@ class Map {
         
                 // Current town is in existing nation
                 if (raw[nationName].name == nationName) 
-                raw[nationName].towns?.push(town.name)
+                    raw[nationName].towns?.push(town.name)
         
                 if (town.flags.capital) {
                     raw[nationName].king = town.mayor
