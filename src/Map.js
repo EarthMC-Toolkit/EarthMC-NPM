@@ -64,18 +64,29 @@ class Map {
             for (; i < len; i++) {      
                 let town = townData[i],
                     rawinfo = town.desc.split("<br />"),
-                    info = rawinfo.map(i => striptags(i))
+                    info = rawinfo.map(i => striptags(i, ['a']))
 
                 if (info[0].includes("(Shop)")) continue
                
                 let mayor = info[1].slice(7)
                 if (mayor == "") continue
 
-                let split = info[0].split(" ("),
-                    nationName = (split[2] ?? split[1]).slice(0, -1),
-                    residents = info[2].slice(9).split(", "),
-                    home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
-        
+                let split = info[0].split(" (")
+                split = (split[2] ?? split[1]).slice(0, -1)
+
+                let residents = info[2].slice(9).split(", "),
+                    nationName = split,
+                    wikiPage = null
+                
+                // Check if we have a wiki
+                if (split.includes('href')) {
+                    nationName = split.slice(split.indexOf('>')+1).replace('</a>', '')
+                    
+                    split = split.replace('<a href="', '')
+                    wikiPage = split.substring(0, split.indexOf('"'))
+                }
+
+                let home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
                 let currentTown = {
                     name: fn.formatString(town.label, removeAccents),
                     nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
@@ -97,6 +108,9 @@ class Map {
                         outline: town.color 
                     }
                 }
+
+                if (wikiPage)
+                    currentTown['wiki'] = wikiPage
 
                 townsArray.push(currentTown)
             }
