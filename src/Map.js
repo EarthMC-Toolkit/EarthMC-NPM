@@ -75,6 +75,7 @@ class Map {
                 split = (split[2] ?? split[1]).slice(0, -1)
 
                 let residents = info[2].slice(9).split(", "),
+                    capital = fn.asBool(info[9]?.slice(9)),
                     nationName = split,
                     wikiPage = null
                 
@@ -83,7 +84,7 @@ class Map {
                     nationName = split.slice(split.indexOf('>')+1).replace('</a>', '')
                     
                     split = split.replace('<a href="', '')
-                    wikiPage = split.substring(0, split.indexOf('"'))
+                    if (capital) wikiPage = split.substring(0, split.indexOf('"'))
                 }
 
                 let home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
@@ -101,7 +102,7 @@ class Map {
                         public: fn.asBool(info[6]?.slice(8)),
                         explosion: fn.asBool(info[7]?.slice(11)),
                         fire: fn.asBool(info[8]?.slice(6)),
-                        capital: fn.asBool(info[9]?.slice(9))
+                        capital: capital
                     },
                     colourCodes: { 
                         fill: town.fillcolor, 
@@ -200,6 +201,8 @@ class Map {
                     raw[nationName].towns?.push(town.name)
         
                 if (town.flags.capital) {
+                    if (town.wiki) raw[nationName].wiki = town.wiki
+
                     raw[nationName].king = town.mayor
                     raw[nationName].capital = {
                         name: town.name,
