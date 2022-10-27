@@ -36,14 +36,17 @@ function calcArea(X, Z, numPoints, divisor = 256) {
     return Math.abs(area / 2) / divisor
 }
 
-async function getAveragePos(nationName, towns) {
-    if (!towns) return "Error getting average position: 'towns' parameter not defined!"
+function averageNationPos(name, towns) {
+    let nationTowns = towns.filter(t => t.nation?.toLowerCase() == name.toLowerCase())
+    return getAveragePos(nationTowns)
+}
 
-    let nationTowns = towns.filter(t => t.nation?.toLowerCase() == nationName.toLowerCase())
+function getAveragePos(arr) {
+    if (!arr) return "Error getting average position: 'towns' parameter not defined!"
     
     return {
-        x: average(nationTowns, 'x'),
-        z: average(nationTowns, 'z')
+        x: average(arr, 'x'),
+        z: average(arr, 'z')
     } 
 }
 
@@ -76,4 +79,5 @@ module.exports = {
     removeDuplicates,
     removeStyleCharacters,
     getAveragePos,
+    averageNationPos
 }
