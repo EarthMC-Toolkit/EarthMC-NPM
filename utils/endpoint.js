@@ -1,5 +1,11 @@
-const { fetch } = require('undici'),
-      refresh = () => asJSON(`https://raw.githubusercontent.com/EarthMC-Toolkit/Toolkit-Website/main/endpoints.json`),
+const { fetch, setGlobalDispatcher, Agent, Pool } = require("undici")
+setGlobalDispatcher(new Agent({
+    keepAliveTimeout: 15,
+    keepAliveMaxTimeout: 15,
+    factory: origin => new Pool(origin, { connections: 128 })
+}))
+
+const refresh = () => asJSON(`https://raw.githubusercontent.com/EarthMC-Toolkit/Toolkit-Website/main/endpoints.json`),
       get = async (dataType, map) => refresh().then(obj => obj[dataType][map].toString()),
       asJSON = url => fetch(new URL(url)).then(res => res.json()).catch(e => console.log(e))
 
