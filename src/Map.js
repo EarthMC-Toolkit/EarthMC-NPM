@@ -15,20 +15,19 @@ class Map {
     }
 
     #unref = key => this.cache?.cache[`__cache__${key}`]?.handle.unref()
-    #createCache = () => import('timed-cache').then(file => {
-        this.cache = new file.default({ defaultTtl: 120*1000 })
-    })
+    #createCache = (ttl=120*1000) => import('timed-cache').then(tc => new tc.default({ defaultTtl: ttl }))
 
     mapData = async () => {
-        if (!this.cache) await this.#createCache()
+        if (!this.cache) this.cache = await this.#createCache()
 
+        let md = null
         if (!this.cache.get('mapData')) {
-            let md = await endpoint.mapData(this.name)
+            md = await endpoint.mapData(this.name)
             this.cache.put('mapData', md)
         }
 
         this.#unref('mapData')
-        return this.cache.get('mapData')
+        return md
     }
 
     playerData = () => endpoint.playerData(this.name)
