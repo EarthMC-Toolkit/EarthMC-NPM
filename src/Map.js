@@ -3,6 +3,7 @@ const fn = require('../utils/functions'),
       { FetchError } = require('../utils/Errors'),
       striptags = require("striptags")
 
+const createCache = (ttl=120*1000) => import('timed-cache').then(tc => new tc.default({ defaultTtl: ttl }))
 class Map {
     name = ''
     inviteRange = 0
@@ -15,10 +16,12 @@ class Map {
     }
 
     #unref = key => this.cache?.cache[`__cache__${key}`]?.handle.unref()
-    #createCache = (ttl=120*1000) => import('timed-cache').then(tc => new tc.default({ defaultTtl: ttl }))
 
     mapData = async () => {
-        if (!this.cache) this.cache = await this.#createCache()
+        if (!this.cache) {
+            //console.log('no cache, creating..')
+            this.cache = await createCache()
+        }
 
         let md = null
         if (!this.cache.get('mapData')) {

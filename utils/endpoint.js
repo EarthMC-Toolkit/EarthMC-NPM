@@ -1,8 +1,7 @@
-const { fetch, setGlobalDispatcher, Agent, Pool } = require("undici")
+const { fetch, setGlobalDispatcher, Agent } = require("undici")
 setGlobalDispatcher(new Agent({
     keepAliveTimeout: 15,
-    keepAliveMaxTimeout: 15,
-    factory: origin => new Pool(origin, { connections: 128 })
+    keepAliveMaxTimeout: 15
 }))
 
 const refresh = () => asJSON(`https://raw.githubusercontent.com/EarthMC-Toolkit/Toolkit-Website/main/endpoints.json`),
