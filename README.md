@@ -12,5 +12,5 @@ A complete class-based refactor was introduced in v6.0.0 and now requires docume
 These changes are breaking and updating is optional, though recommended. <br>
 You should create a seperate branch to update your code base fully to the current version while remaining on v5.2.5 temporarily.
 
-- [Current](https://emctoolkit.vercel.app/npm/current) ( >= v6.0.0 )
+- [Current](https://emctoolkit.vercel.app/npm/current) ( >= v6.3.0 )
 - [Deprecated](https://emctoolkit.vercel.app/npm/deprecated) ( <= 5.2.5 )

@@ -15,21 +15,24 @@ class Map {
         this.inviteRange = map == 'nova' ? 3000 : 3500
     }
 
-    #unref = key => this.cache?.cache[`__cache__${key}`]?.handle.unref()
-
+    handle = key => this.cache?.cache[`__cache__${key}`]?.handle
     mapData = async () => {
         if (!this.cache) {
-            //console.log('no cache, creating..')
+            console.log('No cache found, created a new one.')
             this.cache = await createCache()
         }
+        else console.log('Using found cache..')
+
+        this.handle('mapData')?.ref()
 
         let md = null
         if (!this.cache.get('mapData')) {
             md = await endpoint.mapData(this.name)
+
             this.cache.put('mapData', md)
+            this.handle('mapData').unref()
         }
 
-        this.#unref('mapData')
         return md
     }
 
@@ -51,7 +54,10 @@ class Map {
         all: async (removeAccents=false) => {
             let cachedTowns = this.cache?.get('towns')
 
-            if (cachedTowns) return cachedTowns
+            if (cachedTowns) {
+                console.log('Using cached towns')
+                return cachedTowns
+            }
             else cachedTowns = []
 
             let mapData = await this.mapData(),
@@ -129,8 +135,10 @@ class Map {
             }, {})
             //#endregion
 
-            this.cache.put('towns', cachedTowns)
-            this.#unref('towns')
+            if (cachedTowns.length > 0) {
+                this.cache.put('towns', cachedTowns)
+                this.handle('towns').unref()
+            }
 
             return cachedTowns
         },
