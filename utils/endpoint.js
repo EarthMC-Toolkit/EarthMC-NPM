@@ -1,8 +1,12 @@
-const { request } = require("undici"),
+const Undici = require("undici"),
       endpoints = require('../endpoints.json')
 
+Undici.setGlobalDispatcher(new Undici.Agent({ 
+    connect: { timeout: 60_000 }
+}))
+
 const get = (dataType, map) => endpoints[dataType][map].toString(),
-      asJSON = url => request(url).then(res => res.body.json()).catch(e => console.log(e))
+      asJSON = url => Undici.request(url).then(res => res.body.json()).catch(e => console.log(e))
 
 var archiveTs = false
 
