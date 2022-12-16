@@ -18,10 +18,10 @@ class Map {
     handle = key => this.cache?.cache[`__cache__${key}`]?.handle
     mapData = async () => {
         if (!this.cache) {
-            console.log('No cache found, created a new one.')
+            //console.log('No cache found, created a new one.')
             this.cache = await createCache()
         }
-        else console.log('Using found cache..')
+        //else console.log('Using found cache..')
 
         this.handle('mapData')?.ref()
 
@@ -55,7 +55,7 @@ class Map {
             let cachedTowns = this.cache?.get('towns')
 
             if (cachedTowns) {
-                console.log('Using cached towns')
+                //console.log('Using cached towns')
                 return cachedTowns
             }
             else cachedTowns = []
