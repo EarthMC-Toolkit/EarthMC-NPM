@@ -1,17 +1,14 @@
-const { fetch, setGlobalDispatcher, Agent } = require("undici")
-setGlobalDispatcher(new Agent({
-    keepAliveTimeout: 15,
-    keepAliveMaxTimeout: 15
-}))
+const { request } = require("undici"),
+      endpoints = require('../endpoints.json')
 
-const refresh = () => asJSON(`https://raw.githubusercontent.com/EarthMC-Toolkit/Toolkit-Website/main/endpoints.json`),
-      get = async (dataType, map) => refresh().then(obj => obj[dataType][map].toString()),
-      asJSON = url => fetch(new URL(url)).then(res => res.json()).catch(e => console.log(e))
+const get = (dataType, map) => endpoints[dataType][map].toString(),
+      asJSON = url => request(url).then(res => res.body.json()).catch(e => console.log(e))
 
 var archiveTs = false
 
 module.exports = {
-    refresh, get, asJSON,
+    get, asJSON, 
+    useArchive: ts => archiveTs = ts,
     configData: async mapName => await asJSON(await get("config", mapName)),
     playerData: async mapName => await asJSON(await get("players", mapName)),
     mapData: async mapName => {
@@ -23,6 +20,5 @@ module.exports = {
         const formattedTs = date.toISOString().replace(/[^0-9]/g, '').slice(0, -3)
 
         return await asJSON(`https://web.archive.org/web/${formattedTs}id_/${decodeURIComponent(url)}`)
-    },
-    useArchive: ts => archiveTs = ts
+    }
 }
