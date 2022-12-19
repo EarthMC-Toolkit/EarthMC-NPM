@@ -17,17 +17,14 @@ class Map {
 
     handle = key => this.cache?.cache[`__cache__${key}`]?.handle
     mapData = async () => {
-        if (!this.cache) {
-            //console.log('No cache found, created a new one.')
-            this.cache = await createCache()
-        }
-        //else console.log('Using found cache..')
+        if (!this.cache) this.cache = await createCache()
 
         this.handle('mapData')?.ref()
 
         let md = null
         if (!this.cache.get('mapData')) {
             md = await endpoint.mapData(this.name)
+            if (!md) await this.mapData()
 
             this.cache.put('mapData', md)
             this.handle('mapData').unref()
@@ -53,12 +50,9 @@ class Map {
         },
         all: async (removeAccents=false) => {
             let cachedTowns = this.cache?.get('towns')
-
-            if (cachedTowns) {
-                //console.log('Using cached towns')
-                return cachedTowns
-            }
-            else cachedTowns = []
+            if (cachedTowns) return cachedTowns
+            
+            cachedTowns = []
 
             let mapData = await this.mapData(),
                 markerset = mapData?.sets["townyPlugin.markerset"]
@@ -259,7 +253,7 @@ class Map {
         all: async towns => {
             if (!towns) {
                 towns = await this.Towns.all()
-                if (!towns) return null
+                if (!towns) this.Residents.all()
             }
         
             let residentsArray = [],
@@ -351,7 +345,7 @@ class Map {
 
             let residents = await this.Residents.all(),
                 merged = [], i = 0, len = onlinePlayers.length
-            
+
             for (; i < len; i++) {
                 merged.push({ 
                     ...onlinePlayers[i], 
