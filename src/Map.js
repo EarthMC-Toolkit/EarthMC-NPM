@@ -347,10 +347,10 @@ class Map {
                 merged = [], i = 0, len = onlinePlayers.length
 
             for (; i < len; i++) {
-                merged.push({ 
-                    ...onlinePlayers[i], 
-                    ...(residents.find((itmInner) => itmInner.name === onlinePlayers[i].name)) 
-                })
+                let curOp = onlinePlayers[i],
+                    foundRes = residents.find(res => res.name === curOp.name)
+
+                merged.push({ ...curOp, ...foundRes })
             }
         
             return merged
