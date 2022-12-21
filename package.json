@@ -2,11 +2,12 @@
   "name": "earthmc",
   "version": "6.5.3",
   "description": "Provides data about people, places and more on the Minecraft server 'EarthMC'.",
+  "keywords": ["earth", "minecraft", "emc", "EarthMC"],
   "main": "src/main.js",
   "scripts": {
     "test": "node src/test.js"
   },
-  "author": "Owen77Stubbs <owen77stubbs@gmail.com>",
+  "author": "Owen77Stubbs",
   "license": "ISC",
   "dependencies": {
     "diacritic": "0.0.2",
@@ -17,5 +18,11 @@
   },
   "engines": {
     "node": ">=16.8.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EarthMC-Toolkit/EarthMC-NPM.git"
+  },
+  "homepage": "https://emc-toolkit.vercel.app/npm/current",
+  "funding": "https://github.com/sponsors/Owen3H"
 }
