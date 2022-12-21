@@ -24,7 +24,6 @@ class Map {
         let md = null
         if (!this.cache.get('mapData')) {
             md = await endpoint.mapData(this.name)
-            if (!md) await this.mapData()
 
             this.cache.put('mapData', md)
             this.handle('mapData').unref()
@@ -41,23 +40,26 @@ class Map {
         return pData?.players ? fn.editPlayerProps(pData.players) : null
     }
 
+    markerset = async () => {
+        const mapData = await this.mapData()
+        return mapData?.sets["townyPlugin.markerset"]
+    }
+
     Towns = {
         get: async (...townList) => {
             let towns = await this.Towns.all()
             if (!towns) return new FetchError('Error fetching towns! Please try again.')
-            
+
             return fn.getExisting(towns, townList, 'name')
         },
         all: async (removeAccents=false) => {
             let cachedTowns = this.cache?.get('towns')
             if (cachedTowns) return cachedTowns
             
-            cachedTowns = []
-
-            let mapData = await this.mapData(),
-                markerset = mapData?.sets["townyPlugin.markerset"]
-
+            let markerset = await this.markerset()
             if (!markerset) return null
+
+            cachedTowns = []
 
             let townsArray = [], 
                 townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
@@ -253,7 +255,7 @@ class Map {
         all: async towns => {
             if (!towns) {
                 towns = await this.Towns.all()
-                if (!towns) this.Residents.all()
+                if (!towns) return null
             }
         
             let residentsArray = [],
