@@ -6,7 +6,9 @@
     "earth",
     "minecraft",
     "emc",
-    "EarthMC"
+    "EarthMC",
+    "Dynmap",
+    "geopolitical"
   ],
   "main": "src/main.js",
   "scripts": {
