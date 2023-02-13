@@ -5,7 +5,7 @@
     },
     "players": {
       "nova": "https://earthmc.net/map/nova/up/world/earth/",
-      "aurora": "https://earthmc.net/map/aurora/standalone/dynmap_earth.json"
+      "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_update.php?world=earth"
     },
     "config": {
       "nova": "https://earthmc.net/map/nova/up/configuration",
