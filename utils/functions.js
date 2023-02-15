@@ -5,8 +5,8 @@ var striptags = require("striptags"),
 const removeDuplicates = arr => [...new Set(arr)]
 
 const stripInvalidChars = string => {
-    string.replace(/((&#34)|(&\w[a-z0-9].|&[0-9kmnola-z]));/g, "")
-          .replace(/&quot;|&#039;/g, '"')
+    return string.replace(/((&#34)|(&\w[a-z0-9].|&[0-9kmnola-z]));/g, "")
+        .replace(/&quot;|&#039;/g, '"')
 }
 
 function formatString(str, removeAccents = false) {
