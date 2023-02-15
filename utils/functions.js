@@ -77,7 +77,7 @@ module.exports = {
     editPlayerProps,
     calcArea,
     removeDuplicates,
-    removeStyleCharacters,
+    stripInvalidChars,
     getAveragePos,
     averageNationPos
 }
