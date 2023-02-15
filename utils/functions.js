@@ -3,10 +3,10 @@ var striptags = require("striptags"),
     { NotFound } = require("./Errors")
 
 const removeDuplicates = arr => [...new Set(arr)],
-      removeStyleCharacters = string => string.replace(/(&amp;.|&[0-9kmnola-z])/g, "")
+      stripInvalidChars = string => string.replace(/((&#34)|(&\w[a-z0-9].|&[0-9kmnola-z]));/g, "")
 
 function formatString(str, removeAccents = false) {
-    str = removeStyleCharacters(str) 
+    str = stripInvalidChars(str) 
     return removeAccents ? Diacritics.clean(str) : str
 }
 
