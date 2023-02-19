@@ -55,11 +55,10 @@ class Map {
         all: async (removeAccents=false) => {
             let cachedTowns = this.cache?.get('towns')
             if (cachedTowns) return cachedTowns
+            cachedTowns = []
             
             let markerset = await this.markerset()
             if (!markerset) return null
-
-            cachedTowns = []
 
             let townsArray = [], 
                 townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
@@ -345,8 +344,10 @@ class Map {
             if (!onlinePlayers) return null
             if (!includeResidentInfo) return onlinePlayers
 
-            let residents = await this.Residents.all(),
-                merged = [], i = 0, len = onlinePlayers.length
+            const residents = await this.Residents.all()
+            if (!residents) return null
+
+            let merged = [], i = 0, len = onlinePlayers.length
 
             for (; i < len; i++) {
                 let curOp = onlinePlayers[i],
