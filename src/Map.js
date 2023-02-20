@@ -58,7 +58,7 @@ class Map {
             cachedTowns = []
             
             let markerset = await this.markerset()
-            if (!markerset) return null
+            if (!markerset?.areas) return null
 
             let townsArray = [], 
                 townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
@@ -312,7 +312,7 @@ class Map {
             if (!mapData) return new FetchError('Error fetching townless! Please try again.')
         
             let onlinePlayers = await this.Players.online()
-            if (!onlinePlayers) return
+            if (!onlinePlayers) return null
 
             let allResidents = [],
                 markerset = mapData.sets["townyPlugin.markerset"],
