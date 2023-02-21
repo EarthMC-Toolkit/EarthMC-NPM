@@ -55,10 +55,11 @@ class Map {
         all: async (removeAccents=false) => {
             let cachedTowns = this.cache?.get('towns')
             if (cachedTowns) return cachedTowns
-            cachedTowns = []
-            
+
             let markerset = await this.markerset()
-            if (!markerset?.areas) return null
+            if (!markerset?.areas) return
+
+            cachedTowns = []
 
             let townsArray = [], 
                 townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
