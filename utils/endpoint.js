@@ -7,16 +7,10 @@ Undici.setGlobalDispatcher(agent)
 const get = (dataType, map) => endpoints[dataType][map].toString()
 const asJSON = async (url, n=5) => {
     let res = await Undici.request(url).then(res => res.body.json()).catch(async err => {
-        if (n == 1) return err
-        return await asJSON(url, n-1)
+        return n == 1 ? err : await asJSON(url, n-1)
     })
-
-    if (!res) {
-        if (n == 1) return null
-        return await asJSON(url, n-1)
-    }
-
-    return res
+    
+    return res ?? (n == 1 ? null : await asJSON(url, n-1))
 }
 
 var archiveTs = false
