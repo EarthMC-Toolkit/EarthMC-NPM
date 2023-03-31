@@ -13,3 +13,7 @@ node_modules/
 *.tgz
 
 src/test.js
+
+# Webpack
+webpack.config.js
+/dist

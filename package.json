@@ -1,17 +1,17 @@
 {
   "name": "earthmc",
-  "version": "6.7.1",
+  "version": "6.8.1",
   "description": "Provides data about people, places and more on the Minecraft server 'EarthMC'.",
   "keywords": [
     "earth",
     "minecraft",
     "emc",
     "EarthMC",
-    "Dynmap",
-    "geopolitical"
+    "Dynmap"
   ],
   "main": "src/main.js",
   "scripts": {
+    "build": "npx webpack",
     "test": "node src/test.js"
   },
   "author": "Owen77Stubbs",
@@ -31,5 +31,19 @@
     "url": "https://github.com/EarthMC-Toolkit/EarthMC-NPM.git"
   },
   "homepage": "https://emc-toolkit.vercel.app/npm/current",
-  "funding": "https://github.com/sponsors/Owen3H"
+  "funding": "https://github.com/sponsors/Owen3H",
+  "devDependencies": {
+    "@babel/core": "^7.21.3",
+    "@babel/preset-env": "^7.20.2",
+    "babel-loader": "^9.1.2",
+    "bthreads": "^0.5.1",
+    "core-js": "^3.29.1",
+    "diagnostics_channel": "^1.1.0",
+    "fetch-ponyfill": "^7.1.0",
+    "net-websocket-polyfill": "^0.1.1-r3",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "web-streams-polyfill": "^3.2.1",
+    "webpack": "^5.77.0",
+    "webpack-cli": "^5.0.1"
+  }
 }
