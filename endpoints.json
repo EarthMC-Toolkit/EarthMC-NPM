@@ -8,7 +8,7 @@
       "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_update.php?world=earth"
     },
     "config": {
-      "nova": "https://earthmc.net/map/nova/up/configuration",
-      "aurora": "https://earthmc.net/map/aurora/standalone/dynmap_config.json"
+      "nova": "https://earthmc.net/map/nova/standalone/MySQL_configuration.php",
+      "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_configuration.php"
     }
 }
