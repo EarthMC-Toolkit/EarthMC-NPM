@@ -134,9 +134,11 @@ class Map {
             if (cachedTowns.length > 0) {
                 this.cache.put('towns', cachedTowns)
                 this.handle('towns').unref()
+
+                return cachedTowns
             }
 
-            return cachedTowns
+            return null
         },
         nearby: async (xInput, zInput, xRadius, zRadius, towns=null) => {
             if (!towns) {
