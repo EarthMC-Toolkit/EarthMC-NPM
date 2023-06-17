@@ -14,3 +14,7 @@ node_modules/
 
 src/test.js
 webpack.config.js
+
+# Bundle side effects
+dist/*.html
+dist/bundle.js.LICENSE.txt

@@ -1,10 +1,10 @@
 const Map = require('./Map'),
       endpoint = require("../utils/endpoint"),
       fn = require("../utils/functions"),
-      mclib = require("minecraft-lib")
+      servers = require("minecraft-lib/lib/apis/Servers")
 
 async function getServerData() {
-    let serverData = await mclib.servers.get("play.earthmc.net").catch(err => console.error(err))
+    let serverData = await servers.get("play.earthmc.net").catch(err => console.error(err))
     
     return {
         serverOnline: !!serverData,
