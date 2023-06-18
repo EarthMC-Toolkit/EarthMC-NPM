@@ -1,9 +1,34 @@
 const fn = require('../utils/functions'),
       endpoint = require('../utils/endpoint'),
       { FetchError } = require('../utils/Errors'),
-      striptags = require("striptags")
+      striptags = require("striptags"),
+      { Mutex } = require('async-mutex')
 
-const createCache = (ttl=120*1000) => import('timed-cache').then(tc => new tc.default({ defaultTtl: ttl }))
+let cachePromise = null
+const cacheLock = new Mutex()
+
+async function createCache(ttl = 120*1000) {
+    if (!cachePromise) {
+        const release = await cacheLock.acquire()
+
+        try {
+            if (!cachePromise) {
+                cachePromise = import('timed-cache')
+                .then(tc => new tc.default({ defaultTtl: ttl }))
+                .finally(() => {
+                    cachePromise = null
+                    release()
+                })
+            }
+        } catch (error) {
+            release();
+            throw error;
+        }
+    }
+
+    return cachePromise;
+}
+
 class Map {
     name = ''
     inviteRange = 0
