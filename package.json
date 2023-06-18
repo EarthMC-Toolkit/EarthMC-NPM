@@ -9,7 +9,7 @@
     "EarthMC",
     "Dynmap"
   ],
-  "main": "dist/bundle.js",
+  "main": "src/main.js",
   "scripts": {
     "build": "npx webpack",
     "test": "node src/test.js"
