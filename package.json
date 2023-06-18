@@ -9,7 +9,7 @@
     "EarthMC",
     "Dynmap"
   ],
-  "main": "src/main.js",
+  "main": "dist/bundle.js",
   "scripts": {
     "build": "npx webpack",
     "test": "node src/test.js"
@@ -42,7 +42,6 @@
     "fetch-ponyfill": "^7.1.0",
     "net-websocket-polyfill": "^0.1.1-r3",
     "node-polyfill-webpack-plugin": "^2.0.1",
-    "web-streams-polyfill": "^3.2.1",
     "webpack": "^5.77.0",
     "webpack-bundle-analyzer": "^4.9.0",
     "webpack-cli": "^5.0.1"
