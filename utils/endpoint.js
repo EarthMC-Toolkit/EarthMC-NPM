@@ -1,14 +1,13 @@
-const Undici = require("undici"),
+const { fetch, useDefaultAgent } = require("undici-shim"),
       endpoints = require('../endpoints.json')
 
-const agent = new Undici.Agent({ connect: { timeout: 60_000 } })
-Undici.setGlobalDispatcher(agent)
+if (useDefaultAgent) useDefaultAgent()
 
 const get = (dataType, map) => endpoints[dataType][map].toString()
 const asJSON = async (url, n = 5) => {
-    let res = await Undici.request(url).then(res => res.body.json()).catch(async err => {
-        return n === 1 ? err : await asJSON(url, n-1)
-    })
+    const res = await fetch(url)
+        .then(res => res.body.json())
+        .catch(async err => n === 1 ? err : await asJSON(url, n-1))
     
     return res ?? (n === 1 ? null : await asJSON(url, n-1))
 }
