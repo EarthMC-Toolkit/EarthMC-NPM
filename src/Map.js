@@ -72,7 +72,7 @@ class Map {
             md = await endpoint.mapData(this.name)
 
             this.cache.put('mapData', md)
-            this.handle('mapData').unref()
+            this.handle('mapData')?.unref()
         }
 
         return md
@@ -184,7 +184,7 @@ class Map {
 
             if (cachedTowns.length > 0) {
                 this.cache.put('towns', cachedTowns)
-                this.handle('towns').unref()
+                this.handle('towns')?.unref()
             }
 
             return cachedTowns
