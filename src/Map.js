@@ -51,13 +51,16 @@ class OfficialAPI {
 
 class Map {
     name = ''
-    inviteRange = 0
+    #inviteRange = 0
 
+    #isNode = true
     cache = null
 
-    constructor(map='aurora') {
+    constructor(map = 'aurora') {
+        this.#isNode = typeof process !== "undefined" && process?.versions?.node
+
         this.name = map
-        this.inviteRange = map == 'nova' ? 3000 : 3500
+        this.#inviteRange = map == 'nova' ? 3000 : 3500
     }
 
     handle = key => this.cache?.cache[`__cache__${key}`]?.handle
@@ -65,14 +68,16 @@ class Map {
         if (!this.cache) 
             this.cache = await createCache()
 
+        if (this.#isNode)
+            this.handle('mapData')?.ref()
+            
         let md = null
-        this.handle('mapData')?.ref()
-
         if (!this.cache.get('mapData')) {
             md = await endpoint.mapData(this.name)
 
             this.cache.put('mapData', md)
-            this.handle('mapData')?.unref()
+            if (this.#isNode) 
+                this.handle('mapData')?.unref()
         }
 
         return md
@@ -184,7 +189,7 @@ class Map {
 
             if (cachedTowns.length > 0) {
                 this.cache.put('towns', cachedTowns)
-                this.handle('towns')?.unref()
+                if (this.#isNode) this.handle('towns')?.unref()
             }
 
             return cachedTowns
@@ -207,7 +212,7 @@ class Map {
             if (!towns) return new FetchError('Error fetching towns! Please try again.')
 
             const invitable = town => {
-                const sqr = fn.sqr(town, nation.capital, this.inviteRange) && town.nation != nation.name
+                const sqr = fn.sqr(town, nation.capital, this.#inviteRange) && town.nation != nation.name
                 return includeBelonging ? sqr : sqr && town.nation == "No Nation"
             }
 
@@ -290,7 +295,7 @@ class Map {
             if (!nations) return new FetchError('Error fetching nations! Please try again.')
 
             return nations.filter(n => {
-                const joinable = fn.sqr(n.capital, town, this.inviteRange)
+                const joinable = fn.sqr(n.capital, town, this.#inviteRange)
                 return nationless ? joinable && town.nation == "No Nation" : joinable
             })
         }
