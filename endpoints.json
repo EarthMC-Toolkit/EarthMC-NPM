@@ -10,5 +10,8 @@
     "config": {
       "nova": "https://earthmc.net/map/nova/standalone/MySQL_configuration.php",
       "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_configuration.php"
+    },
+    "towny": {
+      "aurora":"https://api.earthmc.net/v1/aurora"
     }
 }

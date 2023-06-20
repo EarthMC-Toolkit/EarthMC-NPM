@@ -4,7 +4,7 @@ const Map = require('./Map'),
       servers = require("minecraft-lib/lib/apis/Servers")
 
 async function getServerData() {
-    let serverData = await servers.get("play.earthmc.net").catch(err => console.error(err))
+    const serverData = await servers.get("play.earthmc.net").catch(err => console.error(err))
     
     return {
         serverOnline: !!serverData,
@@ -14,11 +14,11 @@ async function getServerData() {
 }
 
 async function getServerInfo() {
-    let serverData = await getServerData(),
-        novaData = await endpoint.playerData("nova"),
-        auroraData = await endpoint.playerData("aurora")
+    const serverData = await getServerData(),
+          novaData = await endpoint.playerData("nova"),
+          auroraData = await endpoint.playerData("aurora")
 
-    let info = {
+    const info = {
         ...serverData,
         nova: novaData.currentcount ?? 0,
         aurora: auroraData.currentcount ?? 0

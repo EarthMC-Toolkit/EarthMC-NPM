@@ -8,25 +8,45 @@ let cachePromise = null
 const cacheLock = new Mutex()
 
 async function createCache(ttl = 120*1000) {
-    if (!cachePromise) {
-        const release = await cacheLock.acquire()
+    const release = await cacheLock.acquire()
 
-        try {
-            if (!cachePromise) {
-                cachePromise = import('timed-cache')
-                .then(tc => new tc.default({ defaultTtl: ttl }))
-                .finally(() => {
-                    cachePromise = null
-                    release()
-                })
-            }
-        } catch (error) {
-            release();
-            throw error;
+    try {
+        if (!cachePromise) {
+            cachePromise = import('timed-cache')
+            .then(tc => new tc.default({ defaultTtl: ttl }))
+            .finally(() => {
+                cachePromise = null
+                release()
+            })
         }
+    } catch (e) {
+        release()
+        console.error(e)
     }
+    
+    return cachePromise
+}
 
-    return cachePromise;
+class OfficialAPI {
+    static resident = async name => {
+        if (!name) return
+
+        const res = await endpoint.townyData(`residents/${name}`)
+        let obj = {
+            online: res.status?.isOnline ?? false,
+            balance: res.stats?.balance ?? 0,
+            timestamps: res.timestamps,
+            friends: res.friends
+        }
+
+        if (res.strings?.title) obj.title = res.strings.title
+        if (res.strings?.surname) obj.surname = res.strings.surname
+
+        if (res.ranks?.townRanks) obj.townRanks = res.ranks.townRanks
+        if (res.ranks?.nationRanks) obj.nationRanks = res.ranks.nationRanks
+
+        return obj
+    }
 }
 
 class Map {
@@ -42,11 +62,12 @@ class Map {
 
     handle = key => this.cache?.cache[`__cache__${key}`]?.handle
     mapData = async () => {
-        if (!this.cache) this.cache = await createCache()
-
-        this.handle('mapData')?.ref()
+        if (!this.cache) 
+            this.cache = await createCache()
 
         let md = null
+        this.handle('mapData')?.ref()
+
         if (!this.cache.get('mapData')) {
             md = await endpoint.mapData(this.name)
 
@@ -61,7 +82,7 @@ class Map {
     configData = () => endpoint.configData(this.name)
 
     #onlinePlayerData = async () => {
-        let pData = await this.playerData()
+        const pData = await this.playerData()
         return pData?.players ? fn.editPlayerProps(pData.players) : null
     }
 
@@ -72,40 +93,41 @@ class Map {
 
     Towns = {
         get: async (...townList) => {
-            let towns = await this.Towns.all()
+            const towns = await this.Towns.all()
             if (!towns) return new FetchError('Error fetching towns! Please try again.')
 
             return fn.getExisting(towns, townList, 'name')
         },
-        all: async (removeAccents=false) => {
+        all: async (removeAccents = false) => {
             let cachedTowns = this.cache?.get('towns')
             if (cachedTowns) return cachedTowns
 
-            let markerset = await this.markerset()
+            const markerset = await this.markerset()
             if (!markerset?.areas) return
 
             cachedTowns = []
 
-            let townsArray = [], 
-                townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
-                i = 0, len = townData.length
+            const townsArray = [], 
+                  townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
+                  len = townData.length
 
-            for (; i < len; i++) {      
-                let town = townData[i],
-                    rawinfo = town.desc.split("<br />"),
-                    info = rawinfo.map(i => striptags(i, ['a']))
+            for (let i = 0; i < len; i++) {      
+                const town = townData[i],
+                      rawinfo = town.desc.split("<br />"),
+                      info = rawinfo.map(i => striptags(i, ['a']))
 
                 if (info[0].includes("(Shop)")) continue
                
-                let mayor = info[1].slice(7)
+                const mayor = info[1].slice(7)
                 if (mayor == "") continue
 
                 let split = info[0].split(" (")
                 split = (split[2] ?? split[1]).slice(0, -1)
 
-                let residents = info[2].slice(9).split(", "),
-                    capital = fn.asBool(info[9]?.slice(9)),
-                    nationName = split,
+                const residents = info[2].slice(9).split(", "),
+                      capital = fn.asBool(info[9]?.slice(9))
+
+                let nationName = split,
                     wikiPage = null
                 
                 // Check if we have a wiki
@@ -116,7 +138,7 @@ class Map {
                     if (capital) wikiPage = split.substring(0, split.indexOf('"'))
                 }
 
-                let home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
+                const home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
                 let currentTown = {
                     name: fn.formatString(town.label, removeAccents),
                     nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
@@ -145,27 +167,29 @@ class Map {
                 townsArray.push(currentTown)
             }
 
+            const temp = {}
+
             //#region Remove duplicates & add to area
-            townsArray.forEach(a => {                   
-                // If town doesnt exist, add it.
-                if (!this[a.name]) {
-                    this[a.name] = a
-                    cachedTowns.push(this[a.name])
+            townsArray.forEach(a => {   
+                // Already exists, just add area and continue.                
+                if (temp[a.name]) {
+                    temp[a.name].area += a.area
+                    return
                 }
-                else this[a.name].area += a.area
+
+                temp[a.name] = a
+                cachedTowns.push(temp[a.name])
             }, {})
             //#endregion
 
             if (cachedTowns.length > 0) {
                 this.cache.put('towns', cachedTowns)
                 this.handle('towns').unref()
-
-                return cachedTowns
             }
 
-            return null
+            return cachedTowns
         },
-        nearby: async (xInput, zInput, xRadius, zRadius, towns=null) => {
+        nearby: async (xInput, zInput, xRadius, zRadius, towns = null) => {
             if (!towns) {
                 towns = await this.Towns.all()
                 if (!towns) return null
@@ -175,15 +199,15 @@ class Map {
                 fn.hypot(t.x, [xInput, xRadius]) && 
                 fn.hypot(t.z, [zInput, zRadius]))
         },
-        invitable: async (nationName, includeBelonging=false) => {
-            let nation = await this.Nations.get(nationName)
+        invitable: async (nationName, includeBelonging = false) => {
+            const nation = await this.Nations.get(nationName)
             if (!nation || nation instanceof Error) return nation
 
-            let towns = this.cache.get('towns')
+            const towns = this.cache.get('towns')
             if (!towns) return new FetchError('Error fetching towns! Please try again.')
 
             const invitable = town => {
-                let sqr = fn.sqr(town, nation.capital, this.inviteRange) && town.nation != nation.name
+                const sqr = fn.sqr(town, nation.capital, this.inviteRange) && town.nation != nation.name
                 return includeBelonging ? sqr : sqr && town.nation == "No Nation"
             }
 
@@ -193,7 +217,7 @@ class Map {
 
     Nations = {
         get: async (...nationList) => {
-            let nations = await this.Nations.all()
+            const nations = await this.Nations.all()
             if (!nations) return new FetchError('Error fetching nations! Please try again.')
         
             return fn.getExisting(nations, nationList, 'name')
@@ -259,14 +283,14 @@ class Map {
                 fn.hypot(n.capital.z, [zInput, zRadius]))
         },
         joinable: async (townName, nationless=true) => {
-            let town = await this.Towns.get(townName)
+            const town = await this.Towns.get(townName)
             if (!town || town == "That town does not exist!") return town
 
-            let nations = await this.Nations.all(this.cache.get('towns'))
+            const nations = await this.Nations.all(this.cache.get('towns'))
             if (!nations) return new FetchError('Error fetching nations! Please try again.')
 
             return nations.filter(n => {
-                let joinable = fn.sqr(n.capital, town, this.inviteRange)
+                const joinable = fn.sqr(n.capital, town, this.inviteRange)
                 return nationless ? joinable && town.nation == "No Nation" : joinable
             })
         }
@@ -274,10 +298,15 @@ class Map {
 
     Residents = {
         get: async (...residentList) => {
-            let residents = await this.Residents.all()
+            const residents = await this.Residents.all()
             if (!residents) return new FetchError('Error fetching residents! Please try again.')
-            
-            return fn.getExisting(residents, residentList, 'name')
+
+            const existing = fn.getExisting(residents, residentList, 'name')
+            const out = existing instanceof Array 
+                ? existing.map(async res => ({ ...res, ...await OfficialAPI.resident(res.name) })) 
+                : { ...existing, ...await OfficialAPI.resident(existing.name) }
+
+            return out instanceof Array ? Promise.all(out) : Promise.resolve(out)
         },
         all: async towns => {
             if (!towns) {
@@ -285,30 +314,18 @@ class Map {
                 if (!towns) return null
             }
         
-            let residentsArray = [],
-                i = 0, len = towns.length
-        
-            for (; i < len; i++) {
-                let town = towns[i],
-                    j = 0, resLen = town.residents.length
-        
-                for (; j < resLen; j++) {
-                    let res = town.residents[j],
-                        rank = "Resident"
-        
-                    if (town.mayor == res) {
-                        rank = "Mayor"
-                        if (town.capital) rank = "Nation Leader"
-                    }
-
-                    residentsArray.push({
+            const residentsArray = towns.reduce((acc, town) => {
+                const townResidents = town.residents.map(res => {
+                    return {
                         name: res,
                         town: town.name,
                         nation: town.nation,
-                        rank: rank
-                    })
-                }
-            }
+                        rank: town.mayor ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
+                    }
+                })
+
+                return [...acc, ...townResidents]
+            }, [])
         
             return residentsArray
         }
@@ -316,48 +333,50 @@ class Map {
 
     Players = {
         get: async (...playerList) => {
-            let players = await this.Players.all()
+            const players = await this.Players.all()
             if (!players) return new FetchError('Error fetching players! Please try again.')
             
             return fn.getExisting(players, playerList, 'name')
         },
         all: async () => {
-            let onlinePlayers = await this.#onlinePlayerData()
+            const onlinePlayers = await this.#onlinePlayerData()
             if (!onlinePlayers) return null
 
             let residents = await this.Residents.all()
             if (!residents) return null
         
-            let i = 0, len = residents.length,
-                ops = index => onlinePlayers.find(op => op.name === residents[index].name),
-                merged = []
+            const len = residents.length,
+                  ops = index => onlinePlayers.find(op => op.name === residents[index].name),
+                  merged = []
             
-            for (; i < len; i++) merged.push({ ...residents[i], ...ops(i) })
+            for (let i = 0; i < len; i++) 
+                merged.push({ ...residents[i], ...ops(i) })
+
             return merged
         },
         townless: async () => {
-            let mapData = await endpoint.mapData("aurora")
+            const mapData = await endpoint.mapData("aurora")
             if (!mapData) return new FetchError('Error fetching townless! Please try again.')
         
-            let onlinePlayers = await this.Players.online()
+            const onlinePlayers = await this.Players.online()
             if (!onlinePlayers) return null
 
-            let allResidents = [],
-                markerset = mapData.sets["townyPlugin.markerset"],
-                townData = Object.keys(markerset.areas).map(key => markerset.areas[key])
+            const allResidents = [],
+                  markerset = mapData.sets["townyPlugin.markerset"],
+                  townData = Object.keys(markerset.areas).map(key => markerset.areas[key])
             
-            let i = 0, len = townData.length
-            for (; i < len; i++) {
-                let town = townData[i],
-                    rawinfo = town.desc.split("<br />"),
-                    info = rawinfo.map(x => striptags(x))
+            const len = townData.length
+            for (let i = 0; i < len; i++) {
+                const town = townData[i],
+                      rawinfo = town.desc.split("<br />"),
+                      info = rawinfo.map(x => striptags(x))
 
                 if (info[0].endsWith("(Shop)")) continue
 
-                let mayor = info[1].slice(7)
+                const mayor = info[1].slice(7)
                 if (mayor == "") continue
                 
-                let residents = info[2].slice(9).split(", ")
+                const residents = info[2].slice(9).split(", ")
                 allResidents.push(...residents)
             }
 
@@ -368,16 +387,17 @@ class Map {
             })
         },
         online: async (includeResidentInfo=false) => {
-            let onlinePlayers = await this.#onlinePlayerData()
+            const onlinePlayers = await this.#onlinePlayerData()
             if (!onlinePlayers) return null
             if (!includeResidentInfo) return onlinePlayers
 
             const residents = await this.Residents.all()
             if (!residents) return null
 
-            let merged = [], i = 0, len = onlinePlayers.length
+            const merged = [], 
+                  len = onlinePlayers.length
 
-            for (; i < len; i++) {
+            for (let i = 0; i < len; i++) {
                 let curOp = onlinePlayers[i],
                     foundRes = residents.find(res => res.name === curOp.name)
 

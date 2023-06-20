@@ -41,7 +41,7 @@ function calcArea(X, Z, numPoints, divisor = 256) {
 }
 
 function averageNationPos(name, towns) {
-    let nationTowns = towns.filter(t => t.nation?.toLowerCase() == name.toLowerCase())
+    const nationTowns = towns.filter(t => t.nation?.toLowerCase() == name.toLowerCase())
     return getAveragePos(nationTowns)
 }
 
@@ -54,14 +54,14 @@ function getAveragePos(arr) {
     } 
 }
 
-const asBool = str => str == "true" ? true : false,
+const asBool = str => str == "true",
       range = args => Math.round((Math.max(...args) + Math.min(...args)) / 2),
       average = (arr, key) => arr.map(obj => obj[key]).reduce((a, b) => a+b) / arr.length,
       sqr = (a, b, range) => Math.hypot(a.x - b.x, a.z - b.z) <= range
 
 const getExisting = (a1, a2, key) => {
-    const filter = x => a1.find(e => x.toLowerCase() == e[key].toLowerCase()) ?? NotFound(x)
-    let arr = a2.flat().map(x => filter(x))
+    const filter = x => a1.find(e => x.toLowerCase() == e[key]?.toLowerCase()) ?? NotFound(x),
+          arr = a2.flat().map(x => filter(x))
 
     return arr.length > 1 ? arr : arr[0] 
 }
