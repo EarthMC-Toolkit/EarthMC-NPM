@@ -1,10 +1,11 @@
 const Map = require('./Map'),
       endpoint = require("../utils/endpoint"),
       fn = require("../utils/functions"),
-      servers = require("minecraft-lib/lib/apis/Servers")
+      { MCAPI } = require("mojang-lib"),
+      OfficialAPI = require('../utils/api')
 
 async function getServerData() {
-    const serverData = await servers.get("play.earthmc.net").catch(err => console.error(err))
+    const serverData = await MCAPI.servers.get("play.earthmc.net").catch(err => console.error(err))
     
     return {
         serverOnline: !!serverData,
@@ -32,7 +33,7 @@ async function getServerInfo() {
 
 module.exports = {
     formatString: fn.formatString,
-    endpoint, getServerInfo,
+    OfficialAPI, endpoint, getServerInfo,
     Errors: require('../utils/Errors'),
     Aurora: new Map('aurora'),
     Nova: new Map('nova')

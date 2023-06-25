@@ -16,8 +16,18 @@ class FetchError extends Error {
     }
 }
 
+class InvalidError extends Error {
+    constructor(message) {
+        super(message)
+
+        this.name = "InvalidError"
+        this.message = message
+    }
+}
+
 module.exports = {
     FetchError,
+    InvalidError,
     NotFoundError,
     NotFound: input => new NotFoundError(`${input} does not exist.`)
 }

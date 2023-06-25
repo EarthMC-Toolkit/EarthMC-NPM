@@ -62,7 +62,7 @@ const asBool = str => str == "true",
       sqr = (a, b, range) => Math.hypot(a.x - b.x, a.z - b.z) <= range
 
 const getExisting = (a1, a2, key) => {
-    const filter = x => a1.find(e => x.toLowerCase() == e[key]?.toLowerCase()) ?? NotFound(x),
+    const filter = x => a1.find(e => x?.toLowerCase() == e[key]?.toLowerCase()) ?? NotFound(x),
           arr = a2.flat().map(x => filter(x))
 
     return arr.length > 1 ? arr : arr[0] 

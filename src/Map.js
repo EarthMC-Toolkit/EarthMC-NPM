@@ -1,8 +1,9 @@
 const fn = require('../utils/functions'),
       endpoint = require('../utils/endpoint'),
-      { FetchError } = require('../utils/Errors'),
+      { FetchError, NotFoundError, InvalidError } = require('../utils/Errors'),
       striptags = require("striptags"),
-      { Mutex } = require('async-mutex')
+      { Mutex } = require('async-mutex'),
+      OfficialAPI = require('../utils/api')
 
 let cachePromise = null
 const cacheLock = new Mutex()
@@ -25,28 +26,6 @@ async function createCache(ttl = 120*1000) {
     }
     
     return cachePromise
-}
-
-class OfficialAPI {
-    static resident = async name => {
-        if (!name) return
-
-        const res = await endpoint.townyData(`residents/${name}`)
-        let obj = {
-            online: res.status?.isOnline ?? false,
-            balance: res.stats?.balance ?? 0,
-            timestamps: res.timestamps,
-            friends: res.friends
-        }
-
-        if (res.strings?.title) obj.title = res.strings.title
-        if (res.strings?.surname) obj.surname = res.strings.surname
-
-        if (res.ranks?.townRanks) obj.townRanks = res.ranks.townRanks
-        if (res.ranks?.nationRanks) obj.nationRanks = res.ranks.nationRanks
-
-        return obj
-    }
 }
 
 class Map {
@@ -97,11 +76,25 @@ class Map {
     }
 
     Towns = {
+        fromNation: async nation => {
+            if (!nation) return new InvalidError(`Parameter 'nation' is ${nation}`)
+            
+            nation = await this.Nations.get(nation)
+            if (nation instanceof NotFoundError) return nation
+
+            return await this.Towns.get(nation.towns)
+        },
         get: async (...townList) => {
             const towns = await this.Towns.all()
             if (!towns) return new FetchError('Error fetching towns! Please try again.')
 
-            return fn.getExisting(towns, townList, 'name')
+            const existing = fn.getExisting(towns, townList, 'name')
+            const isArr = existing instanceof Array
+
+            const out = isArr ? existing.map(async town => ({ ...town, ...await OfficialAPI.town(town.name) }))
+                : { ...existing, ...await OfficialAPI.town(existing.name) }
+
+            return isArr ? Promise.all(out) : Promise.resolve(out)
         },
         all: async (removeAccents = false) => {
             let cachedTowns = this.cache?.get('towns')
@@ -302,16 +295,25 @@ class Map {
     }
 
     Residents = {
+        fromTown: async town => {
+            if (!town) return new InvalidError(`Parameter 'town' is ${town}`)
+
+            town = await this.Towns.get(town)
+            if (town instanceof NotFoundError) return town
+
+            return await this.Residents.get(town.residents)
+        },
         get: async (...residentList) => {
             const residents = await this.Residents.all()
             if (!residents) return new FetchError('Error fetching residents! Please try again.')
 
             const existing = fn.getExisting(residents, residentList, 'name')
-            const out = existing instanceof Array 
-                ? existing.map(async res => ({ ...res, ...await OfficialAPI.resident(res.name) })) 
+            const isArr = existing instanceof Array
+
+            const out = isArr ? existing.map(async res => ({ ...res, ...await OfficialAPI.resident(res.name) })) 
                 : { ...existing, ...await OfficialAPI.resident(existing.name) }
 
-            return out instanceof Array ? Promise.all(out) : Promise.resolve(out)
+            return isArr ? Promise.all(out) : Promise.resolve(out)
         },
         all: async towns => {
             if (!towns) {
