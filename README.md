@@ -1,16 +1,44 @@
-# **EarthMC-NPM**
+# [**EarthMC-NPM**](https://emctoolkit.vercel.app/docs/npm)
+An **unofficial** wrapper library for interacting with the [EarthMC Dynmap](https://earthmc.net/map/aurora/) API.<br>
+This package is part of the [EarthMC Toolkit](https://emctoolkit.vercel.app) and provides extensive info on people, places and more.
 
-> **Notice** </br>
-> This is an unofficial package! All data is gathered from the [Dynmap](https://earthmc.net/map/aurora/).
+## Install
+```bash
+npm i earthmc
+```
 
-## About
-### This package is part of the [EarthMC Toolkit](https://emctoolkit.vercel.app) and provides extensive info about people, places and more on the EarthMC Minecraft server.
+or 
 
-## Documentation
-A complete class-based refactor was introduced in v6.0.0 and now requires documenting in an entirely different way than versions prior.<br>
+```bash
+yarn add earthmc
+```
 
-These changes are breaking and updating is optional, though recommended. <br>
-You should create a seperate branch to update your code base fully to the current version while remaining on v5.2.5 temporarily.
+## Basic Usage
+View the full documentation [here](https://emctoolkit.vercel.app/docs/npm).
 
-- [Current](https://emctoolkit.vercel.app/npm/current) ( >= v6.3.0 )
-- [Deprecated](https://emctoolkit.vercel.app/npm/deprecated) ( <= 5.2.5 )
+### Node
+```js
+import { Aurora } from 'earthmc' // ESM
+const { Aurora } = require('earthmc') // CJS
+
+const towns = await Aurora.Towns.all().catch(console.error)
+console.log(towns.length)
+```
+
+### Browser
+```js
+<button onclick="townAmount()">Show town amount</button>
+
+<script src="https://unpkg.com/earthmc@7.2.1/dist/bundle.js"></script>
+<script>
+window.townAmount = async function() {
+  try {
+    const towns = await earthmc.Aurora.Towns.all()
+    alert(towns.length)
+  }
+  catch(e) {
+    console.error(e)
+  }
+}
+</script>
+```
