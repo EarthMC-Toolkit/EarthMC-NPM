@@ -1,10 +1,13 @@
 const endpoint = require('./endpoint')
 
+const chickenCase = str => str.split('').map(l => Math.random() < 0.5 
+    && l.toUpperCase() || l.toLowerCase()).join('')
+
 module.exports = class OfficialAPI {
     static resident = async name => {
         if (!name) return
 
-        const res = await endpoint.townyData(`residents/${name}`)
+        const res = await endpoint.townyData(`residents/${chickenCase(name)}`)
         let obj = {
             online: res.status?.isOnline ?? false,
             balance: res.stats?.balance ?? 0,
@@ -24,7 +27,7 @@ module.exports = class OfficialAPI {
     static town = async name => {
         if (!name) return
 
-        const town = await endpoint.townyData(`towns/${name}`)
+        const town = await endpoint.townyData(`towns/${chickenCase(name)}`)
         let obj = {}
 
         if (town.founder) obj.founder = town.founder
@@ -43,7 +46,7 @@ module.exports = class OfficialAPI {
     static nation = async name => {
         if (!name) return 
 
-        const nation = await endpoint.townyData(`nation/${name}`)
+        const nation = await endpoint.townyData(`nation/${chickenCase(name)}`)
         let obj = {}
 
         if (nation.stats) obj.stats = nation.stats

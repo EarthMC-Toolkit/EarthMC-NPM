@@ -75,10 +75,10 @@ class Map {
         return mapData?.sets["townyPlugin.markerset"]
     }
 
-    Towns = {
+    #Towns = {
         fromNation: async nation => {
             if (!nation) return new InvalidError(`Parameter 'nation' is ${nation}`)
-            
+
             nation = await this.Nations.get(nation)
             if (nation instanceof NotFoundError) return nation
 
@@ -106,32 +106,32 @@ class Map {
             cachedTowns = []
 
             const townsArray = [], 
-                  townData = Object.keys(markerset.areas).map(key => markerset.areas[key]),
-                  len = townData.length
+                townData = Object.keys(markerset.areas).map(key => markerset.areas[key]), 
+                len = townData.length
 
-            for (let i = 0; i < len; i++) {      
-                const town = townData[i],
-                      rawinfo = town.desc.split("<br />"),
+            for (let i = 0; i < len; i++) {
+                const town = townData[ i ], 
+                      rawinfo = town.desc.split("<br />"), 
                       info = rawinfo.map(i => striptags(i, ['a']))
 
                 if (info[0].includes("(Shop)")) continue
-               
+
                 const mayor = info[1].slice(7)
                 if (mayor == "") continue
 
                 let split = info[0].split(" (")
-                split = (split[2] ?? split[1]).slice(0, -1)
+                split = (split[2] ?? split[ 1 ]).slice(0, -1)
 
-                const residents = info[2].slice(9).split(", "),
+                const residents = info[2].slice(9).split(", "), 
                       capital = fn.asBool(info[9]?.slice(9))
 
-                let nationName = split,
+                let nationName = split, 
                     wikiPage = null
-                
+
                 // Check if we have a wiki
                 if (split.includes('href')) {
-                    nationName = split.slice(split.indexOf('>')+1).replace('</a>', '')
-                    
+                    nationName = split.slice(split.indexOf('>') + 1).replace('</a>', '')
+
                     split = split.replace('<a href="', '')
                     if (capital) wikiPage = split.substring(0, split.indexOf('"'))
                 }
@@ -142,25 +142,25 @@ class Map {
                     nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
                     mayor: mayor,
                     area: fn.calcArea(town.x, town.z, town.x.length),
-                    x: home?.x ?? fn.range(town.x), 
+                    x: home?.x ?? fn.range(town.x),
                     z: home?.z ?? fn.range(town.z),
                     residents: residents,
                     flags: {
-                        pvp: fn.asBool(info[4]?.slice(5)),
-                        mobs: fn.asBool(info[5]?.slice(6)),
-                        public: fn.asBool(info[6]?.slice(8)),
-                        explosion: fn.asBool(info[7]?.slice(11)),
-                        fire: fn.asBool(info[8]?.slice(6)),
+                        pvp: fn.asBool(info[ 4 ]?.slice(5)),
+                        mobs: fn.asBool(info[ 5 ]?.slice(6)),
+                        public: fn.asBool(info[ 6 ]?.slice(8)),
+                        explosion: fn.asBool(info[ 7 ]?.slice(11)),
+                        fire: fn.asBool(info[ 8 ]?.slice(6)),
                         capital: capital
                     },
-                    colourCodes: { 
-                        fill: town.fillcolor, 
-                        outline: town.color 
+                    colourCodes: {
+                        fill: town.fillcolor,
+                        outline: town.color
                     }
                 }
 
                 if (wikiPage)
-                    currentTown['wiki'] = wikiPage
+                    currentTown[ 'wiki' ] = wikiPage
 
                 townsArray.push(currentTown)
             }
@@ -168,18 +168,17 @@ class Map {
             const temp = {}
 
             //#region Remove duplicates & add to area
-            townsArray.forEach(a => {   
+            townsArray.forEach(a => {
                 // Already exists, just add area and continue.                
-                if (temp[a.name]) {
-                    temp[a.name].area += a.area
+                if (temp[ a.name ]) {
+                    temp[ a.name ].area += a.area
                     return
                 }
 
-                temp[a.name] = a
-                cachedTowns.push(temp[a.name])
+                temp[ a.name ] = a
+                cachedTowns.push(temp[ a.name ])
             }, {})
             //#endregion
-
             if (cachedTowns.length > 0) {
                 this.cache.put('towns', cachedTowns)
                 if (this.#isNode) this.handle('towns')?.unref()
@@ -192,10 +191,10 @@ class Map {
                 towns = await this.Towns.all()
                 if (!towns) return null
             }
-        
+
             return towns.filter(t => 
-                fn.hypot(t.x, [xInput, xRadius]) && 
-                fn.hypot(t.z, [zInput, zRadius]))
+                fn.hypot(t.x, [ xInput, xRadius ]) &&
+                fn.hypot(t.z, [ zInput, zRadius ]))
         },
         invitable: async (nationName, includeBelonging = false) => {
             const nation = await this.Nations.get(nationName)
@@ -211,6 +210,10 @@ class Map {
 
             return towns.filter(t => invitable(t))
         }
+    }
+
+    get Towns() {
+        return this.#Towns
     }
 
     Nations = {
