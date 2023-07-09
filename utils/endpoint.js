@@ -1,4 +1,4 @@
-const { fetch, useDefaultAgent } = require("undici-shim"),
+const { request, useDefaultAgent } = require("undici-shim"),
       endpoints = require('../endpoints.json')
 
 if (useDefaultAgent) useDefaultAgent()
@@ -9,7 +9,7 @@ const asJSON = async (url, n = 3) => {
     if (isBrowser) url = `https://corsproxy.io/?${encodeURIComponent(url)}`
 
     const retry = val => n === 1 ? val : asJSON(url, n - 1)
-    const res = await fetch(url)
+    const res = await request(url)
         .then(res => isBrowser ? res.json() : res.body.json())
         .catch(async err => await retry(err))
     
