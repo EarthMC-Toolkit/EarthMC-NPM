@@ -19,7 +19,7 @@
   "dependencies": {
     "async-mutex": "^0.4.0",
     "diacritic": "0.0.2",
-    "mojang-lib": "^1.11.0",
+    "mojang-lib": "^1.11.1",
     "striptags": "3.2.0",
     "timed-cache": "^2.0.0",
     "undici-shim": "^1.5.1"
@@ -31,14 +31,13 @@
     "type": "git",
     "url": "https://github.com/EarthMC-Toolkit/EarthMC-NPM.git"
   },
-  "homepage": "https://emc-toolkit.vercel.app/npm/current",
+  "homepage": "https://emctoolkit.vercel.app/docs/npm",
   "funding": "https://github.com/sponsors/Owen3H",
   "devDependencies": {
     "@babel/core": "^7.21.3",
     "@babel/preset-env": "^7.20.2",
     "babel-loader": "^9.1.2",
     "bthreads": "^0.5.1",
-    "compression-webpack-plugin": "^10.0.0",
     "core-js": "^3.29.1",
     "diagnostics_channel": "^1.1.0",
     "fetch-ponyfill": "^7.1.0",

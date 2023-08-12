@@ -32,11 +32,11 @@ const editPlayerProp = player => ({
 
 function calcArea(X, Z, numPoints, divisor = 256) { 
     let i = 0, j = numPoints - 1,
-        area = 0	
+        area = 0
     
     for (; i < numPoints; i++) { 
         area += (X[j] + X[i]) * (Z[j] - Z[i]) 
-        j = i						
+        j = i
     }
 
     return Math.abs(area / 2) / divisor

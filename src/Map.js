@@ -5,27 +5,26 @@ const fn = require('../utils/functions'),
       { Mutex } = require('async-mutex'),
       OfficialAPI = require('../utils/api')
 
-let cachePromise = null
+let cacheInstance = null
 const cacheLock = new Mutex()
 
 async function createCache(ttl = 120*1000) {
     const release = await cacheLock.acquire()
 
-    try {
-        if (!cachePromise) {
-            cachePromise = import('timed-cache')
-            .then(tc => new tc.default({ defaultTtl: ttl }))
-            .finally(() => {
-                cachePromise = null
-                release()
-            })
+    if (!cacheInstance) {
+        try {
+            const tc = await import('timed-cache')
+            cacheInstance = new tc.default({ defaultTtl: ttl })
         }
-    } catch (e) {
-        release()
-        console.error(e)
+        catch (e) {
+            cacheInstance = null
+            console.error(e)
+        } finally {
+            release()
+        }
     }
-    
-    return cachePromise
+
+    return cacheInstance
 }
 
 class Map {
@@ -44,8 +43,10 @@ class Map {
 
     handle = key => this.cache?.cache[`__cache__${key}`]?.handle
     mapData = async () => {
-        if (!this.cache) 
+        if (!this.cache) {
+            //console.log('Should only run once per 120s')
             this.cache = await createCache()
+        }
 
         if (this.#isNode)
             this.handle('mapData')?.ref()
