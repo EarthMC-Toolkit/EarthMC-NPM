@@ -221,7 +221,7 @@ class Map {
         return this.#Towns
     }
 
-    Nations = {
+    #Nations = {
         get: async (...nationList) => {
             const nations = await this.Nations.all()
             if (!nations) return new FetchError('Error fetching nations! Please try again.')
@@ -302,7 +302,11 @@ class Map {
         }
     }
 
-    Residents = {
+    get Nations() {
+        return this.#Nations
+    }
+
+    #Residents = {
         fromTown: async town => {
             if (!town) return new InvalidError(`Parameter 'town' is ${town}`)
 
@@ -346,7 +350,11 @@ class Map {
         }
     }
 
-    Players = {
+    get Residents() {
+        return this.#Residents
+    }
+
+    #Players = {
         get: async (...playerList) => {
             const players = await this.Players.all()
             if (!players) return new FetchError('Error fetching players! Please try again.')
@@ -432,6 +440,10 @@ class Map {
                 return fn.hypot(p.x, [xInput, xRadius]) && fn.hypot(p.z, [zInput, zRadius])
             })
         }
+    }
+
+    get Players() {
+        return this.#Players
     }
 }
 
