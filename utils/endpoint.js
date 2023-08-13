@@ -10,7 +10,7 @@ const asJSON = async (url, n = 3) => {
 
     const retry = val => n === 1 ? val : asJSON(url, n - 1)
     const res = await request(url)
-        .then(res => isBrowser ? res.json() : res.body.json())
+        .then(res => res.body?.json() || res.json())
         .catch(async err => await retry(err))
     
     return res ?? await retry(null)

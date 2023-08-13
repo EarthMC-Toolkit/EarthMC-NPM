@@ -35,7 +35,7 @@ class Map {
     cache = null
 
     constructor(map = 'aurora') {
-        this.#isNode = typeof process !== "undefined" && process?.versions?.node
+        this.#isNode = globalThis.process?.release?.name == 'node'
 
         this.name = map
         this.#inviteRange = map == 'nova' ? 3000 : 3500
@@ -43,14 +43,12 @@ class Map {
 
     handle = key => this.cache?.cache[`__cache__${key}`]?.handle
     mapData = async () => {
-        if (!this.cache) {
-            //console.log('Should only run once per 120s')
+        if (!this.cache) 
             this.cache = await createCache()
-        }
 
         if (this.#isNode)
             this.handle('mapData')?.ref()
-            
+
         let md = null
         if (!this.cache.get('mapData')) {
             md = await endpoint.mapData(this.name)
@@ -63,7 +61,7 @@ class Map {
     }
 
     #unrefIfNode = () => {
-        if (this.#isNode) 
+        if (this.#isNode)
             this.handle('mapData')?.unref()
     }
 
@@ -115,7 +113,7 @@ class Map {
                 len = townData.length
 
             for (let i = 0; i < len; i++) {
-                const town = townData[ i ], 
+                const town = townData[i], 
                       rawinfo = town.desc.split("<br />"), 
                       info = rawinfo.map(i => striptags(i, ['a']))
 
@@ -125,7 +123,7 @@ class Map {
                 if (mayor == "") continue
 
                 let split = info[0].split(" (")
-                split = (split[2] ?? split[ 1 ]).slice(0, -1)
+                split = (split[2] ?? split[1]).slice(0, -1)
 
                 const residents = info[2].slice(9).split(", "), 
                       capital = fn.asBool(info[9]?.slice(9))
@@ -151,11 +149,11 @@ class Map {
                     z: home?.z ?? fn.range(town.z),
                     residents: residents,
                     flags: {
-                        pvp: fn.asBool(info[ 4 ]?.slice(5)),
-                        mobs: fn.asBool(info[ 5 ]?.slice(6)),
-                        public: fn.asBool(info[ 6 ]?.slice(8)),
-                        explosion: fn.asBool(info[ 7 ]?.slice(11)),
-                        fire: fn.asBool(info[ 8 ]?.slice(6)),
+                        pvp: fn.asBool(info[4]?.slice(5)),
+                        mobs: fn.asBool(info[5]?.slice(6)),
+                        public: fn.asBool(info[6]?.slice(8)),
+                        explosion: fn.asBool(info[7]?.slice(11)),
+                        fire: fn.asBool(info[8]?.slice(6)),
                         capital: capital
                     },
                     colourCodes: {
@@ -198,8 +196,8 @@ class Map {
             }
 
             return towns.filter(t => 
-                fn.hypot(t.x, [ xInput, xRadius ]) &&
-                fn.hypot(t.z, [ zInput, zRadius ]))
+                fn.hypot(t.x, [xInput, xRadius]) &&
+                fn.hypot(t.z, [zInput, zRadius]))
         },
         invitable: async (nationName, includeBelonging = false) => {
             const nation = await this.Nations.get(nationName)
