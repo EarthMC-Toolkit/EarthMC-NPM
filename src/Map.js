@@ -56,11 +56,15 @@ class Map {
             md = await endpoint.mapData(this.name)
 
             this.cache.put('mapData', md)
-            if (this.#isNode) 
-                this.handle('mapData')?.unref()
+            this.#unrefIfNode()
         }
 
         return md
+    }
+
+    #unrefIfNode = () => {
+        if (this.#isNode) 
+            this.handle('mapData')?.unref()
     }
 
     playerData = () => endpoint.playerData(this.name)
@@ -170,19 +174,19 @@ class Map {
 
             //#region Remove duplicates & add to area
             townsArray.forEach(a => {
-                // Already exists, just add area and continue.                
-                if (temp[ a.name ]) {
-                    temp[ a.name ].area += a.area
-                    return
+                const name = a.name
+            
+                if (temp[name]) temp[name].area += a.area
+                else {    
+                    temp[name] = a
+                    cachedTowns.push(temp[name])
                 }
-
-                temp[ a.name ] = a
-                cachedTowns.push(temp[ a.name ])
             }, {})
             //#endregion
+
             if (cachedTowns.length > 0) {
                 this.cache.put('towns', cachedTowns)
-                if (this.#isNode) this.handle('towns')?.unref()
+                this.#unrefIfNode()
             }
 
             return cachedTowns

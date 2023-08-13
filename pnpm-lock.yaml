@@ -12,8 +12,8 @@ dependencies:
     specifier: 0.0.2
     version: 0.0.2
   mojang-lib:
-    specifier: ^1.11.1
-    version: 1.11.1
+    specifier: ^1.12.0
+    version: 1.12.0
   striptags:
     specifier: 3.2.0
     version: 3.2.0
@@ -2373,8 +2373,8 @@ packages:
     resolution: {integrity: sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==}
     dev: true
 
-  /mojang-lib@1.11.1:
-    resolution: {integrity: sha512-U/JE0bhzAnO0Iof5XoaFulxE4IvWHXam0IzNmVGdJEDrod9DxdNYLVot4XsW5FEUZuys+sNCiikVW0RioEJf1g==}
+  /mojang-lib@1.12.0:
+    resolution: {integrity: sha512-k1b52l6MvJHWRHhL+JD2sY46/UV/mrWV0UY5eI23baeQMG3bZ9xlF12uuwtQfG+7cuh4EXbg698d3Epu4Zobcw==}
     dependencies:
       tslib: 2.6.1
       undici-shim: 1.5.1
