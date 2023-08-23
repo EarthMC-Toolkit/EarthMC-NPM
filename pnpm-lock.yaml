@@ -11,6 +11,9 @@ dependencies:
   diacritic:
     specifier: 0.0.2
     version: 0.0.2
+  mitt:
+    specifier: ^3.0.1
+    version: 3.0.1
   mojang-lib:
     specifier: ^1.12.1
     version: 1.12.1
@@ -2373,6 +2376,10 @@ packages:
     resolution: {integrity: sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==}
     dev: true
 
+  /mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+    dev: false
+
   /mojang-lib@1.12.1:
     resolution: {integrity: sha512-u5vEq3RS9rsXv8j29eI04OUyio6sT8UGv9JjypSA8yZnX3Fgbohr2MXJuIIv1ULFxHIQ26QolG9RJ+h3bY/zDA==}
     dependencies:
@@ -2922,6 +2929,10 @@ packages:
     resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
     dev: false
 
+  /tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: false
+
   /tty-browserify@0.0.1:
     resolution: {integrity: sha512-C3TaO7K81YvjCgQH9Q1S3R3P3BtN3RIM8n+OvX4il1K1zgE8ZhI0op7kClgkxtutIE8hQrcrHBXvIheqKUUCxw==}
     dev: true
@@ -2934,7 +2945,7 @@ packages:
   /undici-shim@1.5.1:
     resolution: {integrity: sha512-BjGOgR1z59kog5zv8WQ/QqGP1MXOxrNT9apzp+fBw2TV5bWAVLiwAnhdmfGVzi+41sU9osi6gzlzINyS79v6Gw==}
     dependencies:
-      tslib: 2.6.1
+      tslib: 2.6.2
       undici: 5.23.0
     dev: false
 

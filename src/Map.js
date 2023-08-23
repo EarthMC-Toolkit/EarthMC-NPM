@@ -34,11 +34,14 @@ class Map {
     #isNode = true
     cache = null
 
+    GPS = null
+
     constructor(map = 'aurora') {
         this.#isNode = globalThis.process?.release?.name == 'node'
 
         this.name = map
         this.#inviteRange = map == 'nova' ? 3000 : 3500
+        this.GPS = new GPS(this)
     }
 
     handle = key => this.cache?.cache[`__cache__${key}`]?.handle
@@ -427,6 +430,94 @@ class Map {
             })
         }
     }
+}
+
+const mitt = require('mitt')
+
+class GPS extends mitt {
+    map = null
+
+    constructor(map) {
+        super()
+        this.map = map
+    }
+
+    async track() {
+        // Emit 'locationChanged' event
+        return 'Not implemented'
+    }
+
+    fastestRoute = async function(loc={x, z}, avoidPvp = false) {
+        if (!loc.x || !loc.z) {
+            const obj = JSON.stringify(loc)
+            throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
+        }
+
+        // Scan all nations for closest match.
+        // Computationally more expensive to include PVP disabled nations.
+        const nations = await this.map.Nations.all()
+        const towns = await this.map.Towns.all()
+        const filtered = []
+        
+        const len = nations.length
+        for (let i = 0; i < len; i++) {
+            const nation = nations[i]
+            const capital = towns.find(t => t.name == nation.capital.name)
+        
+            // Filter out nations where either capital is not public 
+            // or both avoidPvp and flags.pvp are true
+            const flags = capital.flags
+            if (!flags.public || (avoidPvp && flags.pvp))
+                continue
+
+            filtered.push(nation)
+        }
+
+        // Use reduce to find the minimum distance and corresponding nation
+        const { distance, nation } = filtered.reduce((acc, nation) => {
+            const dist = GPS.manhattan(nation.capital.x, nation.capital.z, loc.x, loc.z)
+
+            // Update acc if this nation is closer
+            const closer = !acc.distance || dist < acc.distance
+            return closer ? { 
+                    distance: dist, 
+                    nation: {
+                        name: nation.name,
+                        capital: nation.capital
+                    }
+            } : acc
+        }, { distance: null, nation: null })
+
+        const direction = GPS.cardinalDirection(nation.capital, loc)
+        return { nation, distance: Math.round(distance), direction }
+    }
+
+    static cardinalDirection(loc1, loc2) {
+        // Calculate the differences in x and z coordinates
+        const deltaX = loc2.x - loc1.x;
+        const deltaZ = loc2.z - loc1.z;
+
+        const angleRad = Math.atan2(deltaZ, deltaX) // Calculate the angle in radians
+        const angleDeg = (angleRad * 180) / Math.PI // Convert the angle from radians to degrees
+
+        // Determine the cardinal direction
+        if (angleDeg >= -45 && angleDeg < 45) 
+            return "east"
+        
+        if (angleDeg >= 45 && angleDeg < 135) 
+            return "north"
+        
+        if (angleDeg >= 135 || angleDeg < -135) 
+            return "west"
+        
+        return "south"
+    }
+    
+    static euclidean = (x1, z1, x2, z2) => 
+        Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(z2 - z1, 2))
+
+    static manhattan = (x1, z1, x2, z2) =>
+        Math.abs(x2 - x1) + Math.abs(z2 - z1)
 }
 
 module.exports = Map
