@@ -480,7 +480,7 @@ class GPS extends mitt {
             // Update acc if this nation is closer
             const closer = !acc.distance || dist < acc.distance
             return closer ? { 
-                    distance: dist, 
+                    distance: Math.round(dist), 
                     nation: {
                         name: nation.name,
                         capital: nation.capital
@@ -489,7 +489,7 @@ class GPS extends mitt {
         }, { distance: null, nation: null })
 
         const direction = GPS.cardinalDirection(nation.capital, loc)
-        return { nation, distance: Math.round(distance), direction }
+        return { nation, distance, direction }
     }
 
     static cardinalDirection(loc1, loc2) {
