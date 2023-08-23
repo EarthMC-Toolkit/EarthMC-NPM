@@ -455,8 +455,7 @@ class GPS extends mitt {
 
         // Scan all nations for closest match.
         // Computationally more expensive to include PVP disabled nations.
-        const nations = await this.map.Nations.all()
-        const towns = await this.map.Towns.all()
+        const [nations, towns] = await Promise.all([this.map.Nations.all(), this.map.Towns.all()])
         const filtered = []
         
         const len = nations.length
