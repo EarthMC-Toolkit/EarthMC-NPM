@@ -15,23 +15,41 @@ function genRandomString(maxAmount) {
 
 module.exports = class OfficialAPI {
     static resident = async name => {
+        // TODO: Properly handle this case and implement an error.
         if (!name) return
 
         const res = await endpoint.townyData(`residents/${name}?${genRandomString()}`)
         let obj = {
             online: res.status?.isOnline ?? false,
-            balance: res.stats?.balance ?? 0,
-            friends: res.friends || []
+            balance: res.stats?.balance ?? 0
         }
 
+        if (res.timestamps) obj.timestamps = res.timestamps
+        if (res.strings?.username) obj.name = res.strings.username
         if (res.strings?.title) obj.title = res.strings.title
         if (res.strings?.surname) obj.surname = res.strings.surname
+
+        const affiliation = res.affiliation
+        if (affiliation.town) obj.town = affiliation.town
+        if (affiliation.nation) obj.nation = affiliation.nation
 
         if (res.ranks?.townRanks) obj.townRanks = res.ranks.townRanks
         if (res.ranks?.nationRanks) obj.nationRanks = res.ranks.nationRanks
 
-        if (res.timestamps) res.timestamps = res.timestamps
+        const perms = res.perms
+        if (perms) {
+            const rnaoPerms = perms.rnaoPerms
 
+            obj.perms = {
+                build: rnaoPerms.buildPerms,
+                destroy: rnaoPerms.destroyPerms,
+                switch: rnaoPerms.switchPerms,
+                itemUse: rnaoPerms.itemUsePerms,
+                flags: perms.flagPerms
+            }
+        }
+
+        obj.friends = res.friends || []
         return obj
     }
 
