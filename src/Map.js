@@ -443,8 +443,9 @@ class GPS extends mitt {
     }
 
     async track() {
+        throw new Error('Method track() not yet implemented!')
+
         // Emit 'locationChanged' event
-        return 'Not implemented'
     }
 
     fastestRoute = async function(loc={x, z}, avoidPvp = false) {
