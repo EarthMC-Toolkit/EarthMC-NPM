@@ -1,18 +1,27 @@
 const endpoint = require('./endpoint')
 
-const chickenCase = str => str.split('').map(l => Math.random() < 0.5 
-    && l.toUpperCase() || l.toLowerCase()).join('')
+const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+function genRandomString(maxAmount) {
+    let token = ''
+    let len = validChars.length
+
+    for (let i = 0; i < maxAmount; i++) {
+      const randomIndex = Math.floor(Math.random() * len)
+      token += validChars.charAt(randomIndex)
+    }
+  
+    return token
+}
 
 module.exports = class OfficialAPI {
     static resident = async name => {
         if (!name) return
 
-        const res = await endpoint.townyData(`residents/${chickenCase(name)}`)
+        const res = await endpoint.townyData(`residents/${name}?${genRandomString()}`)
         let obj = {
             online: res.status?.isOnline ?? false,
             balance: res.stats?.balance ?? 0,
-            timestamps: res.timestamps,
-            friends: res.friends
+            friends: res.friends || []
         }
 
         if (res.strings?.title) obj.title = res.strings.title
@@ -20,6 +29,8 @@ module.exports = class OfficialAPI {
 
         if (res.ranks?.townRanks) obj.townRanks = res.ranks.townRanks
         if (res.ranks?.nationRanks) obj.nationRanks = res.ranks.nationRanks
+
+        if (res.timestamps) res.timestamps = res.timestamps
 
         return obj
     }
