@@ -448,7 +448,27 @@ class GPS extends mitt {
         // Emit 'locationChanged' event
     }
 
-    fastestRoute = async function(loc={x, z}, avoidPvp = false) {
+    safestRoute = async function(loc = { x, z }) {
+        return await this.findRoute(loc, { 
+            avoidPvp: true,
+            avoidPublic: true
+        })
+    }
+
+    fastestRoute = async function() {
+        return await this.findRoute(loc, { 
+            avoidPvp: false, 
+            avoidPublic: false 
+        })
+    }
+
+    findRoute = async function(
+        loc = { x, z }, 
+        options = { 
+            avoidPvp: true, 
+            avoidPublic: false
+        }
+    ) {
         if (!loc.x || !loc.z) {
             const obj = JSON.stringify(loc)
             throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
@@ -467,9 +487,11 @@ class GPS extends mitt {
             // Filter out nations where either capital is not public 
             // or both avoidPvp and flags.pvp are true
             const flags = capital.flags
-            if (!flags.public || (avoidPvp && flags.pvp))
-                continue
 
+            const PVP = options.avoidPvp && flags.pvp
+            const PUBLIC = options.avoidPublic && !flags.public
+
+            if (PVP || PUBLIC) continue
             filtered.push(nation)
         }
 
