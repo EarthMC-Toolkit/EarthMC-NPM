@@ -437,15 +437,45 @@ const mitt = require('mitt')
 class GPS extends mitt {
     map = null
 
-    constructor(map) {
+    static Route = {
+        SAFEST: {
+            avoidPvp: true,
+            avoidPublic: true
+        },
+        FASTEST: {
+            avoidPvp: false,
+            avoidPublic: false
+        },
+        AVOID_PUBLIC: {
+            avoidPvp: false,
+            avoidPublic: true
+        },
+        AVOID_PVP: {
+            avoidPvp: true,
+            avoidPublic: false
+        }
+    }
+
+    constructor(map = "aurora") {
         super()
+
         this.map = map
     }
 
-    async track() {
-        throw new Error('Method track() not yet implemented!')
+    track = async function(playerName, route = GPS.Route.FASTEST) {
+        //throw new Error('Method track() not yet implemented!')
 
-        // Emit 'locationChanged' event
+        setInterval(async () => {
+            const player = await this.map.Players.get(playerName) 
+            const targetLoc = {
+                x: player.x,
+                z: player.z,
+            }
+
+            this.emit('update', await this.findRoute(targetLoc, route))
+        }, 2000)
+
+        return this
     }
 
     safestRoute = async function(loc = { x, z }) {
@@ -464,10 +494,7 @@ class GPS extends mitt {
 
     findRoute = async function(
         loc = { x, z }, 
-        options = { 
-            avoidPvp: true, 
-            avoidPublic: false
-        }
+        options = GPS.Route.FASTEST,
     ) {
         if (!loc.x || !loc.z) {
             const obj = JSON.stringify(loc)
@@ -522,10 +549,6 @@ class GPS extends mitt {
         const angleRad = Math.atan2(deltaZ, deltaX) // Calculate the angle in radians
         const angleDeg = (angleRad * 180) / Math.PI // Convert the angle from radians to degrees
 
-        // Normalize negative angles to positive ones
-        if (angleDeg < 0)
-            angleDeg = 360 + (angleDeg % 360)
-            
         // Determine the cardinal direction
         if (angleDeg >= -45 && angleDeg < 45) 
             return "east"
