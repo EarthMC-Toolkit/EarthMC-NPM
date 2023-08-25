@@ -503,15 +503,18 @@ class GPS extends mitt {
         // Normalize negative angles to positive ones
         if (angleDeg < 0)
             angleDeg = 360 + (angleDeg % 360)
-
-        return (angleDeg >= 0 && angleDeg < 15) || (angleDeg >= 345) ? "north" :
-               (angleDeg >= 15 && angleDeg < 45) ? "north-east" :
-               (angleDeg >= 45 && angleDeg < 75) ? "east" :
-               (angleDeg >= 75 && angleDeg < 105) ? "south-east" :
-               (angleDeg >= 105 && angleDeg < 135) ? "south" :
-               (angleDeg >= 135 && angleDeg < 165) ? "south-west" :
-               (angleDeg >= 165 && angleDeg < 195) ? "west" :
-               (angleDeg >= 195 && angleDeg < 225) ? "north-west" : "north"
+            
+        // Determine the cardinal direction
+        if (angleDeg >= -45 && angleDeg < 45) 
+            return "east"
+        
+        if (angleDeg >= 45 && angleDeg < 135) 
+            return "north"
+        
+        if (angleDeg >= 135 || angleDeg < -135) 
+            return "west"
+        
+        return "south"
     }
     
     static euclidean = (x1, z1, x2, z2) => 
