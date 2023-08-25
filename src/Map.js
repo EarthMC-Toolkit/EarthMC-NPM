@@ -3,7 +3,8 @@ const fn = require('../utils/functions'),
       { FetchError, NotFoundError, InvalidError } = require('../utils/Errors'),
       striptags = require("striptags"),
       { Mutex } = require('async-mutex'),
-      OfficialAPI = require('../utils/api')
+      OfficialAPI = require('../utils/api'),
+      fn = require('../utils/functions')
 
 let cacheInstance = null
 const cacheLock = new Mutex()
@@ -482,6 +483,14 @@ class GPS extends mitt {
     //     return this
     // }
 
+    // track = async function(player, destination, interval = 2000, route = GPS.Route.FASTEST) {
+    //     setInterval(async () => {
+            
+    //     }, interval)
+
+    //     return this
+    // }
+
     safestRoute = async function(loc = { x, z }) {
         return await this.findRoute(loc, { 
             avoidPvp: true,
@@ -532,7 +541,7 @@ class GPS extends mitt {
 
         // Use reduce to find the minimum distance and corresponding nation
         const { distance, nation } = filtered.reduce((acc, nation) => {
-            const dist = GPS.manhattan(nation.capital.x, nation.capital.z, loc.x, loc.z)
+            const dist = fn.manhattan(nation.capital.x, nation.capital.z, loc.x, loc.z)
 
             // Update acc if this nation is closer
             const closer = !acc.distance || dist < acc.distance
@@ -569,12 +578,6 @@ class GPS extends mitt {
         
         return "south"
     }
-    
-    static euclidean = (x1, z1, x2, z2) => 
-        Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(z2 - z1, 2))
-
-    static manhattan = (x1, z1, x2, z2) =>
-        Math.abs(x2 - x1) + Math.abs(z2 - z1)
 }
 
 module.exports = Map
