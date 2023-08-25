@@ -489,7 +489,7 @@ class GPS extends mitt {
         })
     }
 
-    fastestRoute = async function() {
+    fastestRoute = async function(loc = { x, z }) {
         return await this.findRoute(loc, { 
             avoidPvp: false, 
             avoidPublic: false 
