@@ -4,13 +4,7 @@ This package is part of the [EarthMC Toolkit](https://emctoolkit.vercel.app) and
 
 ## Install
 ```bash
-npm i earthmc
-```
-
-or 
-
-```bash
-yarn add earthmc
+pnpm add earthmc
 ```
 
 ## Basic Usage
@@ -29,7 +23,7 @@ console.log(towns.length)
 ```js
 <button onclick="townAmount()">Show town amount</button>
 
-<script src="https://unpkg.com/earthmc@7.2.1/dist/bundle.js"></script>
+<script src="https://unpkg.com/earthmc@7.4.0/dist/bundle.js"></script>
 <script>
 window.townAmount = async function() {
   try {

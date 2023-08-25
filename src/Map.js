@@ -3,8 +3,7 @@ const fn = require('../utils/functions'),
       { FetchError, NotFoundError, InvalidError } = require('../utils/Errors'),
       striptags = require("striptags"),
       { Mutex } = require('async-mutex'),
-      OfficialAPI = require('../utils/api'),
-      fn = require('../utils/functions')
+      OfficialAPI = require('../utils/api')
 
 let cacheInstance = null
 const cacheLock = new Mutex()
