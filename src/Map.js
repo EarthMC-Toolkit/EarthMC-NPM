@@ -494,23 +494,24 @@ class GPS extends mitt {
 
     static cardinalDirection(loc1, loc2) {
         // Calculate the differences in x and z coordinates
-        const deltaX = loc2.x - loc1.x;
-        const deltaZ = loc2.z - loc1.z;
+        const deltaX = loc2.x - loc1.x
+        const deltaZ = loc2.z - loc1.z
 
         const angleRad = Math.atan2(deltaZ, deltaX) // Calculate the angle in radians
         const angleDeg = (angleRad * 180) / Math.PI // Convert the angle from radians to degrees
 
-        // Determine the cardinal direction
-        if (angleDeg >= -45 && angleDeg < 45) 
-            return "east"
-        
-        if (angleDeg >= 45 && angleDeg < 135) 
-            return "north"
-        
-        if (angleDeg >= 135 || angleDeg < -135) 
-            return "west"
-        
-        return "south"
+        // Normalize negative angles to positive ones
+        if (angleDeg < 0)
+            angleDeg = 360 + (angleDeg % 360)
+
+        return (angleDeg >= 0 && angleDeg < 15) || (angleDeg >= 345) ? "north" :
+               (angleDeg >= 15 && angleDeg < 45) ? "north-east" :
+               (angleDeg >= 45 && angleDeg < 75) ? "east" :
+               (angleDeg >= 75 && angleDeg < 105) ? "south-east" :
+               (angleDeg >= 105 && angleDeg < 135) ? "south" :
+               (angleDeg >= 135 && angleDeg < 165) ? "south-west" :
+               (angleDeg >= 165 && angleDeg < 195) ? "west" :
+               (angleDeg >= 195 && angleDeg < 225) ? "north-west" : "north"
     }
     
     static euclidean = (x1, z1, x2, z2) => 
