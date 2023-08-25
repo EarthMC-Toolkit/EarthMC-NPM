@@ -462,21 +462,25 @@ class GPS extends mitt {
         this.map = map
     }
 
-    track = async function(playerName, route = GPS.Route.FASTEST) {
-        //throw new Error('Method track() not yet implemented!')
+    // routeToPlayer = async function(playerName, route = GPS.Route.FASTEST) {
+    //     setInterval(async () => {
+    //         const player = await this.map.Players.get(playerName) 
+    //         const targetLoc = {
+    //             x: player.x,
+    //             z: player.z,
+    //         }
 
-        setInterval(async () => {
-            const player = await this.map.Players.get(playerName) 
-            const targetLoc = {
-                x: player.x,
-                z: player.z,
-            }
+    //         const routeInfo = await this.findRoute(targetLoc, route)
+    //         const underground = 
+    //             player.x == 0 && player.z == 0 && 
+    //             player.world != "some-other-bogus-world"
+            
+    //         if (underground) this.emit('underground', routeInfo)
+    //         else this.emit('update', routeInfo)
+    //     }, 2000)
 
-            this.emit('update', await this.findRoute(targetLoc, route))
-        }, 2000)
-
-        return this
-    }
+    //     return this
+    // }
 
     safestRoute = async function(loc = { x, z }) {
         return await this.findRoute(loc, { 
@@ -496,7 +500,11 @@ class GPS extends mitt {
         loc = { x, z }, 
         options = GPS.Route.FASTEST,
     ) {
-        if (!loc.x || !loc.z) {
+        // Cannot use `!` as it considers 0 to be falsy.
+        const xValid = loc.x === undefined || loc.z === null
+        const zValid = loc.z === undefined || loc.z === null
+
+        if (xValid || zValid) {
             const obj = JSON.stringify(loc)
             throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
         }
