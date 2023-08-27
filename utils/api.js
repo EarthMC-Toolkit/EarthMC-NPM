@@ -56,7 +56,7 @@ module.exports = class OfficialAPI {
     static town = async name => {
         if (!name) return
 
-        const town = await endpoint.townyData(`towns/${chickenCase(name)}`)
+        const town = await endpoint.townyData(`towns/${name}?${genRandomString()}`)
         let obj = {}
 
         if (town.founder) obj.founder = town.founder
@@ -73,9 +73,9 @@ module.exports = class OfficialAPI {
     }
 
     static nation = async name => {
-        if (!name) return 
+        if (!name) return
 
-        const nation = await endpoint.townyData(`nation/${chickenCase(name)}`)
+        const nation = await endpoint.townyData(`nation/${name}?${genRandomString()}`)
         let obj = {}
 
         if (nation.stats) obj.stats = nation.stats
