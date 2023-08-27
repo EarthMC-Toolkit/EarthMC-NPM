@@ -14,7 +14,8 @@
   "scripts": {
     "build": "npx webpack",
     "test": "pnpm run build && node src/test.js",
-    "test:nobuild": "node src/test.js"
+    "test:nobuild": "node src/test.js",
+    "prepublishOnly": "pnpm run build"
   },
   "author": "Owen77Stubbs",
   "license": "ISC",
