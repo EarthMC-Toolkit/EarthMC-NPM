@@ -75,7 +75,7 @@ module.exports = class OfficialAPI {
     static nation = async name => {
         if (!name) return
 
-        const nation = await endpoint.townyData(`nation/${name}?${genRandomString()}`)
+        const nation = await endpoint.townyData(`nations/${name}?${genRandomString()}`)
         let obj = {}
 
         if (nation.stats) obj.stats = nation.stats
