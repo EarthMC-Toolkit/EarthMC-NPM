@@ -1,7 +1,7 @@
 const endpoint = require('./endpoint')
 
 const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-function genRandomString(maxAmount) {
+function genRandomString(maxAmount = 20) {
     let token = ''
     let len = validChars.length
 
