@@ -73,12 +73,10 @@ const hypot = (num, args) => {
     return num <= (input + radius) && num >= (input - radius)
 }
 
-    
+const manhattan = (x1, z1, x2, z2) => Math.abs(x2 - x1) + Math.abs(z2 - z1)
 const euclidean = (x1, z1, x2, z2) => 
-    Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(z2 - z1, 2))
-
-const manhattan = (x1, z1, x2, z2) =>
-    Math.abs(x2 - x1) + Math.abs(z2 - z1)
+    Math.sqrt(Math.pow(x2 - x1, 2) + 
+    Math.pow(z2 - z1, 2))
 
 module.exports = {
     sqr,
@@ -93,5 +91,6 @@ module.exports = {
     stripInvalidChars,
     getAveragePos,
     averageNationPos,
-    euclidean, manhattan
+    euclidean, 
+    manhattan
 }

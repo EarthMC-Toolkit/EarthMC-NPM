@@ -76,7 +76,7 @@ class Map {
         return pData?.players ? fn.editPlayerProps(pData.players) : null
     }
 
-    markerset = async () => {
+    #markerset = async () => {
         const mapData = await this.mapData()
         return mapData?.sets["townyPlugin.markerset"]
     }
@@ -106,7 +106,7 @@ class Map {
             let cachedTowns = this.cache?.get('towns')
             if (cachedTowns) return cachedTowns
 
-            const markerset = await this.markerset()
+            const markerset = await this.#markerset()
             if (!markerset?.areas) return
 
             cachedTowns = []
@@ -150,6 +150,10 @@ class Map {
                     area: fn.calcArea(town.x, town.z, town.x.length),
                     x: home?.x ?? fn.range(town.x),
                     z: home?.z ?? fn.range(town.z),
+                    bounds: {
+                        x: town.x.map(num => Math.round(num)),
+                        z: town.z.map(num => Math.round(num))
+                    },
                     residents: residents,
                     flags: {
                         pvp: fn.asBool(info[4]?.slice(5)),
@@ -166,7 +170,7 @@ class Map {
                 }
 
                 if (wikiPage)
-                    currentTown[ 'wiki' ] = wikiPage
+                    currentTown['wiki'] = wikiPage
 
                 townsArray.push(currentTown)
             }
@@ -430,6 +434,47 @@ class Map {
             })
         }
     }
+
+    withinTown = async location => {
+        const towns = await this.Towns.all()
+        const len = towns.length
+        
+        let inBounds = false
+        for (let i = 0; i < len; i++) {
+            const cur = towns[i]
+
+            if (this.withinBounds(location, cur.bounds)) {
+                inBounds = true
+                break
+            }
+        }
+
+        return inBounds
+    }
+
+    isWilderness = async location => {
+        return !(await this.withinTown(location))
+    }
+
+    withinBounds = async (loc = { x, z }, bounds) => {
+        // Cannot use `!` as it considers 0 to be falsy.
+        const xValid = loc.x === undefined || loc.z === null
+        const zValid = loc.z === undefined || loc.z === null
+
+        if (xValid || zValid) {
+            const obj = JSON.stringify(loc)
+            throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
+        }
+
+        const xLoc = parseInt(loc.x)
+        const zLoc = parseInt(loc.z)
+
+        // Check if the given coordinates are within the bounds or on the bounds
+        const withinX = xLoc >= Math.min(...bounds.x) && xLoc <= Math.max(...bounds.x)
+        const withinZ = zLoc >= Math.min(...bounds.z) && zLoc <= Math.max(...bounds.z)
+
+        return withinX && withinZ
+    }
 }
 
 const mitt = require('mitt')
@@ -490,24 +535,21 @@ class GPS extends mitt {
     //     return this
     // }
 
-    safestRoute = async function(loc = { x, z }) {
+    safestRoute = async function(loc) {
         return await this.findRoute(loc, { 
             avoidPvp: true,
             avoidPublic: true
         })
     }
 
-    fastestRoute = async function(loc = { x, z }) {
+    fastestRoute = async function(loc) {
         return await this.findRoute(loc, { 
             avoidPvp: false, 
             avoidPublic: false 
         })
     }
 
-    findRoute = async function(
-        loc = { x, z }, 
-        options = GPS.Route.FASTEST,
-    ) {
+    findRoute = async function(loc, options = GPS.Route.FASTEST) {
         // Cannot use `!` as it considers 0 to be falsy.
         const xValid = loc.x === undefined || loc.z === null
         const zValid = loc.z === undefined || loc.z === null
