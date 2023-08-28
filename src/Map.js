@@ -456,13 +456,9 @@ class Map {
     }
 
     withinBounds = async (loc = { x, z }, bounds) => {
-        // Cannot use `!` as it considers 0 to be falsy.
-        const xValid = loc.x === undefined || loc.z === null
-        const zValid = loc.z === undefined || loc.z === null
-
-        if (xValid || zValid) {
+        if (this.#strictFalsy(loc.x) || this.#strictFalsy(loc.z)) {
             const obj = JSON.stringify(loc)
-            throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
+            throw new ReferenceError(`(withinBounds) - Invalid location:\n${obj}`)
         }
 
         const xLoc = parseInt(loc.x)
@@ -474,6 +470,9 @@ class Map {
 
         return withinX && withinZ
     }
+
+    // Used as alternative to `!` as it considers 0 to be falsy.
+    #strictFalsy = val => val === undefined || val === null
 }
 
 const mitt = require('mitt')
@@ -506,33 +505,46 @@ class GPS extends mitt {
         this.map = map
     }
 
-    // routeToPlayer = async function(playerName, route = GPS.Route.FASTEST) {
-    //     setInterval(async () => {
-    //         const player = await this.map.Players.get(playerName) 
-    //         const targetLoc = {
-    //             x: player.x,
-    //             z: player.z,
-    //         }
+    emittedUnderground = false
+    lastLoc = null
 
-    //         const routeInfo = await this.findRoute(targetLoc, route)
-    //         const underground = 
-    //             player.x == 0 && player.z == 0 && 
-    //             player.world != "some-other-bogus-world"
-            
-    //         if (underground) this.emit('underground', routeInfo)
-    //         else this.emit('update', routeInfo)
-    //     }, 2000)
+    track = async function(playerName, interval = 3000, route = GPS.Route.FASTEST) {
+        setInterval(async () => {
+            const player = await this.map.Players.get(playerName) 
+            const underground = 
+                player.x == 0 && player.z == 0 && 
+                player.world != "some-other-bogus-world"
 
-    //     return this
-    // }
+            if (underground) {
+                if (!this.emittedUnderground) {
+                    this.emittedUnderground = true
 
-    // track = async function(player, destination, interval = 2000, route = GPS.Route.FASTEST) {
-    //     setInterval(async () => {
-            
-    //     }, interval)
+                    if (!this.lastLoc) {
+                        this.emit("underground", "No last location. Waiting for this player to show.")
+                        return
+                    }
+                    
+                    const routeInfo = await this.findRoute(this.lastLoc, route)
+                    this.emit('underground', { 
+                        lastLocation: this.lastLoc, 
+                        routeInfo: routeInfo
+                    })
+                }
+            }
+            else {
+                this.lastLoc = { x: player.x, z: player.z }
 
-    //     return this
-    // }
+                const routeInfo = await this.findRoute({
+                    x: player.x,
+                    z: player.z,
+                }, route)
+    
+                this.emit('locationUpdate', routeInfo)
+            }
+        }, interval)
+
+        return this
+    }
 
     safestRoute = async function(loc) {
         return await this.findRoute(loc, { 
