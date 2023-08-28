@@ -2,29 +2,28 @@ const fn = require('../utils/functions'),
       endpoint = require('../utils/endpoint'),
       { FetchError, NotFoundError, InvalidError } = require('../utils/Errors'),
       striptags = require("striptags"),
-      { Mutex } = require('async-mutex'),
-      OfficialAPI = require('../utils/api')
+      OfficialAPI = require('../utils/api'),
+      { Mutex } = require('async-mutex')
 
-let cacheInstance = null
+let cachePromise = null
 const cacheLock = new Mutex()
-
 async function createCache(ttl = 120*1000) {
     const release = await cacheLock.acquire()
-
-    if (!cacheInstance) {
-        try {
-            const tc = await import('timed-cache')
-            cacheInstance = new tc.default({ defaultTtl: ttl })
+    try {
+        if (!cachePromise) {
+            cachePromise = import('timed-cache')
+            .then(tc => new tc.default({ defaultTtl: ttl }))
+            .finally(() => {
+                cachePromise = null
+                release()
+            })
         }
-        catch (e) {
-            cacheInstance = null
-            console.error(e)
-        } finally {
-            release()
-        }
+    } catch (e) {
+        release()
+        console.error(e)
     }
-
-    return cacheInstance
+    
+    return cachePromise
 }
 
 class Map {
