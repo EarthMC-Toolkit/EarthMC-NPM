@@ -19,6 +19,8 @@ module.exports = class OfficialAPI {
         if (!name) return
 
         const res = await endpoint.townyData(`residents/${name}?${genRandomString()}`)
+        if (!res) return {}
+
         let obj = {
             online: res.status?.isOnline ?? false,
             balance: res.stats?.balance ?? 0
@@ -30,8 +32,8 @@ module.exports = class OfficialAPI {
         if (res.strings?.surname) obj.surname = res.strings.surname
 
         const affiliation = res.affiliation
-        if (affiliation.town) obj.town = affiliation.town
-        if (affiliation.nation) obj.nation = affiliation.nation
+        if (affiliation?.town) obj.town = affiliation.town
+        if (affiliation?.nation) obj.nation = affiliation.nation
 
         if (res.ranks?.townRanks) obj.townRanks = res.ranks.townRanks
         if (res.ranks?.nationRanks) obj.nationRanks = res.ranks.nationRanks
@@ -59,15 +61,17 @@ module.exports = class OfficialAPI {
         const town = await endpoint.townyData(`towns/${name}?${genRandomString()}`)
         let obj = {}
 
-        if (town.founder) obj.founder = town.founder
-        if (town.stats) obj.stats = town.stats
-        if (town.ranks) obj.ranks = town.ranks
-
-        if (town.timestamps?.registered) 
-            obj.created = town.timestamps.registered
-
-        if (town.timestamps?.joinedNationAt)
-            obj.joinedNation = town.timestamps.joinedNationAt
+        if (town) {
+            if (town.founder) obj.founder = town.founder
+            if (town.stats) obj.stats = town.stats
+            if (town.ranks) obj.ranks = town.ranks
+    
+            if (town.timestamps?.registered) 
+                obj.created = town.timestamps.registered
+    
+            if (town.timestamps?.joinedNationAt)
+                obj.joinedNation = town.timestamps.joinedNationAt
+        }
 
         return obj
     }
@@ -78,11 +82,13 @@ module.exports = class OfficialAPI {
         const nation = await endpoint.townyData(`nations/${name}?${genRandomString()}`)
         let obj = {}
 
-        if (nation.stats) obj.stats = nation.stats
-        if (nation.ranks) obj.ranks = nation.ranks
-
-        if (nation.timestamps?.registered) 
-            obj.created = nation.timestamps.registered
+        if (nation) {
+            if (nation.stats) obj.stats = nation.stats
+            if (nation.ranks) obj.ranks = nation.ranks
+    
+            if (nation.timestamps?.registered) 
+                obj.created = nation.timestamps.registered
+        }
 
         return obj
     }
