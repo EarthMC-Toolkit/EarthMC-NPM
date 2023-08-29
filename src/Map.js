@@ -499,9 +499,8 @@ class GPS extends mitt {
         }
     }
 
-    constructor(map = "aurora") {
+    constructor(map) {
         super()
-
         this.map = map
     }
 
