@@ -78,6 +78,9 @@ const euclidean = (x1, z1, x2, z2) =>
     Math.sqrt(Math.pow(x2 - x1, 2) + 
     Math.pow(z2 - z1, 2))
 
+// Used as alternative to `!` as it considers 0 to be falsy.
+const strictFalsy = val => val === undefined || val === null
+
 module.exports = {
     sqr,
     range,
@@ -92,5 +95,6 @@ module.exports = {
     getAveragePos,
     averageNationPos,
     euclidean, 
-    manhattan
+    manhattan,
+    strictFalsy
 }

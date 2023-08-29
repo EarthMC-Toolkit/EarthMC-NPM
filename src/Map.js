@@ -459,7 +459,7 @@ class Map {
     }
 
     withinBounds = async (loc = { x, z }, bounds) => {
-        if (this.#strictFalsy(loc.x) || this.#strictFalsy(loc.z)) {
+        if (fn.strictFalsy(loc.x) || fn.strictFalsy(loc.z)) {
             const obj = JSON.stringify(loc)
             throw new ReferenceError(`(withinBounds) - Invalid location:\n${obj}`)
         }
@@ -473,9 +473,6 @@ class Map {
 
         return withinX && withinZ
     }
-
-    // Used as alternative to `!` as it considers 0 to be falsy.
-    #strictFalsy = val => val === undefined || val === null
 }
 
 module.exports = Map

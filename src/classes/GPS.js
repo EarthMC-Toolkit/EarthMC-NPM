@@ -1,4 +1,5 @@
 const mitt = require('mitt')
+const fn = require('../../utils/functions')
 
 class GPS extends mitt {
     map = null
@@ -51,22 +52,31 @@ class GPS extends mitt {
                         return
                     }
                     
-                    const routeInfo = await this.findRoute(this.lastLoc, route)
-                    this.emit('underground', { 
-                        lastLocation: this.lastLoc, 
-                        routeInfo: routeInfo
-                    })
+                    try {
+                        const routeInfo = await this.findRoute(this.lastLoc, route)
+                        this.emit('underground', { 
+                            lastLocation: this.lastLoc, 
+                            routeInfo: routeInfo
+                        })
+                    } catch(e) {
+                        this.emit('error', { err: "INVALID_LAST_LOC", msg: e.message })
+                    }
                 }
             }
             else {
                 this.lastLoc = { x: player.x, z: player.z }
 
-                const routeInfo = await this.findRoute({
-                    x: player.x,
-                    z: player.z,
-                }, route)
-    
-                this.emit('locationUpdate', routeInfo)
+                try {
+                    const routeInfo = await this.findRoute({
+                        x: player.x,
+                        z: player.z,
+                    }, route)
+        
+                    this.emit('locationUpdate', routeInfo)
+                }
+                catch(e) {
+                    this.emit('error', { err: "INVALID_LOC", msg: e.message })
+                }
             }
         }, interval)
 
@@ -89,12 +99,12 @@ class GPS extends mitt {
 
     findRoute = async function(loc, options = GPS.Route.FASTEST) {
         // Cannot use `!` as it considers 0 to be falsy.
-        const xValid = loc.x === undefined || loc.z === null
-        const zValid = loc.z === undefined || loc.z === null
+        const xValid = fn.strictFalsy(loc.x)
+        const zValid = fn.strictFalsy(loc.z)
 
         if (xValid || zValid) {
             const obj = JSON.stringify(loc)
-            throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
+            throw new ReferenceError(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
         }
 
         // Scan all nations for closest match.
