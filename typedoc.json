@@ -1,0 +1,13 @@
+{
+    "tsconfig": "./tsconfig.json",
+    "entryPoints": ["./src"],
+    "entryPointStrategy": "expand",
+    "out": "docs",
+    "theme": "hierarchy",
+    "excludePrivate": true,
+    "hideGenerator": true,
+    "plugin": ["typedoc-theme-hierarchy"],
+    "gitRevision": "main",
+    "readme": "./README.md",
+    "name": "EarthMC-NPM"
+}

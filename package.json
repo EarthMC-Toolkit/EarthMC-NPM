@@ -1,32 +1,51 @@
 {
   "name": "earthmc",
-  "version": "7.4.7",
-  "description": "Provides data about people, places and more on the Minecraft server 'EarthMC'.",
+  "version": "8.0.0",
+  "description": "An unofficial EarthMC library providing handy methods and extensive info.",
   "keywords": [
     "earth",
+    "earthmc",
+    "dynmap",
+    "towny",
     "minecraft",
-    "emc",
-    "EarthMC",
-    "Dynmap"
+    "geopolitics"
   ],
-  "main": "src/main.js",
-  "browser": "./dist/bundle.js",
+  "type": "module",
+  "types": "./dist/main.d.ts",
+  "exports": {
+    "import": "./dist/main.js",
+    "require": "./dist/main.cjs",
+    "default": "./dist/main.cjs"
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md",
+    "package.json",
+    "endpoints.json"
+  ],
   "scripts": {
-    "build": "npx webpack",
-    "test": "pnpm run build && node src/test.js",
-    "test:nobuild": "node src/test.js",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "npm run ci",
+    "ci": "pnpm run lint && pnpm run test && pnpm run build",
+    "lint": "npx eslint .",
+    "clean": "rimraf dist",
+    "build": "npm run clean && rollup -c && tsc --declaration true --emitDeclarationOnly true --declarationMap && npm run docs",
+    "docs": "npx typedoc --options typedoc.json",
+    "test": "vitest run --config ./vitest.config.ts",
+    "test-browser": "vitest run --browser.name=chrome --browser.headless --config ./vitest.config.ts"
   },
   "author": "Owen77Stubbs",
   "license": "ISC",
   "dependencies": {
     "async-mutex": "^0.4.0",
-    "diacritic": "0.0.2",
     "mitt": "^3.0.1",
+    "modern-diacritics": "^2.3.1",
     "mojang-lib": "^1.12.1",
     "striptags": "3.2.0",
     "timed-cache": "^2.0.0",
-    "undici-shim": "^1.5.1"
+    "tslib": "^2.6.2",
+    "undici-shim": "^1.5.2"
   },
   "engines": {
     "node": ">=16.8.0"
@@ -38,17 +57,24 @@
   "homepage": "https://emctoolkit.vercel.app/docs/npm",
   "funding": "https://github.com/sponsors/Owen3H",
   "devDependencies": {
-    "@babel/core": "^7.21.3",
-    "@babel/preset-env": "^7.20.2",
-    "babel-loader": "^9.1.2",
-    "bthreads": "^0.5.1",
-    "core-js": "^3.29.1",
-    "diagnostics_channel": "^1.1.0",
-    "fetch-ponyfill": "^7.1.0",
-    "net-websocket-polyfill": "^0.1.1-r3",
-    "node-polyfill-webpack-plugin": "^2.0.1",
-    "webpack": "^5.77.0",
-    "webpack-bundle-analyzer": "^4.9.0",
-    "webpack-cli": "^5.0.1"
+    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.2.1",
+    "@types/node": "^20.5.7",
+    "@types/timed-cache": "^2.0.1",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "@vitest/browser": "^0.34.3",
+    "eslint": "^8.48.0",
+    "rimraf": "^5.0.1",
+    "rollup": "^3.28.1",
+    "rollup-plugin-esbuild": "^5.0.0",
+    "rollup-plugin-polyfill-node": "^0.12.0",
+    "rollup-plugin-typescript-paths": "^1.4.0",
+    "typedoc": "latest",
+    "typedoc-theme-hierarchy": "latest",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.3",
+    "webdriverio": "^8.16.3"
   }
 }

@@ -1,0 +1,36 @@
+import { describe, it, expect, expectTypeOf, assertType } from 'vitest'
+import { Resident } from '../src/types'
+
+import { 
+    Map
+} from '../src/main'
+
+describe('Residents', () => {
+    it('can get all residents', async () => {
+        const residents = await globalThis.Aurora.Residents.all()
+        assertType<Resident[]>(residents)
+    })
+
+    it('can get single resident without error', async () => {
+        const resident = await globalThis.Aurora.Residents.get('owen3h')
+
+        expect(resident).toBeDefined()
+        expectTypeOf(resident).not.toEqualTypeOf<Error>()
+        assertType<Resident | Resident[]>(resident)
+
+        expect(resident.name).toBe("Owen3H")
+        expect(resident.rank).toBe("Resident")
+        expect(resident.timestamps).toBeDefined()
+        expect(resident.timestamps.registered).toEqual(1659309285893)
+    })
+
+    it('should return different resident info on Aurora and Nova', async () => {
+        const Nova = new Map('nova')
+        const [novaRes, auroraRes] = await Promise.all([
+            Nova.Residents.get('3meraldK'), 
+            globalThis.Aurora.Residents.get('3meraldK')
+        ]) as Resident[]
+
+        expect(auroraRes.town).not.toBe(novaRes.town)
+    })
+})

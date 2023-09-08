@@ -1,0 +1,5 @@
+dist/
+src/tests/
+node_modules/
+vite.config.ts
+/docs

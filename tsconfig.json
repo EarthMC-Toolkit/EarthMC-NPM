@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "moduleDetection": "force",
+        "target": "ES2017",
+        "outDir": "dist",
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "importHelpers": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "types": ["node"],
+        "baseUrl": ".",
+        "paths": {
+            "tslib": ["node_modules/tslib/tslib.d.ts"]
+        }
+    },
+    "include": ["src", "endpoints.json"],
+    "exclude": ["node_modules", "docs", "tests", "dist"]
+}

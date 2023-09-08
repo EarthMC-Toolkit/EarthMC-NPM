@@ -8,7 +8,7 @@ pnpm add earthmc
 ```
 
 ## Basic Usage
-View the full documentation [here](https://emctoolkit.vercel.app/docs/npm).
+View the full documentation [here](https://earthmc-toolkit.github.io/EarthMC-NPM/).
 
 ### Node
 ```js
@@ -23,7 +23,7 @@ console.log(towns.length)
 ```js
 <button onclick="townAmount()">Show town amount</button>
 
-<script src="https://unpkg.com/earthmc@7.4.0/dist/bundle.js"></script>
+<script src="https://unpkg.com/earthmc@latest/dist/bundle.js"></script>
 <script>
 window.townAmount = async function() {
   try {
