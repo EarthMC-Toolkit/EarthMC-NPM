@@ -2,46 +2,50 @@ import { editPlayerProps } from '../utils/functions.js'
 import * as endpoint from '../utils/endpoint.js'
 
 import { Mutex } from 'async-mutex'
-import Cache from 'timed-cache'
 import { MapResponse, ValidMapName } from '../types.js'
 
 class DataHandler {
     #isNode = true
-    #cache: any = null
+    #cache: any
 
     #map: ValidMapName
+
+    #cacheLock: Mutex
 
     constructor(mapName: ValidMapName) {
         this.#map = mapName
         this.#isNode = globalThis.process?.release?.name == 'node'
+
+        this.#cacheLock = new Mutex()
     }
 
-    static createCache = async (ttl = 120*1000) =>{
-        const cacheLock = new Mutex()
-        const release = await cacheLock.acquire()
-    
+    private createCache = async (ttl = 120*1000) => {
+        const release = await this.#cacheLock.acquire()
+        let cacheInstance = null
+
         try {
-            // @ts-expect-error
-            return new Cache({ defaultTtl: ttl })
-        } 
-        catch (e) {
+            //@ts-expect-error 
+            cacheInstance = import('timed-cache').then(tc => new tc.default({ defaultTtl: ttl }))
+        } catch (e) {
             console.error(e)
         } finally {
             release()
         }
-    }
 
+        return cacheInstance
+    }
+    
     readonly handle = (key: string) => this.#cache?.cache[`__cache__${key}`]?.handle
     readonly mapData = async () => {
         if (!this.#cache)
-            this.#cache = await DataHandler.createCache()
+            this.#cache = await this.createCache()
 
         if (this.#isNode)
             this.handle('mapData')?.ref()
 
         let md: MapResponse | null = null
-        const cached = this.getFromCache('mapData')
 
+        const cached = this.getFromCache('mapData')
         if (!cached) {
             md = await endpoint.mapData(this.#map)
 

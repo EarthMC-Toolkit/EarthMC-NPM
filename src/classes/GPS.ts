@@ -25,7 +25,7 @@ class GPS extends Mitt {
         this.map = map
     }
 
-    getPlayer = async (name: string) => {
+    readonly getPlayer = async (name: string) => {
         const player = await this.map.Players.get(name)
         return player
     }

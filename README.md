@@ -1,4 +1,4 @@
-# [**EarthMC-NPM**](https://emctoolkit.vercel.app/docs/npm)
+# [**EarthMC-NPM**](https://www.npmjs.com/package/earthmc)
 An **unofficial** wrapper library for interacting with the [EarthMC Dynmap](https://earthmc.net/map/aurora/) API.<br>
 This package is part of the [EarthMC Toolkit](https://emctoolkit.vercel.app) and provides extensive info on people, places and more.
 
@@ -8,7 +8,7 @@ pnpm add earthmc
 ```
 
 ## Basic Usage
-View the full documentation [here](https://earthmc-toolkit.github.io/EarthMC-NPM/).
+View the full documentation [here](https://emctoolkit.vercel.app).
 
 ### Node
 ```js
@@ -23,11 +23,13 @@ console.log(towns.length)
 ```js
 <button onclick="townAmount()">Show town amount</button>
 
-<script src="https://unpkg.com/earthmc@latest/dist/bundle.js"></script>
+<script type="module" src="https://unpkg.com/earthmc@latest/dist/main.js"></script>
 <script>
+import { Aurora } from 'earthmc'
+
 window.townAmount = async function() {
   try {
-    const towns = await earthmc.Aurora.Towns.all()
+    const towns = await Aurora.Towns.all()
     alert(towns.length)
   }
   catch(e) {

@@ -1,16 +1,26 @@
 import mitt from 'mitt'
 
 export default class Mitt {
-    on: any
-    emit: any
-    off: any
+    _on: any
+    get on() {
+        return this._on
+    }
+
+    _off: any
+
+    get off() {
+        return this._off
+    }
+
+    protected emit: any
+
     constructor() {
         // @ts-expect-error
         const emitter = mitt()
   
         Object.keys(emitter).forEach(() => {
-            this.on = emitter['on']
-            this.off = emitter['off']
+            this._on = emitter['on']
+            this._off = emitter['off']
             this.emit = emitter['emit']
         })
     }
