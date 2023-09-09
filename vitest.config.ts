@@ -3,7 +3,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   test: {
-    slowTestThreshold: 10000,
+    testTimeout: 6000,
     globals: true,
     watch: false,
     setupFiles: ["./tests/setup.ts"]
