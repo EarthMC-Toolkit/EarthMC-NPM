@@ -6,7 +6,9 @@ export default defineConfig({
     testTimeout: 6000,
     globals: true,
     watch: false,
-    setupFiles: ["./tests/setup.ts"]
+    setupFiles: ["./tests/setup.ts"],
+    reporters: 'verbose',
+    threads: false
   },
   resolve: {
     alias: {
