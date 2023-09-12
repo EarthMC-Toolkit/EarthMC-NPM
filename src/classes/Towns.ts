@@ -53,9 +53,7 @@ class Towns implements Base {
             throw new ReferenceError('No areas found on markerset!')
         }
 
-        cachedTowns = []
-
-        const townsArray = [], 
+        const townsArray: Town[] = [], 
               townData = Object.keys(markerset.areas).map(key => markerset.areas[key]), 
               len = townData.length
 
@@ -119,18 +117,29 @@ class Towns implements Base {
             townsArray.push(currentTown)
         }
 
+        //#region Remove duplicates & add to area
         const temp: Record<string, Town> = {}
 
-        //#region Remove duplicates & add to area
-        townsArray.forEach(a => {
-            const name = a.name
+        // townsArray.forEach(a => {
+        //     const name = a.name
         
-            if (temp[name]) temp[name].area += a.area
-            else {    
-                temp[name] = a
-                cachedTowns.push(temp[name])
-            }
-        }, {})
+        //     if (temp[name]) temp[name].area += a.area
+        //     else {    
+        //         temp[name] = a
+        //         cachedTowns.push(temp[name])
+        //     }
+        // }, {})
+
+        const townsArrLen = townsArray.length
+        for (let i = 0; i < townsArrLen; i++) {
+            const town = townsArray[i]
+            const name = town.name
+            
+            if (temp[name]) temp[name].area += town.area
+            else temp[name] = town
+        }
+
+        cachedTowns = Object.values(temp)
         //#endregion
 
         if (cachedTowns.length > 0) {
