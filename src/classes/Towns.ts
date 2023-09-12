@@ -120,26 +120,17 @@ class Towns implements Base {
         //#region Remove duplicates & add to area
         const temp: Record<string, Town> = {}
 
-        // townsArray.forEach(a => {
-        //     const name = a.name
-        
-        //     if (temp[name]) temp[name].area += a.area
-        //     else {    
-        //         temp[name] = a
-        //         cachedTowns.push(temp[name])
-        //     }
-        // }, {})
-
         const townsArrLen = townsArray.length
         for (let i = 0; i < townsArrLen; i++) {
             const town = townsArray[i]
             const name = town.name
             
             if (temp[name]) temp[name].area += town.area
-            else temp[name] = town
+            else {
+                temp[name] = town
+                cachedTowns.push(town)
+            }
         }
-
-        cachedTowns = Object.values(temp)
         //#endregion
 
         if (cachedTowns.length > 0) {
