@@ -1,5 +1,5 @@
 dist/
-src/tests/
+tests/
 node_modules/
 vite.config.ts
 /docs
