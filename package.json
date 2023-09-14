@@ -2,14 +2,6 @@
   "name": "earthmc",
   "version": "8.0.1",
   "description": "An unofficial EarthMC library providing handy methods and extensive info.",
-  "keywords": [
-    "earth",
-    "earthmc",
-    "dynmap",
-    "towny",
-    "minecraft",
-    "geopolitics"
-  ],
   "type": "module",
   "types": "./dist/main.d.ts",
   "exports": {
@@ -17,14 +9,6 @@
     "require": "./dist/main.cjs",
     "default": "./dist/main.cjs"
   },
-  "files": [
-    "dist",
-    "src",
-    "LICENSE",
-    "README.md",
-    "package.json",
-    "endpoints.json"
-  ],
   "scripts": {
     "prepublishOnly": "npm run ci",
     "ci": "pnpm run lint && pnpm run test && pnpm run build",
@@ -35,8 +19,33 @@
     "test": "vitest run --config ./vitest.config.ts",
     "test-browser": "vitest run --browser.name=chrome --browser.headless --config ./vitest.config.ts"
   },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md",
+    "package.json",
+    "endpoints.json"
+  ],
+  "keywords": [
+    "earth",
+    "earthmc",
+    "dynmap",
+    "towny",
+    "minecraft",
+    "geopolitics"
+  ],
   "author": "Owen77Stubbs",
   "license": "ISC",
+  "engines": {
+    "node": ">=16.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EarthMC-Toolkit/EarthMC-NPM.git"
+  },
+  "homepage": "https://emctoolkit.vercel.app/docs/npm",
+  "funding": "https://github.com/sponsors/Owen3H",
   "dependencies": {
     "async-mutex": "^0.4.0",
     "mitt": "^3.0.1",
@@ -47,15 +56,6 @@
     "tslib": "^2.6.2",
     "undici-shim": "^1.5.2"
   },
-  "engines": {
-    "node": ">=16.8.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/EarthMC-Toolkit/EarthMC-NPM.git"
-  },
-  "homepage": "https://emctoolkit.vercel.app/docs/npm",
-  "funding": "https://github.com/sponsors/Owen3H",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-json": "^6.0.0",
