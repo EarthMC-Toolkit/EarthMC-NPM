@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config'
-import { resolve } from 'path'
 
 export default defineConfig({
   test: {
@@ -9,15 +8,5 @@ export default defineConfig({
     setupFiles: ["./tests/setup.ts"],
     reporters: 'verbose',
     threads: false
-  },
-  resolve: {
-    alias: {
-      'classes': resolve(__dirname, './src/classes'),
-      'oapi': resolve(__dirname, "./src/classes/OAPI"),
-      'types': resolve(__dirname, './src/types/index'),
-      'fn': resolve(__dirname, './src/utils/functions'),
-      'endpoint': resolve(__dirname, './src/utils/endpoint'),
-      'errors': resolve(__dirname, './src/utils/errors')
-    },
   }
 })
