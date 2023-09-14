@@ -119,6 +119,7 @@ class Towns implements Base {
 
         //#region Remove duplicates & add to area
         const temp: Record<string, Town> = {}
+        cachedTowns = []
 
         const townsArrLen = townsArray.length
         for (let i = 0; i < townsArrLen; i++) {
