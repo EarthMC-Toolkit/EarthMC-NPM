@@ -6,19 +6,19 @@ import { Map } from './Map.js'
 import * as endpoint from './utils/endpoint.js'
 import * as Errors from "./utils/errors.js"
 
-async function getServerData() {
-    const serverData = await MCAPI.servers.get("play.earthmc.net")
-    
+async function fetchServer(name = "play.earthmc.net") {
+    const server = await MCAPI.servers.get(name)
+
     return {
-        serverOnline: !!serverData,
-        online: serverData?.players?.online ?? 0,
-        max: serverData?.players?.max ?? 0
+        max: server?.players?.max ?? 0,
+        online: server?.players?.online ?? 0,
+        serverOnline: !!server
     }
 }
 
 async function getServerInfo() {
     try {
-        const serverData = await getServerData(),
+        const serverData = await fetchServer(),
               novaData = await endpoint.playerData("nova"),
               auroraData = await endpoint.playerData("aurora")
 
@@ -42,8 +42,10 @@ const Nova = new Map('nova')
 export { formatString } from './utils/functions.js'
 export {
     Errors,
+    MCAPI as MojangLib,
     OfficialAPI, 
-    endpoint, 
+    endpoint,
+    fetchServer,
     getServerInfo,
     Aurora, Nova,
     Map
