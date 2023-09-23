@@ -8,7 +8,7 @@ pnpm add earthmc
 ```
 
 ## Basic Usage
-View the full documentation [here](https://emctoolkit.vercel.app).
+View the full documentation [here](https://emctoolkit.vercel.app/docs/npm).
 
 ### Node
 ```js
