@@ -1,13 +1,19 @@
 import { Location } from '../types.js'
 
-export type ApiEntityRaw = {
-    status: EntityStatusRaw
-    stats: EntityStatsRaw
+type NestedOmit<T, K extends PropertyKey> = {
+    [P in keyof T as P extends K ? never : P]:
+    NestedOmit<T[P], K extends `${Exclude<P, symbol>}.${infer R}` ? R : never>
+} extends infer O ? { [P in keyof O]: O[P] } : never;
+
+//#region Raw, unparsed types
+export type RawEntity = {
+    status: RawEntityStatus
+    stats: RawEntityStats
     ranks?: { [key: string]: string[] }
     spawn?: Location
 }
 
-export type EntityStatusRaw = {
+export type RawEntityStatus = {
     isPublic: boolean
     isOpen: boolean
     isNeutral: boolean
@@ -17,7 +23,7 @@ export type EntityStatusRaw = {
     isOnline?: boolean 
 }
 
-export type EntityStatsRaw = {
+export type RawEntityStats = {
     maxTownBlocks?: number
     numTownBlocks?: number
     numResidents?: number
@@ -25,29 +31,29 @@ export type EntityStatsRaw = {
     balance: number
 }
 
-export type ResidentPermsRaw = {
+export type RawResidentPerms = {
     friend: boolean
     town: boolean
     ally: boolean
     outsider: boolean
 }
 
-export type TownPermsRaw = {
+export type RawTownPerms = {
     resident: boolean
     nation: boolean
     ally: boolean
     outsider: boolean
 }
 
-export type FlagPermsRaw = {
+export type RawFlagPerms = {
     pvp: boolean
     explosion: boolean
     fire: boolean
     mobs: boolean
 }
 
-export type EntityPermsRaw<PermsType> = {
-    flagPerms: FlagPermsRaw
+export type RawEntityPerms<PermsType> = {
+    flagPerms: RawFlagPerms
     rnaoPerms: {
         buildPerms: PermsType
         destroyPerms: PermsType
@@ -56,7 +62,7 @@ export type EntityPermsRaw<PermsType> = {
     }
 }
 
-export type ApiTownRaw = ApiEntityRaw & {
+export type RawTown = RawEntity & {
     strings: {
         town: string
         board: string
@@ -73,10 +79,10 @@ export type ApiTownRaw = ApiEntityRaw & {
     }
     home: Location
     residents: string[]
-    perms: EntityPermsRaw<TownPermsRaw>
+    perms: RawEntityPerms<RawTownPerms>
 }
 
-export type ApiNationRaw = ApiEntityRaw & {
+export type RawNation = RawEntity & {
     strings: {
         nation: string
         board: string
@@ -93,26 +99,26 @@ export type ApiNationRaw = ApiEntityRaw & {
     enemies: string[]
 }
 
-export type ApiResidentRaw = ApiEntityRaw & {
+export type RawResident = RawEntity & {
     strings: {
         title: string
         username: string
         surname: string
     }
-    affiliation?: {
-        town?: string
-        nation?: string
-    }
+    affiliation?: Partial<{
+        town: string
+        nation: string
+    }>
     timestamps?: {
         joinedTownAt?: number
         registered: number
         lastOnline: number
     }
-    perms: EntityPermsRaw<ResidentPermsRaw>
+    perms: RawEntityPerms<RawResidentPerms>
     friends: string[]
 }
 
-export type ServerInfoRaw = {
+export type RawServerInfo = {
     world: {
         hasStorm: boolean
         isThundering: boolean
@@ -132,3 +138,26 @@ export type ServerInfoRaw = {
         numTownBlocks: number
     }
 }
+//#endregion
+
+//#region Parsed
+export type OAPITown = NestedOmit<RawTown, 
+    "strings.town" | 
+    "strings.founder" |
+    "timestamps.registered" |
+    "timestamps.joinedNationAt"
+> & {
+    name: string
+    founder: string
+    created: number
+    joinedNation: number
+}
+
+export type OAPINation = Partial<RawEntity> & {
+    s
+}
+
+export type OAPIResident = Partial<RawEntity> & {
+    s
+}
+//#endregion

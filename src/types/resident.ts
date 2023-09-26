@@ -1,4 +1,4 @@
-import { FlagPermsRaw, ResidentPermsRaw } from '../types.js'
+import { RawFlagPerms, RawResidentPerms } from '../types.js'
 
 export type Resident = {
     name: string
@@ -23,11 +23,11 @@ export type ApiResident = {
     townRanks: ResidentRanks
     nationRanks: ResidentRanks
     perms?: {
-        build: ResidentPermsRaw
-        destroy: ResidentPermsRaw
-        switch: ResidentPermsRaw
-        itemUse: ResidentPermsRaw
-        flags: FlagPermsRaw
+        build: RawResidentPerms
+        destroy: RawResidentPerms
+        switch: RawResidentPerms
+        itemUse: RawResidentPerms
+        flags: RawFlagPerms
     }
     friends?: string[]
 }

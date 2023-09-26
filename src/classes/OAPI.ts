@@ -1,22 +1,23 @@
 import {
-    ApiTownRaw,
-    ApiNationRaw, 
-    ApiResidentRaw,
+    RawTown,
+    RawNation, 
+    RawResident,
     ApiResident,
-    ServerInfoRaw
+    RawServerInfo,
+    OAPITown
 } from '../types.js'
 
 import { townyData } from '../utils/endpoint.js'
 import { FetchError } from '../utils/errors.js'
 
 class OfficialAPI {
-    static serverInfo = async () => await townyData('', 'v2') as ServerInfoRaw
+    static serverInfo = async () => await townyData('', 'v2') as RawServerInfo
 
     static resident = async (name: string) => {
         // TODO: Properly handle this case and implement an error.
         if (!name) return
 
-        const res = await townyData(`/residents/${name}`) as ApiResidentRaw
+        const res = await townyData(`/residents/${name}`) as RawResident
         if (!res) throw new FetchError(`Could not fetch resident '${name}'. Received invalid response.`)
 
         const obj: any = {
@@ -56,28 +57,23 @@ class OfficialAPI {
     static town = async (name: string) => {
         if (!name) return
 
-        const town = await townyData(`/towns/${name}`) as ApiTownRaw
-        const obj: any = {}
+        const town = await townyData(`/towns/${name}`) as RawTown
 
-        if (town) {
-            if (town.strings.founder) obj.founder = town.strings.founder
-            if (town.stats) obj.stats = town.stats
-            if (town.ranks) obj.ranks = town.ranks
-    
-            if (town.timestamps?.registered) 
-                obj.created = town.timestamps.registered
-    
-            if (town.timestamps?.joinedNationAt)
-                obj.joinedNation = town.timestamps.joinedNationAt
-        }
+        // TODO: Implement a proper error
+        if (!town) return 
 
-        return obj
+        return {
+            name: town.strings.town,
+            founder: town.strings.founder,
+            created: town.timestamps?.registered,
+            joinedNation: town.timestamps?.joinedNationAt
+        } as OAPITown
     }
 
     static nation = async (name: string) => {
         if (!name) return
 
-        const nation = await townyData(`/nations/${name}`) as ApiNationRaw
+        const nation = await townyData(`/nations/${name}`) as RawNation
         const obj: any = {}
 
         if (nation) {
