@@ -23,6 +23,19 @@
         "semi": ["error", "never"],
         "no-unreachable": ["error"],
         "no-unexpected-multiline": ["error"],
-        "prefer-const": "warn"
+        "prefer-const": "warn",
+        "no-self-compare": "error",
+        "no-sparse-arrays": "error",
+        "spaced-comment": ["warn", "always", { 
+            "markers": [
+                "#region",
+                "#endregion",
+                "@ts-expect-error"
+            ] 
+        }],
+        "comma-spacing": 2,
+        "comma-style": 2,
+        "comma-dangle": ["error", "never"],
+        "camelcase": 2
     }
 }

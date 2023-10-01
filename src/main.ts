@@ -30,8 +30,7 @@ async function getServerInfo() {
         const queue = online < 1 ? 0 : online - auroraCount - novaCount
 
         return { queue, ...serverInfo }
-    }
-    catch (err: unknown) {
+    } catch (err: unknown) {
         throw new Errors.FetchError(`Error fetching server info!\n${err}`)
     }
 }

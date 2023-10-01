@@ -66,19 +66,18 @@ class GPS extends Mitt {
                         this.emit('error', { err: "INVALID_LAST_LOC", msg: e.message })
                     }
                 }
-            }
+            } 
             else {
                 this.lastLoc = { x: player.x, z: player.z }
 
                 try {
                     const routeInfo = await this.findRoute({
                         x: player.x,
-                        z: player.z,
+                        z: player.z
                     }, route)
         
                     this.emit('locationUpdate', routeInfo)
-                }
-                catch(e: any) {
+                } catch(e: any) {
                     this.emit('error', { err: "INVALID_LOC", msg: e.message })
                 }
             }

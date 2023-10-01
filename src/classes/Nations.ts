@@ -105,8 +105,12 @@ class Nations implements Base {
     }
 
     readonly joinable = async (townName: string, nationless = true): Promise<Nation[] | FetchError> => {
-        const town = await this.map.Towns.get(townName)
-        if (!town || town == "That town does not exist!") return town
+        let town = null
+        try {
+            town = await this.map.Towns.get(townName)
+        } catch (ignore) {
+            return new FetchError(`Specified town '${townName}' does not exist!`)
+        }
 
         const nations = await this.all(this.map.getFromCache('towns'))
         if (!nations) return new FetchError('Error fetching nations! Please try again.')
