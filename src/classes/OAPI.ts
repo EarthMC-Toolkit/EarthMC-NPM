@@ -2,9 +2,10 @@ import {
     RawTown,
     RawNation, 
     RawResident,
-    ApiResident,
     RawServerInfo,
-    OAPITown
+    OAPITown,
+    OAPIResident,
+    OAPINation
 } from '../types.js'
 
 import { townyData } from '../utils/endpoint.js'
@@ -20,10 +21,12 @@ class OfficialAPI {
         const res = await townyData(`/residents/${name}`) as RawResident
         if (!res) throw new FetchError(`Could not fetch resident '${name}'. Received invalid response.`)
 
-        const obj: any = {
-            online: res.status?.isOnline ?? false,
-            balance: res.stats?.balance ?? 0
-        }
+        const obj: any = {}
+        if (res.status?.isOnline) 
+            obj.online = res.status.isOnline
+
+        if (res.stats?.balance) 
+            obj.balance = res.stats.balance
 
         if (res.timestamps) obj.timestamps = res.timestamps
         if (res.strings?.username) obj.name = res.strings.username
@@ -50,23 +53,21 @@ class OfficialAPI {
             }
         }
 
-        obj.friends = res.friends || []
-        return obj as ApiResident
+        return obj as OAPIResident
     }
 
     static town = async (name: string) => {
         if (!name) return
 
         const town = await townyData(`/towns/${name}`) as RawTown
-
-        // TODO: Implement a proper error
-        if (!town) return 
+        if (!town) return // TODO: Implement a proper error
 
         return {
             name: town.strings.town,
             founder: town.strings.founder,
             created: town.timestamps?.registered,
-            joinedNation: town.timestamps?.joinedNationAt
+            joinedNation: town.timestamps?.joinedNationAt,
+            ...town
         } as OAPITown
     }
 
@@ -74,17 +75,12 @@ class OfficialAPI {
         if (!name) return
 
         const nation = await townyData(`/nations/${name}`) as RawNation
-        const obj: any = {}
+        if (!nation) return // TODO: Implement a proper error
 
-        if (nation) {
-            if (nation.stats) obj.stats = nation.stats
-            if (nation.ranks) obj.ranks = nation.ranks
-    
-            if (nation.timestamps?.registered) 
-                obj.created = nation.timestamps.registered
-        }
-
-        return obj
+        return {
+            name: nation.strings.nation,
+            created: nation.timestamps.registered
+        } as OAPINation
     }
 }
 

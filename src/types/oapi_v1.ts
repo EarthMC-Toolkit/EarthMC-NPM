@@ -5,6 +5,55 @@ type NestedOmit<T, K extends PropertyKey> = {
     NestedOmit<T[P], K extends `${Exclude<P, symbol>}.${infer R}` ? R : never>
 } extends infer O ? { [P in keyof O]: O[P] } : never;
 
+//#region Parsed
+export type OAPITown = NestedOmit<RawTown, 
+    "strings.town" | 
+    "strings.founder" |
+    "timestamps.registered" |
+    "timestamps"
+> & {
+    name: string
+    founder: string
+    created: number
+    joinedNation: number
+}
+
+export type OAPINation = NestedOmit<RawNation,
+    "strings.nation" |
+    "timestamps"
+> & {
+    name: string
+    created: number
+}
+
+export type OAPIResident = NestedOmit<RawResident, 
+    "strings" |
+    "affiliation" |
+    "ranks" |
+    "perms" |
+    "status" |
+    "stats"
+> & {
+    name: string
+    title?: string
+    surname?: string
+    town?: string
+    nation?: string
+    townRanks: string[]
+    nationRanks: string[]
+    timestamps: Timestamps
+    perms?: {
+        build: RawResidentPerms
+        destroy: RawResidentPerms
+        switch: RawResidentPerms
+        itemUse: RawResidentPerms
+        flags: RawFlagPerms
+    }
+    online: boolean
+    balance: number
+}
+//#endregion
+
 //#region Raw, unparsed types
 export type RawEntity = {
     status: RawEntityStatus
@@ -99,6 +148,12 @@ export type RawNation = RawEntity & {
     enemies: string[]
 }
 
+export type Timestamps = {
+    joinedTownAt?: number
+    registered: number
+    lastOnline?: number
+}
+
 export type RawResident = RawEntity & {
     strings: {
         title: string
@@ -109,11 +164,7 @@ export type RawResident = RawEntity & {
         town: string
         nation: string
     }>
-    timestamps?: {
-        joinedTownAt?: number
-        registered: number
-        lastOnline: number
-    }
+    timestamps?: Timestamps
     perms: RawEntityPerms<RawResidentPerms>
     friends: string[]
 }
@@ -137,27 +188,5 @@ export type RawServerInfo = {
         numNations: number
         numTownBlocks: number
     }
-}
-//#endregion
-
-//#region Parsed
-export type OAPITown = NestedOmit<RawTown, 
-    "strings.town" | 
-    "strings.founder" |
-    "timestamps.registered" |
-    "timestamps.joinedNationAt"
-> & {
-    name: string
-    founder: string
-    created: number
-    joinedNation: number
-}
-
-export type OAPINation = Partial<RawEntity> & {
-    s
-}
-
-export type OAPIResident = Partial<RawEntity> & {
-    s
 }
 //#endregion

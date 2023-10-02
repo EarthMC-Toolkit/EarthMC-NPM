@@ -26,7 +26,7 @@ class Nations implements Base {
         const nations = await this.all()
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
     
-        const existing = fn.getExisting(nations, nationList, 'name') as Nation | Nation[]
+        const existing = fn.getExisting(nations, nationList, 'name') as Nation[] | Nation
         const isArr = existing instanceof Array
 
         return isArr ? 

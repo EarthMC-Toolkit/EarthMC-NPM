@@ -5,10 +5,12 @@ export type Nation = {
     residents: string[]
     area: number
     wiki?: string
-    capital: {
-        name: string
-        x: number
-        z: number
-    }
+    capital: NationCapital
     stats: unknown
+}
+
+export type NationCapital = {
+    name: string
+    x: number
+    z: number
 }
