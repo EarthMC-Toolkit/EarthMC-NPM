@@ -4,7 +4,7 @@ export type MapResponse = {
     timestamp: number
     sets: {
         markers: Markerset
-        'worldborder.markerset': Markerset
+        'chunky.markerset': Markerset
         'townyPlugin.markerset': Markerset
     }
 }
