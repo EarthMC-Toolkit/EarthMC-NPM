@@ -5,17 +5,28 @@ type NestedOmit<T, K extends PropertyKey> = {
     NestedOmit<T[P], K extends `${Exclude<P, symbol>}.${infer R}` ? R : never>
 } extends infer O ? { [P in keyof O]: O[P] } : never;
 
+export type ValidateShape<T, Shape> = T extends Shape ? Exclude<keyof T, keyof Shape> extends never ? T : never : never;
+
 //#region Parsed
 export type OAPITown = NestedOmit<RawTown, 
     "strings.town" | 
     "strings.founder" |
-    "timestamps.registered" |
-    "timestamps"
+    "timestamps" |
+    "perms.rnaoPerms" |
+    "perms.flagPerms"
 > & {
     name: string
+    nation: string
     founder: string
     created: number
     joinedNation: number
+    perms: {
+        build: RawTownPerms
+        destroy: RawTownPerms
+        switch: RawTownPerms
+        itemUse: RawTownPerms
+        flags: RawFlagPerms
+    }
 }
 
 export type OAPINation = NestedOmit<RawNation,

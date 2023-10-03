@@ -4,7 +4,7 @@ import {
 } from 'vitest'
 
 import { OfficialAPI } from '../src/main'
-import { OAPINation, OAPIResident, RawServerInfo } from '../src/types'
+import { OAPINation, OAPIResident, OAPITown, RawServerInfo } from '../src/types'
 
 describe('OfficialAPI', async () => {
     it('can get valid towny/server info (v2)', async () => {
@@ -39,6 +39,16 @@ describe('OfficialAPI', async () => {
         assertType<OAPINation>(nation)
 
         expect(nation.name).toBe("Venice")
-        console.log(nation)
+        //console.log(nation)
+    })
+
+    it('can get valid nation (v1)', async () => {
+        const town = await OfficialAPI.town('venice')
+
+        expect(town).toBeDefined()
+        assertType<OAPITown>(town)
+
+        expect(town.name).toBe("Venice")
+        console.log(town)
     })
 })

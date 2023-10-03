@@ -14,11 +14,11 @@ class Nations implements Base {
     }
 
     /** @internal */
-    private mergeIfAurora = async (nation: Nation) => {
+    private mergeIfAurora = async (nation: any) => {
         if (this.map.name === 'aurora') {
             return { ...nation, ...await OfficialAPI.nation(nation.name) }
         }
-
+ 
         return nation
     }
 
@@ -29,9 +29,11 @@ class Nations implements Base {
         const existing = fn.getExisting(nations, nationList, 'name') as Nation[] | Nation
         const isArr = existing instanceof Array
 
-        return isArr ? 
-            Promise.all(existing.map(async n => await this.mergeIfAurora(n))) : 
-            Promise.resolve(await this.mergeIfAurora(existing))
+        if (isArr) {
+            return await Promise.all(existing.map(async n => await this.mergeIfAurora(n))) 
+        }
+        
+        return await Promise.resolve(await this.mergeIfAurora(existing))
     }
 
     readonly all = async (towns?: Town[]) => {

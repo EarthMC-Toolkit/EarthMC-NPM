@@ -24,7 +24,7 @@ class Towns implements Base {
     }
 
     /** @internal */
-    private mergeIfAurora = async (town: Town) => {
+    private mergeIfAurora = async (town: any) => {
         if (this.map.name === 'aurora') {
             return { ...town, ...await OfficialAPI.town(town.name) }
         }

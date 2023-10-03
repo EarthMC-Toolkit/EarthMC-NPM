@@ -22,7 +22,7 @@ class Residents implements Base {
     }
     
     /** @internal */
-    private mergeIfAurora = async (res: Resident) => {
+    private mergeIfAurora = async (res: any) => {
         if (this.map.name === 'aurora') {
             return { ...res, ...await OfficialAPI.resident(res.name) }
         }
