@@ -62,12 +62,13 @@ class Towns implements Base {
                   rawinfo = town.desc.split("<br />"), 
                   info = rawinfo.map(i => striptags(i, ['a']))
 
-            if (info[0].includes("(Shop)")) continue
+            const firstEl = info[0]
+            if (firstEl.includes("(Shop)")) continue
 
             const mayor = info[1].slice(7)
             if (mayor == "") continue
 
-            let split: string | string[] = info[0].split(" (")
+            let split: string | string[] = firstEl.split(" (")
             split = (split[2] ?? split[1]).slice(0, -1)
 
             const residents = info[2].slice(9).split(", "), 

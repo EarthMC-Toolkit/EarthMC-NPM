@@ -20,24 +20,24 @@ const get = (dataType: keyof typeof endpoints, map: ValidMapName) => {
  * and retrieve the response as a **JSON** object.
  * 
  * This method does the following:
- * - Uses a proxy in browser runtimed to bypass CORS.
- * - 
+ * - Uses a proxy when in browser environment to bypass CORS.
+ * - Retries a failed request up to 3 times by default.
  * 
  * @param url - The full URL to send the request to.
- * @param n - The number of retries to attempt.
+ * @param retries - The amount of retries to attempt before erroring.
  */
-const asJSON = async (url: string, /** @defaultValue `3` */ n = 3) => {
+const asJSON = async (url: string, retries = 3) => {
     const isBrowser = typeof window === "object"
     if (isBrowser) url = `https://corsproxy.io/?${encodeURIComponent(url)}`
 
     const res = await request(url)
         .then((res: any) => res.body?.json() || res.json())
-        .catch(async err => await retry(err, url, n))
+        .catch(async err => await retry(err, url, retries))
     
-    return res ?? await retry(null, url, n)
+    return res ?? await retry(null, url, retries)
 }
 
-const retry = (val: any, url: string, n: number): any => n === 1 ? val : asJSON(url, n - 1)
+const retry = (val: any, url: string, amt: number): any => amt === 1 ? val : asJSON(url, amt - 1)
 
 let archiveTs = 0
 const useArchive = (ts: number) => archiveTs = ts

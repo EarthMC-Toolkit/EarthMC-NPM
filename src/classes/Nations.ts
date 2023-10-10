@@ -50,12 +50,14 @@ class Nations implements Base {
             const town = towns[i],
                   nationName = town.nation
 
-            if (nationName == "No Nation") continue
+            if (nationName == "No Nation") {
+                continue
+            }
     
             // Doesn't already exist, create new.
             if (!raw[nationName]) {          
                 raw[nationName] = { 
-                    name: town.nation,
+                    name: nationName,
                     residents: town.residents,
                     towns: [],
                     area: 0,
