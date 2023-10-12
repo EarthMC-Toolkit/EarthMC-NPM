@@ -22,17 +22,17 @@ describe('OfficialAPI', async () => {
         expect(info.stats.numNations).toBeGreaterThanOrEqual(300)
     })
 
-    it('can get valid resident (v1)', async () => {
+    it('can get valid resident', async () => {
         const res = await OfficialAPI.resident('owen3h')
 
         expect(res).toBeDefined()
         assertType<OAPIResident>(res)
 
         expect(res.name).toBe("Owen3H")
-        //console.log(res)
+        console.log(res)
     })
 
-    it('can get valid nation (v1)', async () => {
+    it('can get valid nation', async () => {
         const nation = await OfficialAPI.nation('venice')
 
         expect(nation).toBeDefined()
@@ -42,13 +42,13 @@ describe('OfficialAPI', async () => {
         //console.log(nation)
     })
 
-    it('can get valid nation (v1)', async () => {
+    it('can get valid nation', async () => {
         const town = await OfficialAPI.town('venice')
 
         expect(town).toBeDefined()
         assertType<OAPITown>(town)
 
         expect(town.name).toBe("Venice")
-        console.log(town)
+        //console.log(town)
     })
 })

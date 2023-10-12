@@ -1,4 +1,4 @@
-export * from './types/oapi_v1.js'
+export * from './types/oapi_v2.js'
 export * from './types/dynmap.js'
 export * from './types/gps.js'
 

@@ -14,7 +14,8 @@ import { FetchError } from '../utils/errors.js'
 const parseResident = (res: RawResident) => {
     const obj: any = {}
     
-    obj.online = res.status.isOnline
+    if (res.status)
+        obj.status = res.status
 
     if (res.stats?.balance) 
         obj.balance = res.stats.balance
@@ -22,13 +23,13 @@ const parseResident = (res: RawResident) => {
     if (res.timestamps) 
         obj.timestamps = res.timestamps
 
-    if (res.strings?.username) obj.name = res.strings.username
-    if (res.strings?.title) obj.title = res.strings.title
-    if (res.strings?.surname) obj.surname = res.strings.surname
+    if (res.name) obj.name = res.name
+    if (res.uuid) obj.uuid = res.uuid
+    if (res.title) obj.title = res.title
+    if (res.surname) obj.surname = res.surname
 
-    const affiliation = res.affiliation
-    if (affiliation?.town) obj.town = affiliation.town
-    if (affiliation?.nation) obj.nation = affiliation.nation
+    if (res?.town) obj.town = res.town
+    if (res?.nation) obj.nation = res.nation
 
     if (res.ranks?.townRanks) obj.townRanks = res.ranks.townRanks
     if (res.ranks?.nationRanks) obj.nationRanks = res.ranks.nationRanks
@@ -58,9 +59,6 @@ const parseTown = (town: RawTown) => {
 
     const obj: any = {
         ...town,
-        name: town.strings.town,
-        nation: town.affiliation.nation,
-        founder: town.strings.founder,
         created: town.timestamps?.registered,
         joinedNation: town.timestamps?.joinedNationAt,
         perms: {
@@ -72,11 +70,7 @@ const parseTown = (town: RawTown) => {
         }
     }
 
-    delete obj.affiliation.nation
     delete obj.timestamps
-
-    delete obj.strings.town
-    delete obj.strings.founder
 
     delete obj.perms.rnaoPerms
     delete obj.perms.flagPerms
@@ -113,7 +107,6 @@ class OfficialAPI {
         if (!nation) return // TODO: Implement a proper error
 
         return {
-            name: nation.strings.nation,
             created: nation.timestamps.registered,
             ...nation
         } as OAPINation

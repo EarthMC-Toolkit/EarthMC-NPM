@@ -19,12 +19,13 @@ describe('GPS', () => {
         expect(route.distance).toBeGreaterThanOrEqual(0)
     })
 
-    it('can check player is online when emitting', async () => { 
-        const player = await globalThis.Aurora.GPS.getPlayer('Owen3H')
-        expect(player).not.toBeInstanceOf(NotFoundError)
+    it('can check player is online when emitting', async () => {
+        const ops = await globalThis.Aurora.Players.online()
+        const op = await globalThis.Aurora.GPS.getPlayer(ops[0]['name'])
+        expect(op).not.toBeInstanceOf(NotFoundError)
 
-        const online = await globalThis.Aurora.GPS.playerIsOnline(player)
-        expect(online).toEqual(false)
+        const online = await globalThis.Aurora.GPS.playerIsOnline(op)
+        expect(online).toEqual(true)
     })
 
     it('can throw not found error', async () => { 

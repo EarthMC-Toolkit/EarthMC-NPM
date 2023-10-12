@@ -54,19 +54,19 @@ const configData = (mapName: ValidMapName) =>
 const playerData = (mapName: ValidMapName) => 
     asJSON(get("players", mapName)) as unknown as PlayersResponse
 
-const townyData = async (endpoint = '', version = 'v1') => {
-    if (endpoint.startsWith("/"))
-        endpoint.replace("/", "")
-
-    const url = get("towny", `${version}/aurora`)
-    return await asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown
-}
-
 const mapData = async (mapName: ValidMapName) => {
     const url = await get("map", mapName)
     const res: unknown = await !archiveTs ? asJSON(url) : getArchive(url, archiveTs)
 
     return res as MapResponse
+}
+    
+const townyData = async (endpoint = '', version = 'v2') => {
+    if (endpoint.startsWith("/"))
+        endpoint.replace("/", "")
+
+    const url = get("towny", `${version}/aurora`)
+    return await asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown
 }
 
 export {

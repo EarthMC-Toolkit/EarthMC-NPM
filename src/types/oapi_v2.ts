@@ -36,17 +36,18 @@ export type OAPIResident = NestedOmit<RawResident,
     "affiliation" |
     "ranks" |
     "perms" |
-    "status" |
     "stats"
 > & {
     name: string
+    uuid: string
     title?: string
     surname?: string
     town?: string
     nation?: string
-    townRanks: string[]
-    nationRanks: string[]
+    balance: number
     timestamps: Timestamps
+    townRanks?: string[]
+    nationRanks?: string[]
     perms?: {
         build: RawResidentPerms
         destroy: RawResidentPerms
@@ -54,28 +55,27 @@ export type OAPIResident = NestedOmit<RawResident,
         itemUse: RawResidentPerms
         flags: RawFlagPerms
     }
-    online: boolean
-    balance: number
 }
 //#endregion
 
 //#region Raw, unparsed types
 export type RawEntity = {
+    uuid: string
     status: RawEntityStatus
     stats: RawEntityStats
     ranks?: { [key: string]: string[] }
-    spawn?: Location
 }
 
-export type RawEntityStatus = {
+export type RawEntityStatus = Partial<{
     isPublic: boolean
     isOpen: boolean
     isNeutral: boolean
-    isCapital?: boolean
-    isOverClaimed?: boolean
-    isRuined?: boolean
-    isOnline?: boolean 
-}
+    isCapital: boolean
+    isOverClaimed: boolean
+    isRuined: boolean
+    isOnline: boolean
+    isNPC: boolean
+}>
 
 export type RawEntityStats = {
     maxTownBlocks?: number
@@ -116,31 +116,42 @@ export type RawEntityPerms<PermsType> = {
     }
 }
 
+export type TownSpawn = Location & {
+    world: string
+    pitch?: number
+    yaw?: number
+}
+
+export type TownCoordinates = {
+    spawn: TownSpawn 
+    home: number[]
+    townBlocks: {
+        x: number[]
+        z: number[]
+    }
+}
+
 export type RawTown = RawEntity & {
-    strings: {
-        town: string
-        board: string
-        mayor: string
-        founder: string
-        mapColorHexCode: string
-    }
-    affiliation?: {
-        nation?: string
-    }
+    name: string
+    board: string
+    mayor: string
+    founder: string
+    mapColorHexCode: string
+    nation?: string
     timestamps?: Timestamps
-    home: Location
-    residents: string[]
     perms: RawEntityPerms<RawTownPerms>
+    coordinates: TownCoordinates
+    residents: string[]
+    trusted?: string[]
+    outlaws?: string[]
 }
 
 export type RawNation = RawEntity & {
-    strings: {
-        nation: string
-        board: string
-        king: string
-        capital: string
-        mapColorHexCode: string
-    }
+    name: string
+    board: string
+    king: string
+    capital: string
+    mapColorHexCode: string
     timestamps?: Timestamps
     towns: string[]
     residents: string[]
@@ -149,24 +160,21 @@ export type RawNation = RawEntity & {
 }
 
 export type Timestamps = {
+    joinedNationAt?: number
     joinedTownAt?: number
     registered: number
     lastOnline?: number
 }
 
 export type RawResident = RawEntity & {
-    strings: {
-        title: string
-        username: string
-        surname: string
-    }
-    affiliation?: Partial<{
-        town: string
-        nation: string
-    }>
+    name: string
+    title: string
+    surname: string
+    town?: string
+    nation?: string
     timestamps?: Timestamps
     perms: RawEntityPerms<RawResidentPerms>
-    friends: string[]
+    friends?: string[]
 }
 
 export type RawServerInfo = {

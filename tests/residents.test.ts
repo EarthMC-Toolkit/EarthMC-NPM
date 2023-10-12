@@ -12,16 +12,16 @@ describe('Residents', () => {
     })
 
     it('can get single resident without error', async () => {
-        const resident = await globalThis.Aurora.Residents.get('owen3h')
+        const resident = await globalThis.Aurora.Residents.get('3meraldk')
 
         expect(resident).toBeDefined()
         expectTypeOf(resident).not.toEqualTypeOf<Error>()
         assertType<Resident | Resident[]>(resident)
 
-        expect(resident.name).toBe("Owen3H")
-        expect(resident.rank).toBe("Resident")
+        expect(resident.name).toBe("3meraldK")
+        expect(resident.rank).toBe("Mayor")
         expect(resident.timestamps).toBeDefined()
-        expect(resident.timestamps.registered).toEqual(1659309285893)
+        expect(resident.timestamps.registered).toEqual(1652454407381)
     })
 
     it('should return different resident info on Aurora and Nova', async () => {
