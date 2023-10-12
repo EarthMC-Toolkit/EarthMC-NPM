@@ -18,12 +18,16 @@
 <h1>Function asJSON</h1></div>
 <section class="tsd-panel">
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="asJSON"><span class="tsd-kind-call-signature">asJSON</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">url</span>, <span class="tsd-kind-parameter">n</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#asJSON" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="asJSON"><span class="tsd-kind-call-signature">asJSON</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">url</span>, <span class="tsd-kind-parameter">retries</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#asJSON" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description"><code class="tsd-tag ts-flagInternal">Internal</code> 
 <div class="tsd-comment tsd-typography"><p>Used internally to send a <strong>GET</strong> request to the specified URL 
 and retrieve the response as a <strong>JSON</strong> object.</p>
-<a id="md:this-method-does-the-following---uses-a-proxy-in-browser-runtimed-to-bypass-cors" class="tsd-anchor"></a><h2><a href="#md:this-method-does-the-following---uses-a-proxy-in-browser-runtimed-to-bypass-cors">This method does the following:
-- Uses a proxy in browser runtimed to bypass CORS.</a></h2></div>
+<p>This method does the following:</p>
+<ul>
+<li>Uses a proxy when in browser environment to bypass CORS.</li>
+<li>Retries a failed request up to 3 times by default.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -33,8 +37,8 @@ and retrieve the response as a <strong>JSON</strong> object.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li>
 <li>
-<h5><span class="tsd-kind-parameter">n</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 3</span></h5>
-<div class="tsd-comment tsd-typography"><p>The number of retries to attempt.</p>
+<h5><span class="tsd-kind-parameter">retries</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 3</span></h5>
+<div class="tsd-comment tsd-typography"><p>The amount of retries to attempt before erroring.</p>
 </div>
 <div class="tsd-comment tsd-typography"></div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -54,15 +58,7 @@ and retrieve the response as a <strong>JSON</strong> object.</p>
 <li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><use href="#icon-checkbox"></use></svg><span>Inherited</span></label></li>
 <li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><use href="#icon-checkbox"></use></svg><span>External</span></label></li></ul></form></div>
 <div class="tsd-theme-toggle">
-<h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
-<details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary">
-<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-chevronDown"></use></svg>On This Page</h3></summary>
-<div class="tsd-accordion-details">
-<ul>
-<li>
-<ul>
-<li><a href="#md:this-method-does-the-following---uses-a-proxy-in-browser-runtimed-to-bypass-cors"><span>This method does the following:
--<wbr/> <wbr/>Uses a proxy in browser runtimed to bypass CORS.</span></a></li></ul></li></ul></div></details></div>
+<h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div></div>
 <div class="site-menu">
 <div class="tree">
 <div class="tree-config"><button class="tree-config__button tree-config__button--expand js-tree-expand" title="Expand All"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 490.72 490.72" fill="currentColor"><path d="M480.027,288.027H10.693c-5.867,0-10.667,4.8-10.667,10.667c0,5.867,4.8,10.667,10.667,10.667h213.333v144.96l-45.76-45.76c-4.267-4.053-10.987-3.947-15.04,0.213c-3.947,4.16-3.947,10.667,0,14.827l64,64c4.16,4.16,10.88,4.16,15.04,0l64-64c4.053-4.267,3.947-10.987-0.213-15.04c-4.16-3.947-10.667-3.947-14.827,0l-45.867,45.76V309.36h234.667c5.867,0,10.667-4.8,10.667-10.667C490.693,292.827,485.893,288.027,480.027,288.027z"></path><path d="M10.693,224.027h469.333c5.867,0,10.667-4.8,10.667-10.667c0-5.867-4.8-10.667-10.667-10.667H245.36V36.4l45.76,45.76c4.267,4.053,10.987,3.947,15.04-0.213c3.947-4.16,3.947-10.667,0-14.827l-64-64c-4.16-4.16-10.88-4.16-15.04,0l-64,64c-4.053,4.267-3.947,10.987,0.213,15.04c4.16,3.947,10.667,3.947,14.827,0l45.867-45.76v166.293H10.693c-5.867,0-10.667,4.8-10.667,10.667C0.027,219.227,4.827,224.027,10.693,224.027z"></path></svg></button><button class="tree-config__button tree-config__button--collapse js-tree-collapse" title="Collapse All"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path></svg></button><button class="tree-config__button tree-config__button--target js-tree-target" title="Scroll to current file"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M13 4.069V2h-2v2.069A8.008 8.008 0 0 0 4.069 11H2v2h2.069A8.007 8.007 0 0 0 11 19.931V22h2v-2.069A8.007 8.007 0 0 0 19.931 13H22v-2h-2.069A8.008 8.008 0 0 0 13 4.069zM12 18c-3.309 0-6-2.691-6-6s2.691-6 6-6 6 2.691 6 6-2.691 6-6 6z"></path></svg></button></div>
@@ -130,27 +126,50 @@ and retrieve the response as a <strong>JSON</strong> object.</p>
 <li><a class="category__link js-category-link" href="../variables/types_gps.Routes.html" data-id="/variables/types_gps.Routes.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg>Routes</a></li></ul></li>
 <li><a class="category__link js-category-link category__link--ts" href="../modules/types_nation.html" data-id="/modules/types_nation.html">nation.ts</a>
 <ul>
-<li><a class="category__link js-category-link" href="../types/types_nation.Nation.html" data-id="/types/types_nation.Nation.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>Nation</a></li></ul></li>
+<li><a class="category__link js-category-link" href="../types/types_nation.Nation.html" data-id="/types/types_nation.Nation.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>Nation</a></li>
+<li><a class="category__link js-category-link" href="../types/types_nation.NationCapital.html" data-id="/types/types_nation.NationCapital.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>NationCapital</a></li></ul></li>
 <li><a class="category__link js-category-link category__link--ts" href="../modules/types_oapi_v1.html" data-id="/modules/types_oapi_v1.html">oapi_v1.ts</a>
 <ul>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.ApiEntityRaw.html" data-id="/types/types_oapi_v1.ApiEntityRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>ApiEntityRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.ApiNationRaw.html" data-id="/types/types_oapi_v1.ApiNationRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>ApiNationRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.ApiResidentRaw.html" data-id="/types/types_oapi_v1.ApiResidentRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>ApiResidentRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.ApiTownRaw.html" data-id="/types/types_oapi_v1.ApiTownRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>ApiTownRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.EntityPermsRaw.html" data-id="/types/types_oapi_v1.EntityPermsRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>EntityPermsRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.EntityStatsRaw.html" data-id="/types/types_oapi_v1.EntityStatsRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>EntityStatsRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.EntityStatusRaw.html" data-id="/types/types_oapi_v1.EntityStatusRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>EntityStatusRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.FlagPermsRaw.html" data-id="/types/types_oapi_v1.FlagPermsRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>FlagPermsRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.ResidentPermsRaw.html" data-id="/types/types_oapi_v1.ResidentPermsRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>ResidentPermsRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.ServerInfoRaw.html" data-id="/types/types_oapi_v1.ServerInfoRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>ServerInfoRaw</a></li>
-<li><a class="category__link js-category-link" href="../types/types_oapi_v1.TownPermsRaw.html" data-id="/types/types_oapi_v1.TownPermsRaw.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TownPermsRaw</a></li></ul></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.OAPINation.html" data-id="/types/types_oapi_v1.OAPINation.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>OAPINation</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.OAPIResident.html" data-id="/types/types_oapi_v1.OAPIResident.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>OAPIResident</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.OAPITown.html" data-id="/types/types_oapi_v1.OAPITown.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>OAPITown</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawEntity.html" data-id="/types/types_oapi_v1.RawEntity.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawEntity</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawEntityPerms.html" data-id="/types/types_oapi_v1.RawEntityPerms.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawEntityPerms</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawEntityStats.html" data-id="/types/types_oapi_v1.RawEntityStats.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawEntityStats</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawEntityStatus.html" data-id="/types/types_oapi_v1.RawEntityStatus.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawEntityStatus</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawFlagPerms.html" data-id="/types/types_oapi_v1.RawFlagPerms.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawFlagPerms</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawNation.html" data-id="/types/types_oapi_v1.RawNation.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawNation</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawResident.html" data-id="/types/types_oapi_v1.RawResident.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawResident</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawResidentPerms.html" data-id="/types/types_oapi_v1.RawResidentPerms.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawResidentPerms</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawServerInfo.html" data-id="/types/types_oapi_v1.RawServerInfo.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawServerInfo</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawTown.html" data-id="/types/types_oapi_v1.RawTown.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawTown</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.RawTownPerms.html" data-id="/types/types_oapi_v1.RawTownPerms.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawTownPerms</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v1.Timestamps.html" data-id="/types/types_oapi_v1.Timestamps.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>Timestamps</a></li></ul></li>
+<li><a class="category__link js-category-link category__link--ts" href="../modules/types_oapi_v2.html" data-id="/modules/types_oapi_v2.html">oapi_v2.ts</a>
+<ul>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.OAPINation.html" data-id="/types/types_oapi_v2.OAPINation.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>OAPINation</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.OAPIResident.html" data-id="/types/types_oapi_v2.OAPIResident.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>OAPIResident</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.OAPITown.html" data-id="/types/types_oapi_v2.OAPITown.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>OAPITown</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawEntity.html" data-id="/types/types_oapi_v2.RawEntity.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawEntity</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawEntityPerms.html" data-id="/types/types_oapi_v2.RawEntityPerms.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawEntityPerms</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawEntityStats.html" data-id="/types/types_oapi_v2.RawEntityStats.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawEntityStats</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawEntityStatus.html" data-id="/types/types_oapi_v2.RawEntityStatus.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawEntityStatus</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawFlagPerms.html" data-id="/types/types_oapi_v2.RawFlagPerms.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawFlagPerms</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawNation.html" data-id="/types/types_oapi_v2.RawNation.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawNation</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawResident.html" data-id="/types/types_oapi_v2.RawResident.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawResident</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawResidentPerms.html" data-id="/types/types_oapi_v2.RawResidentPerms.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawResidentPerms</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawServerInfo.html" data-id="/types/types_oapi_v2.RawServerInfo.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawServerInfo</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawTown.html" data-id="/types/types_oapi_v2.RawTown.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawTown</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.RawTownPerms.html" data-id="/types/types_oapi_v2.RawTownPerms.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>RawTownPerms</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.Timestamps.html" data-id="/types/types_oapi_v2.Timestamps.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>Timestamps</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.TownCoordinates.html" data-id="/types/types_oapi_v2.TownCoordinates.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TownCoordinates</a></li>
+<li><a class="category__link js-category-link" href="../types/types_oapi_v2.TownSpawn.html" data-id="/types/types_oapi_v2.TownSpawn.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TownSpawn</a></li></ul></li>
 <li><a class="category__link js-category-link category__link--ts" href="../modules/types_player.html" data-id="/modules/types_player.html">player.ts</a>
 <ul>
 <li><a class="category__link js-category-link" href="../types/types_player.OnlinePlayer.html" data-id="/types/types_player.OnlinePlayer.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>OnlinePlayer</a></li>
 <li><a class="category__link js-category-link" href="../types/types_player.Player.html" data-id="/types/types_player.Player.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>Player</a></li></ul></li>
 <li><a class="category__link js-category-link category__link--ts" href="../modules/types_resident.html" data-id="/modules/types_resident.html">resident.ts</a>
 <ul>
-<li><a class="category__link js-category-link" href="../types/types_resident.ApiResident.html" data-id="/types/types_resident.ApiResident.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>ApiResident</a></li>
 <li><a class="category__link js-category-link" href="../types/types_resident.Resident.html" data-id="/types/types_resident.Resident.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>Resident</a></li></ul></li>
 <li><a class="category__link js-category-link category__link--ts" href="../modules/types_town.html" data-id="/modules/types_town.html">town.ts</a>
 <ul>
@@ -158,7 +177,11 @@ and retrieve the response as a <strong>JSON</strong> object.</p>
 <li><a class="category__link js-category-link" href="../types/types_town.TownBounds.html" data-id="/types/types_town.TownBounds.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TownBounds</a></li>
 <li><a class="category__link js-category-link" href="../types/types_town.TownFlags.html" data-id="/types/types_town.TownFlags.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TownFlags</a></li>
 <li><a class="category__link js-category-link" href="../types/types_town.TownRanks.html" data-id="/types/types_town.TownRanks.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TownRanks</a></li>
-<li><a class="category__link js-category-link" href="../types/types_town.TownStatus.html" data-id="/types/types_town.TownStatus.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TownStatus</a></li></ul></li></ul></li>
+<li><a class="category__link js-category-link" href="../types/types_town.TownStatus.html" data-id="/types/types_town.TownStatus.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TownStatus</a></li></ul></li>
+<li><a class="category__link js-category-link category__link--ts" href="../modules/types_util.html" data-id="/modules/types_util.html">util.ts</a>
+<ul>
+<li><a class="category__link js-category-link" href="../types/types_util.NestedOmit.html" data-id="/types/types_util.NestedOmit.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>NestedOmit</a></li>
+<li><a class="category__link js-category-link" href="../types/types_util.ValidateShape.html" data-id="/types/types_util.ValidateShape.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>ValidateShape</a></li></ul></li></ul></li>
 <li><span class="js-category-title category__title" data-id="root-src-utils">
 <div class="category__folder" data-id="root-src-utils"></div>utils</span>
 <ul class="js-category-list category" data-id="root-src-utils">
@@ -214,41 +237,47 @@ and retrieve the response as a <strong>JSON</strong> object.</p>
 <li><a class="category__link js-category-link" href="main.getServerInfo.html" data-id="/functions/main.getServerInfo.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg>getServerInfo</a></li></ul></li>
 <li><a class="category__link js-category-link category__link--ts" href="../modules/types.html" data-id="/modules/types.html">types.ts</a>
 <ul>
-<li><a class="category__link js-category-link" href="../modules/types.html#ApiEntityRaw" data-id="/modules/types.html#ApiEntityRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ApiEntityRaw</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#ApiNationRaw" data-id="/modules/types.html#ApiNationRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ApiNationRaw</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#ApiResident" data-id="/modules/types.html#ApiResident"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ApiResident</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#ApiResidentRaw" data-id="/modules/types.html#ApiResidentRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ApiResidentRaw</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#ApiTownRaw" data-id="/modules/types.html#ApiTownRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ApiTownRaw</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#CardinalDirection" data-id="/modules/types.html#CardinalDirection"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>CardinalDirection</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#ConfigResponse" data-id="/modules/types.html#ConfigResponse"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ConfigResponse</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#EntityPermsRaw" data-id="/modules/types.html#EntityPermsRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>EntityPermsRaw</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#EntityStatsRaw" data-id="/modules/types.html#EntityStatsRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>EntityStatsRaw</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#EntityStatusRaw" data-id="/modules/types.html#EntityStatusRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>EntityStatusRaw</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#FlagPermsRaw" data-id="/modules/types.html#FlagPermsRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>FlagPermsRaw</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Location" data-id="/modules/types.html#Location"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Location</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#MapArea" data-id="/modules/types.html#MapArea"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>MapArea</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#MapResponse" data-id="/modules/types.html#MapResponse"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>MapResponse</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Markerset" data-id="/modules/types.html#Markerset"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Markerset</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Nation" data-id="/modules/types.html#Nation"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Nation</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#NationCapital" data-id="/modules/types.html#NationCapital"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>NationCapital</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#OAPINation" data-id="/modules/types.html#OAPINation"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>OAPINation</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#OAPIResident" data-id="/modules/types.html#OAPIResident"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>OAPIResident</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#OAPITown" data-id="/modules/types.html#OAPITown"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>OAPITown</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#OnlinePlayer" data-id="/modules/types.html#OnlinePlayer"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>OnlinePlayer</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Player" data-id="/modules/types.html#Player"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Player</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#PlayersResponse" data-id="/modules/types.html#PlayersResponse"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>PlayersResponse</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Point2D" data-id="/modules/types.html#Point2D"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Point2D</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawEntity" data-id="/modules/types.html#RawEntity"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawEntity</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawEntityPerms" data-id="/modules/types.html#RawEntityPerms"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawEntityPerms</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawEntityStats" data-id="/modules/types.html#RawEntityStats"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawEntityStats</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawEntityStatus" data-id="/modules/types.html#RawEntityStatus"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawEntityStatus</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawFlagPerms" data-id="/modules/types.html#RawFlagPerms"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawFlagPerms</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawNation" data-id="/modules/types.html#RawNation"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawNation</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#RawPlayer" data-id="/modules/types.html#RawPlayer"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawPlayer</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawResident" data-id="/modules/types.html#RawResident"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawResident</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawResidentPerms" data-id="/modules/types.html#RawResidentPerms"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawResidentPerms</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawServerInfo" data-id="/modules/types.html#RawServerInfo"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawServerInfo</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawTown" data-id="/modules/types.html#RawTown"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawTown</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#RawTownPerms" data-id="/modules/types.html#RawTownPerms"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RawTownPerms</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Resident" data-id="/modules/types.html#Resident"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Resident</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#ResidentPermsRaw" data-id="/modules/types.html#ResidentPermsRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ResidentPermsRaw</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Route" data-id="/modules/types.html#Route"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Route</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#RouteInfo" data-id="/modules/types.html#RouteInfo"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RouteInfo</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#RouteKey" data-id="/modules/types.html#RouteKey"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RouteKey</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#RouteType" data-id="/modules/types.html#RouteType"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>RouteType</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Routes" data-id="/modules/types.html#Routes"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Routes</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#ServerInfoRaw" data-id="/modules/types.html#ServerInfoRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ServerInfoRaw</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#Timestamps" data-id="/modules/types.html#Timestamps"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Timestamps</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#Town" data-id="/modules/types.html#Town"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>Town</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#TownBounds" data-id="/modules/types.html#TownBounds"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>TownBounds</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#TownCoordinates" data-id="/modules/types.html#TownCoordinates"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>TownCoordinates</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#TownFlags" data-id="/modules/types.html#TownFlags"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>TownFlags</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#TownHome" data-id="/modules/types.html#TownHome"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>TownHome</a></li>
-<li><a class="category__link js-category-link" href="../modules/types.html#TownPermsRaw" data-id="/modules/types.html#TownPermsRaw"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>TownPermsRaw</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#TownRanks" data-id="/modules/types.html#TownRanks"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>TownRanks</a></li>
+<li><a class="category__link js-category-link" href="../modules/types.html#TownSpawn" data-id="/modules/types.html#TownSpawn"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>TownSpawn</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#TownStatus" data-id="/modules/types.html#TownStatus"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>TownStatus</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#UpdatedTile" data-id="/modules/types.html#UpdatedTile"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>UpdatedTile</a></li>
 <li><a class="category__link js-category-link" href="../modules/types.html#ValidMapName" data-id="/modules/types.html#ValidMapName"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg>ValidMapName</a></li>
