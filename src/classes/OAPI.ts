@@ -78,6 +78,17 @@ const parseTown = (town: RawTown) => {
     return obj as OAPITown
 }
 
+const parseNation = (nation: RawNation) => {
+    const obj: any = {
+        ...nation,
+        created: nation.timestamps.registered
+    }
+
+    delete obj.timestamps
+
+    return obj as OAPINation
+}
+
 class OfficialAPI {
     static serverInfo = async () => await townyData('', 'v2') as RawServerInfo
 
@@ -106,10 +117,7 @@ class OfficialAPI {
         const nation = await townyData(`/nations/${name}`) as RawNation
         if (!nation) return // TODO: Implement a proper error
 
-        return {
-            created: nation.timestamps.registered,
-            ...nation
-        } as OAPINation
+        return parseNation(nation)
     }
 }
 

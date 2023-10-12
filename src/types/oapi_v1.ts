@@ -178,15 +178,7 @@ export type RawServerInfo = {
     }
     players: {
         maxPlayers: number
-        numOnlineTownless: number
         numOnlinePlayers: number
-    }
-    stats: {
-        numResidents: number
-        numTownless: number
-        numTowns: number
-        numNations: number
-        numTownBlocks: number
     }
 }
 //#endregion

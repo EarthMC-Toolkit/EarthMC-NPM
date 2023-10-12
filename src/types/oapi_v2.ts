@@ -3,8 +3,6 @@ import { NestedOmit } from './util.js'
 
 //#region Parsed
 export type OAPITown = NestedOmit<RawTown, 
-    "strings.town" | 
-    "strings.founder" |
     "timestamps" |
     "perms.rnaoPerms" |
     "perms.flagPerms"
@@ -24,16 +22,12 @@ export type OAPITown = NestedOmit<RawTown,
 }
 
 export type OAPINation = NestedOmit<RawNation,
-    "strings.nation" |
     "timestamps"
 > & {
-    name: string
     created: number
 }
 
 export type OAPIResident = NestedOmit<RawResident, 
-    "strings" |
-    "affiliation" |
     "ranks" |
     "perms" |
     "stats"
@@ -148,15 +142,15 @@ export type RawTown = RawEntity & {
 
 export type RawNation = RawEntity & {
     name: string
-    board: string
+    board?: string
     king: string
     capital: string
     mapColorHexCode: string
     timestamps?: Timestamps
     towns: string[]
     residents: string[]
-    allies: string[]
-    enemies: string[]
+    allies?: string[]
+    enemies?: string[]
 }
 
 export type Timestamps = {
