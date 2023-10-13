@@ -89,35 +89,35 @@ const parseNation = (nation: RawNation) => {
     return obj as OAPINation
 }
 
-const ParamErr = () => SyntaxError(`Parameter 'name' is invalid. Must be of type string!`)
+const ParamErr = () => new SyntaxError(`Parameter 'name' is invalid. Must be of type string!`)
+const FetchErr = (type, name) => new FetchError(`Could not fetch ${type} '${name}'. Invalid response received!`)
 
 class OfficialAPI {
     static serverInfo = async () => await townyData() as RawServerInfo
 
     static resident = async (name: string) => {
-        // TODO: Properly handle this case and implement an error.
-        if (!name) return ParamErr()
+        if (!name) throw ParamErr()
 
         const res = await townyData(`/residents/${name}`) as RawResident
-        if (!res) throw new FetchError(`Could not fetch resident '${name}'. Invalid response received!`)
+        if (!res) throw FetchErr('resident', name)
 
         return parseResident(res)
     }
 
     static town = async (name: string) => {
-        if (!name) return ParamErr()
+        if (!name) throw ParamErr()
 
         const town = await townyData(`/towns/${name}`) as RawTown
-        if (!town) throw new FetchError(`Could not fetch town '${name}'. Invalid response received!`)
+        if (!town) throw FetchErr('town', name)
 
         return parseTown(town)
     }
 
     static nation = async (name: string) => {
-        if (!name) return ParamErr()
+        if (!name) throw ParamErr()
 
         const nation = await townyData(`/nations/${name}`) as RawNation
-        if (!nation) throw new FetchError(`Could not fetch nation '${name}'. Invalid response received!`)
+        if (!nation) throw FetchErr('nation', name)
 
         return parseNation(nation)
     }
