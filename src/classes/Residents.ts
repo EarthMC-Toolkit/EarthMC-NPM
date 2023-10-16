@@ -13,33 +13,31 @@ class Residents implements Base {
     }
 
     readonly fromTown = async (townName: string) => {
-        if (!townName) return new InvalidError(`Parameter 'town' is ${townName}`)
+        if (!townName) throw new InvalidError(`Parameter 'town' is ${townName}`)
 
         const town = await this.map.Towns.get(townName) as Town
         if (town instanceof Error) throw town
 
-        return await this.get(...town.residents)
+        return await this.get(...town.residents) as Resident[]
     }
     
     /** @internal */
-    private mergeIfAurora = async (res: any) => {
+    private mergeIfAurora = async (res: Resident) => {
         if (this.map.name === 'aurora') {
-            return { ...res, ...await OfficialAPI.resident(res.name) }
+            return { ...await OfficialAPI.resident(res.name), ...res }
         }
 
         return res
     }
 
-    readonly get = async (...residentList: string[]) => {
+    readonly get = async (...residentList: string[]): Promise<Resident[] | Resident> => {
         const residents = await this.all()
-        if (!residents) return new FetchError('Error fetching residents! Please try again.')
+        if (!residents) throw new FetchError('Error fetching residents! Please try again.')
 
-        const existing = fn.getExisting(residents, residentList, 'name') as Resident | Resident[]
-        const isArr = existing instanceof Array
-
-        return isArr ? 
-            Promise.all(existing.map(async res => await this.mergeIfAurora(res))) : 
-            Promise.resolve(await this.mergeIfAurora(existing))
+        const existing = fn.getExisting(residents, residentList, 'name')
+        return existing instanceof Array 
+            ? Promise.all(existing.map(async res => await this.mergeIfAurora(res))) 
+            : Promise.resolve(await this.mergeIfAurora(existing))
     }
 
     readonly all = async (towns?: Town[]) => {

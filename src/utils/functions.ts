@@ -4,7 +4,7 @@ import { removeDiacritics } from "modern-diacritics"
 import { RawPlayer, Player, Town, Point2D } from '../types.js'
 import { NotFound } from './errors.js'
 
-const removeDuplicates = (arr: any[]) => [...new Set(arr)]
+const removeDuplicates = <T>(arr: T[]) => [...new Set(arr)]
 
 const stripInvalidChars = (str: string) => {
     return str.replace(/((&#34)|(&\w[a-z0-9].|&[0-9kmnola-z]));/g, "")

@@ -16,7 +16,7 @@ class Nations implements Base {
     /** @internal */
     private mergeIfAurora = async (nation: any) => {
         if (this.map.name === 'aurora') {
-            return { ...nation, ...await OfficialAPI.nation(nation.name) }
+            return { ...await OfficialAPI.nation(nation.name), ...nation }
         }
  
         return nation
@@ -58,8 +58,7 @@ class Nations implements Base {
                     towns: [],
                     area: 0,
                     king: undefined,
-                    capital: undefined,
-                    stats: undefined
+                    capital: undefined
                 }
     
                 nations.push(raw[nationName])
@@ -108,12 +107,12 @@ class Nations implements Base {
         let town = null
         try {
             town = await this.map.Towns.get(townName)
-        } catch (ignore) {
+        } catch (_) {
             return new FetchError(`Specified town '${townName}' does not exist!`)
         }
 
         const nations = await this.all(this.map.getFromCache('towns'))
-        if (!nations) return new FetchError('Error fetching nations! Please try again.')
+        if (!nations) throw new FetchError('Error fetching nations! Please try again.')
 
         return nations.filter(n => {
             const joinable = fn.sqr(n.capital, town, this.map.inviteRange)

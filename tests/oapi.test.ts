@@ -29,7 +29,7 @@ describe('OfficialAPI', async () => {
         assertType<OAPIResident>(res)
 
         expect(res.name).toBe("Owen3H")
-        console.log(res)
+        //console.log(res)
     })
 
     it('can get valid nation', async () => {

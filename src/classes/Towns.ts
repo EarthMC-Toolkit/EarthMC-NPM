@@ -26,7 +26,7 @@ class Towns implements Base {
     /** @internal */
     private mergeIfAurora = async (town: any) => {
         if (this.map.name === 'aurora') {
-            return { ...town, ...await OfficialAPI.town(town.name) }
+            return { ...await OfficialAPI.town(town.name), ...town }
         }
 
         return town as Town
@@ -52,11 +52,11 @@ class Towns implements Base {
         }
 
         const townsArray: Town[] = [], 
-              townData = Object.keys(markerset.areas).map(key => markerset.areas[key]), 
-              len = townData.length
-
+              areas = Object.values(markerset.areas)
+              
+        const len = areas.length
         for (let i = 0; i < len; i++) {
-            const town = townData[i], 
+            const town = areas[i], 
                   rawinfo = town.desc.split("<br />"), 
                   info = rawinfo.map(i => striptags(i, ['a']))
 
@@ -161,7 +161,7 @@ class Towns implements Base {
         if (!nation || nation instanceof Error) throw new Error()
 
         const towns = await this.all()
-        if (!towns) return new FetchError('Error fetching towns! Please try again.')
+        if (!towns) throw new FetchError('Error fetching towns! Please try again.')
 
         const invitable = (town: Town) => {
             const sqr = fn.sqr(town, nation.capital, this.map.inviteRange) && town.nation != nation.name

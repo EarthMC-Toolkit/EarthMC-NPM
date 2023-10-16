@@ -110,14 +110,14 @@ export type RawEntityPerms<PermsType> = {
     }
 }
 
-export type TownSpawn = Location & {
+export type RawEntitySpawn = Location & {
     world: string
     pitch?: number
     yaw?: number
 }
 
-export type TownCoordinates = {
-    spawn: TownSpawn 
+export type RawTownCoordinates = {
+    spawn: RawEntitySpawn 
     home: number[]
     townBlocks: {
         x: number[]
@@ -134,7 +134,7 @@ export type RawTown = RawEntity & {
     nation?: string
     timestamps?: Timestamps
     perms: RawEntityPerms<RawTownPerms>
-    coordinates: TownCoordinates
+    coordinates: RawTownCoordinates
     residents: string[]
     trusted?: string[]
     outlaws?: string[]

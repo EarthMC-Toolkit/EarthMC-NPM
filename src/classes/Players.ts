@@ -16,7 +16,7 @@ class Players implements Base {
 
     readonly get = async (...playerList: string[]) => {
         const players = await this.all()
-        if (!players) return new FetchError('Error fetching players! Please try again.')
+        if (!players) throw new FetchError('Error fetching players! Please try again.')
         
         return fn.getExisting(players, playerList, 'name') as Player | Player[]
     }

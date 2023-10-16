@@ -8,7 +8,6 @@ export type Town = {
     x: number
     z: number
     residents: string[]
-    onlineResidents?: string[]
     flags: TownFlags
     balance?: number
     timestamps?: {

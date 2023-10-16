@@ -17,6 +17,7 @@ describe('Nations', () => {
         assertType<Nation | Nation[]>(nation)
 
         expect(nation.name).toBe('Venice')
+        console.log(nation)
     })
 
     it('should return different nation info on Aurora and Nova', async () => {
