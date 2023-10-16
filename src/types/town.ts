@@ -24,11 +24,9 @@ export type Town = {
     wiki?: string
 }
 
-export type TownStatus = {
-    open: boolean
-    neutral: boolean
-    overclaimed: boolean
-    ruined: boolean
+export type TownBounds = {
+    x: number[]
+    z: number[]
 }
 
 export type TownFlags = {
@@ -40,11 +38,13 @@ export type TownFlags = {
     capital: boolean
 }
 
-export type TownBounds = {
-    x: number[]
-    z: number[]
-}
+// export type TownStatus = {
+//     open: boolean
+//     neutral: boolean
+//     overclaimed: boolean
+//     ruined: boolean
+// }
 
-export type TownRanks = {
-    [key: string]: string 
-}
+// export type TownRanks = {
+//     [key: string]: string 
+// }

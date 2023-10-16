@@ -90,7 +90,7 @@ const parseNation = (nation: RawNation) => {
 }
 
 const ParamErr = () => new SyntaxError(`Parameter 'name' is invalid. Must be of type string!`)
-const FetchErr = (type, name) => new FetchError(`Could not fetch ${type} '${name}'. Invalid response received!`)
+const FetchErr = (type: string, name: string) => new FetchError(`Could not fetch ${type} '${name}'. Invalid response received!`)
 
 class OfficialAPI {
     static serverInfo = async () => await townyData() as RawServerInfo

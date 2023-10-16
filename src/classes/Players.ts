@@ -42,18 +42,18 @@ class Players implements Base {
     
     readonly townless = async () => {
         const mapData = await endpoint.mapData("aurora")
-        if (!mapData) return new FetchError('Error fetching townless! Please try again.')
+        if (!mapData) throw new FetchError('Error fetching townless! Please try again.')
     
         const onlinePlayers = await this.online()
         if (!onlinePlayers) return null
 
         const allResidents: string[] = [],
               markerset = mapData.sets["townyPlugin.markerset"],
-              townData = Object.keys(markerset.areas).map(key => markerset.areas[key])
+              areas = Object.values(markerset.areas)
         
-        const len = townData.length
+        const len = areas.length
         for (let i = 0; i < len; i++) {
-            const town = townData[i],
+            const town = areas[i],
                   rawinfo = town.desc.split("<br />"),
                   info = rawinfo.map(x => striptags(x))
 
@@ -67,11 +67,10 @@ class Players implements Base {
         }
 
         // Filter out residents & sort alphabetically
-        return onlinePlayers.filter(op => !allResidents.find(resident => resident == op.name)).sort((a, b) => {
-            if (b.name.toLowerCase() < a.name.toLowerCase()) return 1
-            if (b.name.toLowerCase() > a.name.toLowerCase()) return -1
-
-            return 0
+        const residentSet = new Set(allResidents)
+        return onlinePlayers.filter(op => !residentSet.has(op.name)).sort((a, b) => {
+            const [aName, bName] = [a.name.toLowerCase(), b.name.toLowerCase()]
+            return bName < aName ? 1 : bName > aName ? -1 : 0
         })
     }
 
