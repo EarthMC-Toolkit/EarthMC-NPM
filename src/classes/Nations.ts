@@ -22,18 +22,14 @@ class Nations implements Base {
         return nation
     }
 
-    readonly get = async (...nationList: string[]): Promise<Nation | Nation[]> => {
+    readonly get = async (...nationList: string[]): Promise<Nation[] | Nation> => {
         const nations = await this.all()
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
     
-        const existing = fn.getExisting(nations, nationList, 'name') as Nation[] | Nation
-        const isArr = existing instanceof Array
-
-        if (isArr) {
-            return await Promise.all(existing.map(async n => await this.mergeIfAurora(n))) 
-        }
-        
-        return await Promise.resolve(await this.mergeIfAurora(existing))
+        const existing = fn.getExisting(nations, nationList, 'name')
+        return existing instanceof Array
+            ? Promise.all(existing.map(async n => await this.mergeIfAurora(n)))
+            : Promise.resolve(await this.mergeIfAurora(existing))
     }
 
     readonly all = async (towns?: Town[]) => {

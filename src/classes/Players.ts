@@ -28,14 +28,11 @@ class Players implements Base {
         const residents = await this.map.Residents.all()
         if (!residents) return
     
-        const len = residents.length,
-              ops = (index: number) => onlinePlayers.find(op => op.name === residents[index].name),
-              merged = []
-        
-        for (let i = 0; i < len; i++) {
-            const op = ops(i)
-            merged.push({ ...residents[i], ...op, online: !!op })
-        }
+        // Loop over residents and merge data for any online players
+        const merged = residents.map(res => {
+            const op = onlinePlayers.find(op => op.name === res.name)
+            return !op ? { ...res, online: false } : { ...res, ...op, online: true }
+        })
 
         return merged as Player[]
     }

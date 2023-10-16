@@ -15,12 +15,12 @@ class Towns implements Base {
     }
 
     readonly fromNation = async (nationName: string) => {
-        if (!nationName) return new InvalidError(`Parameter 'nation' is ${nationName}`)
+        if (!nationName) throw new InvalidError(`Parameter 'nation' is ${nationName}`)
 
         const nation = await this.map.Nations.get(nationName) as Nation
         if (nation instanceof Error) throw nation
 
-        return await this.get(...nation.towns)
+        return await this.get(...nation.towns) as Town[]
     }
 
     /** @internal */
@@ -29,19 +29,17 @@ class Towns implements Base {
             return { ...town, ...await OfficialAPI.town(town.name) }
         }
 
-        return town
+        return town as Town
     }
 
-    readonly get = async (...townList: string[]) => {
+    readonly get = async (...townList: string[]): Promise<Town[] | Town> => {
         const towns = await this.all()
         if (!towns) throw new FetchError('Error fetching towns! Please try again.')
 
         const existing = fn.getExisting(towns, townList, 'name')
-        const isArr = existing instanceof Array
-
-        return isArr ? 
-            Promise.all(existing.map(async t => await this.mergeIfAurora(t))) : 
-            Promise.resolve(await this.mergeIfAurora(existing))
+        return existing instanceof Array
+            ? Promise.all(existing.map(async t => await this.mergeIfAurora(t)))
+            : Promise.resolve(await this.mergeIfAurora(existing))
     }
 
     readonly all = async (removeAccents = false) => {

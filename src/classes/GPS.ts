@@ -11,6 +11,8 @@ import {
 
 import Mitt from './EventEmitter.js'
 
+const NativeMap = globalThis.Map
+
 class GPS extends Mitt {
     readonly map: Map
     static readonly Routes = Routes
@@ -98,12 +100,16 @@ class GPS extends Mitt {
         // Scan all nations for closest match.
         // Computationally more expensive to include PVP disabled nations.
         const [towns, nations] = await Promise.all([this.map.Towns.all(), this.map.Nations.all()])
-        const filtered = []
+        const townMap = new NativeMap(towns.map(town => [town.name, town]))
 
         const len = nations.length
+        const filtered = []
+
         for (let i = 0; i < len; i++) {
             const nation = nations[i]
-            const capital = towns.find(t => t.name == nation.capital.name)
+            const capitalName = nation.capital.name
+
+            const capital = townMap.get(capitalName)
             if (!capital) continue
 
             // Filter out nations where either capital is not public 
@@ -119,7 +125,8 @@ class GPS extends Mitt {
 
         // Use reduce to find the minimum distance and corresponding nation
         const { distance, nation } = filtered.reduce((acc: any, nation: Nation) => {
-            const dist = fn.manhattan(nation.capital.x, nation.capital.z, loc.x, loc.z)
+            const capital = nation.capital
+            const dist = fn.manhattan(capital.x, capital.z, loc.x, loc.z)
 
             // Update acc if this nation is closer
             const closer = !acc.distance || dist < acc.distance
@@ -127,7 +134,7 @@ class GPS extends Mitt {
                 distance: Math.round(dist), 
                 nation: {
                     name: nation.name,
-                    capital: nation.capital
+                    capital: capital
                 }
             }
         }, { distance: null, nation: null })

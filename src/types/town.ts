@@ -12,7 +12,7 @@ export type Town = {
     flags: TownFlags
     balance?: number
     timestamps?: {
-        joinedNation: number
+        joinedNation?: number
         founded: number
     }
     trusted?: string[]

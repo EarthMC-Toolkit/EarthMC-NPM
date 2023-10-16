@@ -68,7 +68,7 @@ const getExisting = <T>(a1: any[], a2: string[], key: keyof T) => {
           arr = a2.flat().map(x => filter(x))
 
     // TODO: Ensure this is returning T[] and not a string of names.
-    return arr.length > 1 ? arr : arr[0] 
+    return arr.length > 1 ? arr : arr[0]
 }
 
 const hypot = (num: number, args: [input: number, radius: number]) => {
