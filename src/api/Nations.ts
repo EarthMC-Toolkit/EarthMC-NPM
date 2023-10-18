@@ -4,7 +4,7 @@ import { FetchError } from "../utils/errors.js"
 import { Base, Nation, Town } from '../types.js'
 import { Map } from "../Map.js"
 
-import OfficialAPI from './OAPI.js'
+import OfficialAPI from '../OAPI.js'
 
 class Nations implements Base {
     private map: Map
@@ -14,13 +14,10 @@ class Nations implements Base {
     }
 
     /** @internal */
-    private mergeIfAurora = async (nation: any) => {
-        if (this.map.name === 'aurora') {
-            return { ...await OfficialAPI.nation(nation.name), ...nation }
-        }
- 
-        return nation
-    }
+    private mergeIfAurora = async (nation: any) => this.map.name === 'aurora' ? { 
+        ...await OfficialAPI.nation(nation.name),
+        ...nation
+    } : nation
 
     readonly get = async (...nationList: string[]): Promise<Nation[] | Nation> => {
         const nations = await this.all()

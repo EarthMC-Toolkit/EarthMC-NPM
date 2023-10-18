@@ -6,10 +6,10 @@ import {
     OAPITown,
     OAPIResident,
     OAPINation
-} from '../types.js'
+} from './types.js'
 
-import { townyData } from '../utils/endpoint.js'
-import { FetchError } from '../utils/errors.js'
+import { townyData } from './utils/endpoint.js'
+import { FetchError } from './utils/errors.js'
 
 const parseResident = (res: RawResident) => {
     const obj: any = {}

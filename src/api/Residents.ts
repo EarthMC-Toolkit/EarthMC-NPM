@@ -1,5 +1,5 @@
 import * as fn from '../utils/functions.js'
-import OfficialAPI from "./OAPI.js"
+import OfficialAPI from "../OAPI.js"
 
 import { FetchError, InvalidError } from "../utils/errors.js"
 import { Base, Resident, Town } from '../types.js'
@@ -22,13 +22,10 @@ class Residents implements Base {
     }
     
     /** @internal */
-    private mergeIfAurora = async (res: Resident) => {
-        if (this.map.name === 'aurora') {
-            return { ...await OfficialAPI.resident(res.name), ...res }
-        }
-
-        return res
-    }
+    private mergeIfAurora = async (res: Resident) => this.map.name === 'aurora' ? { 
+        ...await OfficialAPI.resident(res.name), 
+        ...res 
+    } : res
 
     readonly get = async (...residentList: string[]): Promise<Resident[] | Resident> => {
         const residents = await this.all()

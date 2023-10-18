@@ -1,4 +1,4 @@
-import OfficialAPI from './classes/OAPI.js'
+import OfficialAPI from './OAPI.js'
 
 import { MCAPI } from "mojang-lib"
 import { Map } from './Map.js'

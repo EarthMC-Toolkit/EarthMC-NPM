@@ -9,7 +9,7 @@ import {
     Player
 } from '../types.js'
 
-import Mitt from './EventEmitter.js'
+import Mitt from '../helpers/EventEmitter.js'
 
 const NativeMap = globalThis.Map
 

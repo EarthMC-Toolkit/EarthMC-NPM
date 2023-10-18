@@ -4,7 +4,7 @@ import { FetchError, InvalidError } from "../utils/errors.js"
 import { Base, Nation, Town } from '../types.js'
 import { Map } from "../Map.js"
 
-import OfficialAPI from './OAPI.js'
+import OfficialAPI from '../OAPI.js'
 import striptags from 'striptags'
 
 class Towns implements Base {
@@ -24,13 +24,10 @@ class Towns implements Base {
     }
 
     /** @internal */
-    private mergeIfAurora = async (town: any) => {
-        if (this.map.name === 'aurora') {
-            return { ...await OfficialAPI.town(town.name), ...town }
-        }
-
-        return town as Town
-    }
+    private mergeIfAurora = async (town: any) => this.map.name === 'aurora' ? { 
+        ...await OfficialAPI.town(town.name),
+        ...town
+    } : town
 
     readonly get = async (...townList: string[]): Promise<Town[] | Town> => {
         const towns = await this.all()
@@ -158,18 +155,18 @@ class Towns implements Base {
 
     readonly invitable = async (nationName: string, includeBelonging = false) => {
         const nation = await this.map.Nations.get(nationName) as Nation
-        if (!nation || nation instanceof Error) throw new Error()
+        if (!nation) throw new Error("Could not fetch the nation")
 
         const towns = await this.all()
-        if (!towns) throw new FetchError('Error fetching towns! Please try again.')
+        if (!towns) throw new FetchError('An error occurred fetching towns!')
 
-        const invitable = (town: Town) => {
-            const sqr = fn.sqr(town, nation.capital, this.map.inviteRange) && town.nation != nation.name
-            return includeBelonging ? sqr : sqr && town.nation == "No Nation"
-        }
-
-        return towns.filter(t => invitable(t))
+        return towns.filter(t => invitable(t, nation, this.map.inviteRange, includeBelonging))
     }
+}
+
+const invitable = (town: Town, nation: Nation, range: number, belonging: boolean) => {
+    const sqr = fn.sqr(town, nation.capital, range) && town.nation != nation.name
+    return belonging ? sqr : sqr && town.nation == "No Nation"
 }
 
 export {

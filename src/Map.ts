@@ -1,4 +1,4 @@
-import DataHandler from './classes/DataHandler.js'
+import DataHandler from './helpers/DataHandler.js'
 
 import Towns from './classes/Towns.js'
 import Nations from './classes/Nations.js'
