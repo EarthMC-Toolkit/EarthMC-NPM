@@ -16,12 +16,12 @@ export type RouteKey = keyof RouteType
 export type Route = RouteType[RouteKey]
 
 export type Location = Point2D & {
-    y?: number
+    y?: number | string
 }
 
 export type Point2D = {
-    x: number
-    z: number
+    x: number | string
+    z: number | string
 }
 
 export type RouteInfo = {

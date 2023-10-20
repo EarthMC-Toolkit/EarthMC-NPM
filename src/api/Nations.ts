@@ -40,12 +40,10 @@ class Nations implements Base {
               len = towns.length
 
         for (let i = 0; i < len; i++) {
-            const town = towns[i],
-                  nationName = town.nation
-
-            if (nationName == "No Nation") {
-                continue
-            }
+            const town = towns[i]
+            
+            const nationName = town.nation
+            if (nationName == "No Nation") continue
     
             // Doesn't already exist, create new.
             if (!raw[nationName]) {          
@@ -101,11 +99,11 @@ class Nations implements Base {
     }
 
     readonly joinable = async (townName: string, nationless = true): Promise<Nation[] | FetchError> => {
-        let town = null
+        let town: Town = null
         try {
-            town = await this.map.Towns.get(townName)
+            town = await this.map.Towns.get(townName) as Town
         } catch (_) {
-            return new FetchError(`Specified town '${townName}' does not exist!`)
+            throw new FetchError(`Specified town '${townName}' does not exist!`)
         }
 
         const nations = await this.all(this.map.getFromCache('towns'))

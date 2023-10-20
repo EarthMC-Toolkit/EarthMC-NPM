@@ -11,6 +11,7 @@ if (useDefaultAgent) useDefaultAgent()
  * Gets the appropriate endpoint from the given keys.
  */
 const get = (dataType: keyof typeof endpoints, map: ValidMapName) => {
+    //@ts-ignore
     return (endpoints[dataType][map.toLowerCase()]) as string
 }
 

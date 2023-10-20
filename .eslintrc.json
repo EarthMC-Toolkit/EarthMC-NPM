@@ -30,7 +30,8 @@
             "markers": [
                 "#region",
                 "#endregion",
-                "@ts-expect-error"
+                "@ts-expect-error",
+                "@ts-ignore"
             ] 
         }],
         "comma-spacing": 2,

@@ -18,6 +18,8 @@ describe('Towns', () => {
         expect(town).toBeDefined()
         expectTypeOf(town).not.toEqualTypeOf<Error>()
         assertType<Town[]>(town)
+
+        console.log(town)
     })
 
     it('can get towns invitable to specified nation', async () => {
@@ -36,7 +38,7 @@ describe('Towns', () => {
         ])
 
         expect(novaTown).not.toEqual(auroraTown)
-        expect(novaTown.stats).toBeUndefined()
+        expect(novaTown['stats']).toBeUndefined()
 
         expect(auroraTown.stats).toBeDefined()
         expect(auroraTown.wiki).toBeDefined()

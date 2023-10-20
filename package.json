@@ -10,11 +10,11 @@
     "default": "./dist/main.cjs"
   },
   "scripts": {
-    "prepublishOnly": "npm run ci",
+    "prepublishOnly": "npm run ci && npm run docs",
     "ci": "pnpm run lint && pnpm run test && pnpm run build",
     "lint": "npx eslint .",
     "clean": "rimraf dist",
-    "build": "npm run clean && rollup -c && tsc --declaration true --emitDeclarationOnly true --declarationMap && npm run docs",
+    "build": "npm run clean && rollup -c && tsc --declaration true --emitDeclarationOnly true --declarationMap",
     "docs": "npx typedoc --options typedoc.json",
     "test": "vitest run --config ./vitest.config.ts",
     "test-browser": "vitest run --browser.name=chrome --browser.headless --config ./vitest.config.ts"
@@ -22,10 +22,8 @@
   "files": [
     "dist",
     "src",
-    "LICENSE",
     "README.md",
-    "package.json",
-    "endpoints.json"
+    "package.json"
   ],
   "keywords": [
     "earth",

@@ -70,7 +70,10 @@ class GPS extends Mitt {
                 }
             } 
             else {
-                this.lastLoc = { x: player.x, z: player.z }
+                this.lastLoc = { 
+                    x: fn.safeParseInt(player.x), 
+                    z: fn.safeParseInt(player.z) 
+                }
 
                 try {
                     const routeInfo = await this.findRoute({
@@ -126,7 +129,7 @@ class GPS extends Mitt {
         // Use reduce to find the minimum distance and corresponding nation
         const { distance, nation } = filtered.reduce((acc: any, nation: Nation) => {
             const capital = nation.capital
-            const dist = fn.manhattan(capital.x, capital.z, loc.x, loc.z)
+            const dist = fn.manhattan(capital.x, capital.z, fn.safeParseInt(loc.x), fn.safeParseInt(loc.z))
 
             // Update acc if this nation is closer
             const closer = !acc.distance || dist < acc.distance
@@ -145,8 +148,8 @@ class GPS extends Mitt {
 
     static cardinalDirection(loc1: Location, loc2: Location) {
         // Calculate the differences in x and z coordinates
-        const deltaX = loc2.x - loc1.x
-        const deltaZ = loc2.z - loc1.z
+        const deltaX = fn.safeParseInt(loc2.x) - fn.safeParseInt(loc1.x)
+        const deltaZ = fn.safeParseInt(loc2.z) - fn.safeParseInt(loc1.z)
 
         const angleRad = Math.atan2(deltaZ, deltaX) // Calculate the angle in radians
         const angleDeg = (angleRad * 180) / Math.PI // Convert the angle from radians to degrees

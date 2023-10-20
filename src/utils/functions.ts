@@ -58,10 +58,22 @@ function getAveragePos(arr: Point2D[]) {
     } 
 }
 
-const asBool = (str: string) => str == "true",
-      range = (args: number[]) => Math.round((Math.max(...args) + Math.min(...args)) / 2),
-      average = (arr: Point2D[], key: keyof Point2D) => arr.map(obj => obj[key]).reduce((a, b) => a + b) / arr.length,
-      sqr = (a: Point2D, b: Point2D, range: number) => Math.hypot(a.x - b.x, a.z - b.z) <= range
+const asBool = (str: string) => str == "true"
+const range = (args: number[]) => Math.round((Math.max(...args) + Math.min(...args)) / 2)
+
+const sqr = (a: Point2D, b: Point2D, range: number) => Math.hypot(
+    safeParseInt(a.x) - safeParseInt(b.x), 
+    safeParseInt(a.z) - safeParseInt(b.z)
+) <= range
+
+const average = (nums: Point2D[], key: keyof Point2D) => {
+    const sum = nums.map(obj => obj[key]).reduce((a, b) => safeParseInt(a) + safeParseInt(b))
+    return safeParseInt(sum) / nums.length
+}
+
+const safeParseInt = (num: number | string) => {
+    return typeof num === "number" ? num : parseInt(num)
+}
 
 const getExisting = <T>(a1: any[], a2: string[], key: keyof T) => {
     const filter = (x: string) => a1.find(e => x?.toLowerCase() == e[key]?.toLowerCase()) ?? NotFound(x),
@@ -114,5 +126,6 @@ export {
     euclidean, 
     manhattan,
     strictFalsy,
-    genRandomString
+    genRandomString,
+    safeParseInt
 }

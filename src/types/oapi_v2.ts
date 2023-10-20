@@ -1,5 +1,5 @@
 import { Location } from '../types.js'
-import { NestedOmit } from './util.js'
+import { NestedOmit, Prettify } from './util.js'
 
 //#region Parsed
 export type OAPITown = NestedOmit<RawTown, 
@@ -110,11 +110,11 @@ export type RawEntityPerms<PermsType> = {
     }
 }
 
-export type RawEntitySpawn = Location & {
+export type RawEntitySpawn = Prettify<Location & {
     world: string
     pitch?: number
     yaw?: number
-}
+}>
 
 export type RawTownCoordinates = {
     spawn: RawEntitySpawn 
@@ -125,7 +125,7 @@ export type RawTownCoordinates = {
     }
 }
 
-export type RawTown = RawEntity & {
+export type RawTown = Prettify<RawEntity & {
     name: string
     board: string
     mayor: string
@@ -138,9 +138,9 @@ export type RawTown = RawEntity & {
     residents: string[]
     trusted?: string[]
     outlaws?: string[]
-}
+}>
 
-export type RawNation = RawEntity & {
+export type RawNation = Prettify<RawEntity & {
     name: string
     board?: string
     king: string
@@ -151,7 +151,7 @@ export type RawNation = RawEntity & {
     residents: string[]
     allies?: string[]
     enemies?: string[]
-}
+}>
 
 export type Timestamps = {
     joinedNationAt?: number
@@ -160,7 +160,7 @@ export type Timestamps = {
     lastOnline?: number
 }
 
-export type RawResident = RawEntity & {
+export type RawResident = Prettify<RawEntity & {
     name: string
     title: string
     surname: string
@@ -169,7 +169,7 @@ export type RawResident = RawEntity & {
     timestamps?: Timestamps
     perms: RawEntityPerms<RawResidentPerms>
     friends?: string[]
-}
+}>
 
 export type RawServerInfo = {
     world: {

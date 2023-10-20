@@ -5,6 +5,7 @@
         "moduleDetection": "force",
         "target": "ES2017",
         "outDir": "dist",
+        "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "removeComments": true,
@@ -20,6 +21,6 @@
             "tslib": ["node_modules/tslib/tslib.d.ts"]
         }
     },
-    "include": ["src", "endpoints.json"],
+    "include": ["src"],
     "exclude": ["node_modules", "docs", "tests", "dist"]
 }

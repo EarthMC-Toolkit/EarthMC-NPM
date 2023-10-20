@@ -1,10 +1,10 @@
 import DataHandler from './helpers/DataHandler.js'
 
-import Towns from './classes/Towns.js'
-import Nations from './classes/Nations.js'
-import Players from './classes/Players.js'
-import Residents from './classes/Residents.js'
-import GPS from './classes/GPS.js'
+import Towns from './api/Towns.js'
+import Nations from './api/Nations.js'
+import Players from './api/Players.js'
+import Residents from './api/Residents.js'
+import GPS from './api/GPS.js'
 
 import * as fn from './utils/functions.js'
 import { Point2D, TownBounds, ValidMapName } from './types.js'
@@ -59,9 +59,7 @@ class Map extends DataHandler {
         return inBounds
     }
 
-    readonly isWilderness = async (location: Point2D) => {
-        return !(await this.withinTown(location))
-    }
+    readonly isWilderness = async (location: Point2D) => !(await this.withinTown(location))
 
     readonly withinBounds = (location: Point2D, bounds: TownBounds) => {
         if (fn.strictFalsy(location.x) || fn.strictFalsy(location.z)) {
@@ -69,12 +67,12 @@ class Map extends DataHandler {
             throw new ReferenceError(`(withinBounds) - Invalid location:\n${obj}`)
         }
 
-        const xLoc = parseInt(String(location.x))
-        const zLoc = parseInt(String(location.z))
+        const locX = fn.safeParseInt(location.x)
+        const locZ = fn.safeParseInt(location.z)
 
         // Check if the given coordinates are within the bounds or on the bounds
-        const withinX = xLoc >= Math.min(...bounds.x) && xLoc <= Math.max(...bounds.x)
-        const withinZ = zLoc >= Math.min(...bounds.z) && zLoc <= Math.max(...bounds.z)
+        const withinX = locX >= Math.min(...bounds.x) && locX <= Math.max(...bounds.x)
+        const withinZ = locZ >= Math.min(...bounds.z) && locZ <= Math.max(...bounds.z)
 
         return withinX && withinZ
     }

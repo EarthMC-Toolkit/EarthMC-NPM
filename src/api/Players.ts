@@ -100,7 +100,8 @@ class Players implements Base {
 
         return players.filter(p => {            
             if (p.x == 0 && p.z == 0) return
-            return fn.hypot(p.x, [xInput, xRadius]) && fn.hypot(p.z, [zInput, zRadius])
+            return fn.hypot(fn.safeParseInt(p.x), [xInput, xRadius]) && 
+                   fn.hypot(fn.safeParseInt(p.z), [zInput, zRadius])
         })
     }
 }
