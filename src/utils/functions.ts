@@ -58,6 +58,7 @@ function getAveragePos(arr: Point2D[]) {
     } 
 }
 
+const safeParseInt = (num: number | string) => typeof num === "number" ? num : parseInt(num)
 const asBool = (str: string) => str == "true"
 const range = (args: number[]) => Math.round((Math.max(...args) + Math.min(...args)) / 2)
 
@@ -70,17 +71,11 @@ const average = (nums: Point2D[], key: keyof Point2D) => {
     const sum = nums.map(obj => obj[key]).reduce((a, b) => safeParseInt(a) + safeParseInt(b))
     return safeParseInt(sum) / nums.length
 }
-
-const safeParseInt = (num: number | string) => {
-    return typeof num === "number" ? num : parseInt(num)
-}
-
-const getExisting = <T>(a1: any[], a2: string[], key: keyof T) => {
-    const filter = (x: string) => a1.find(e => x?.toLowerCase() == e[key]?.toLowerCase()) ?? NotFound(x),
-          arr = a2.flat().map(x => filter(x))
+const getExisting = <T>(a1: T[], a2: string[], key: keyof T) => {
+    const filter = (x: string) => a1.find(e => x?.toLowerCase() == String(e[key])?.toLowerCase()) ?? NotFound(x)
 
     // TODO: Ensure this is returning T[] and not a string of names.
-    return arr.length > 1 ? arr : arr[0]
+    return a2.flat().map(x => filter(x))
 }
 
 const hypot = (num: number, args: [input: number, radius: number]) => {

@@ -14,7 +14,6 @@ import Mitt from '../helpers/EventEmitter.js'
 const NativeMap = globalThis.Map
 
 class GPS extends Mitt {
-    readonly map: Map
     static readonly Routes = Routes
     private emittedUnderground = false
     private lastLoc: undefined | {
@@ -22,9 +21,13 @@ class GPS extends Mitt {
         z: number
     }
 
+    #map: Map
+
+    get map() { return this.#map }
+
     constructor(map: Map) {
         super()
-        this.map = map
+        this.#map = map
     }
 
     readonly getPlayer = async (name: string) => {
@@ -47,7 +50,7 @@ class GPS extends Mitt {
             }) as Player
 
             if (!player) return
-            if (!(this.playerIsOnline(player))) return
+            if (!this.playerIsOnline(player)) return
 
             if (player.underground) {
                 if (!this.emittedUnderground) {

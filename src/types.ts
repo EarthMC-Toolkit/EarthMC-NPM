@@ -6,8 +6,3 @@ export * from './types/town.js'
 export * from './types/nation.js'
 export * from './types/resident.js'
 export * from './types/player.js'
-
-export interface Base {
-    all(): void
-    get(...list: any[]): void
-}

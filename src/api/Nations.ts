@@ -1,32 +1,33 @@
 import * as fn from '../utils/functions.js'
 
 import { FetchError } from "../utils/errors.js"
-import { Base, Nation, Town } from '../types.js'
+import { Nation, Town } from '../types.js'
 import { Map } from "../Map.js"
+import { EntityApi } from './EntityApi.js'
 
-import OfficialAPI from '../OAPI.js'
+//import OfficialAPI from '../OAPI.js'
 
-class Nations implements Base {
-    private map: Map
+class Nations implements EntityApi<Nation> {
+    #map: Map
+
+    get map() { return this.#map }
 
     constructor(map: Map) {
-        this.map = map
+        this.#map = map
     }
 
     /** @internal */
-    private mergeIfAurora = async (nation: any) => this.map.name === 'aurora' ? { 
-        ...await OfficialAPI.nation(nation.name),
-        ...nation
-    } : nation
+    // private mergeIfAurora = async (nation: any) => this.map.name === 'aurora' ? { 
+    //     ...await OfficialAPI.nation(nation.name),
+    //     ...nation
+    // } : nation
 
     readonly get = async (...nationList: string[]): Promise<Nation[] | Nation> => {
         const nations = await this.all()
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
     
-        const existing = fn.getExisting(nations, nationList, 'name')
-        return existing instanceof Array
-            ? Promise.all(existing.map(async n => await this.mergeIfAurora(n)))
-            : Promise.resolve(await this.mergeIfAurora(existing))
+        const existing = fn.getExisting(nations, nationList, 'name').filter(n => n.name !== "NotFoundError") as Nation[]
+        return existing.length > 1 ? Promise.all(existing): Promise.resolve(existing[0])
     }
 
     readonly all = async (towns?: Town[]) => {

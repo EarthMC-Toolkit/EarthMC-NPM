@@ -1,17 +1,21 @@
+import striptags from 'striptags'
+
 import * as fn from '../utils/functions.js'
 
 import { FetchError, InvalidError } from "../utils/errors.js"
-import { Base, Nation, Town } from '../types.js'
+import { Nation, Town } from '../types.js'
 import { Map } from "../Map.js"
+import { EntityApi } from './EntityApi.js'
 
-import OfficialAPI from '../OAPI.js'
-import striptags from 'striptags'
+//import OfficialAPI from '../OAPI.js'
 
-class Towns implements Base {
-    private map: Map
+class Towns implements EntityApi<Town> {
+    #map: Map
+
+    get map() { return this.#map }
 
     constructor(map: Map) {
-        this.map = map
+        this.#map = map
     }
 
     readonly fromNation = async (nationName: string) => {
@@ -24,19 +28,17 @@ class Towns implements Base {
     }
 
     /** @internal */
-    private mergeIfAurora = async (town: any) => this.map.name === 'aurora' ? { 
-        ...await OfficialAPI.town(town.name),
-        ...town
-    } : town
+    // private mergeIfAurora = async (town: any) => this.map.name === 'aurora' ? { 
+    //     ...await OfficialAPI.town(town.name),
+    //     ...town
+    // } : town
 
     readonly get = async (...townList: string[]): Promise<Town[] | Town> => {
         const towns = await this.all()
         if (!towns) throw new FetchError('Error fetching towns! Please try again.')
 
-        const existing = fn.getExisting(towns, townList, 'name')
-        return existing instanceof Array
-            ? Promise.all(existing.map(async t => await this.mergeIfAurora(t)))
-            : Promise.resolve(await this.mergeIfAurora(existing))
+        const existing = fn.getExisting(towns, townList, 'name').filter(t => t.name != "NotFoundError") as Town[]
+        return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 
     readonly all = async (removeAccents = false) => {
@@ -81,16 +83,18 @@ class Towns implements Base {
             }
 
             const home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
+            const [townX, townZ] = [town.x, town.z]
+            const area =  fn.calcArea(townX, townZ, townX.length)
+
             const currentTown: Town = {
                 name: fn.formatString(town.label, removeAccents),
                 nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
-                mayor: mayor,
-                area: fn.calcArea(town.x, town.z, town.x.length),
-                x: home?.x ?? fn.range(town.x),
-                z: home?.z ?? fn.range(town.z),
+                mayor, area,
+                x: home?.x ?? fn.range(townX),
+                z: home?.z ?? fn.range(townZ),
                 bounds: {
-                    x: town.x.map(num => Math.round(num)),
-                    z: town.z.map(num => Math.round(num))
+                    x: townX.map(num => Math.round(num)),
+                    z: townZ.map(num => Math.round(num))
                 },
                 residents: residents,
                 flags: {

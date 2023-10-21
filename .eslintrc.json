@@ -31,7 +31,8 @@
                 "#region",
                 "#endregion",
                 "@ts-expect-error",
-                "@ts-ignore"
+                "@ts-ignore",
+                "import"
             ] 
         }],
         "comma-spacing": 2,

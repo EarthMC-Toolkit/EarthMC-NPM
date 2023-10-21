@@ -1,15 +1,18 @@
 import * as fn from '../utils/functions.js'
-import OfficialAPI from "../OAPI.js"
+//import OfficialAPI from "../OAPI.js"
 
 import { FetchError, InvalidError } from "../utils/errors.js"
-import { Base, Resident, Town } from '../types.js'
+import { Resident, Town } from '../types.js'
 import { Map } from "../Map.js"
+import { EntityApi } from './EntityApi.js'
 
-class Residents implements Base {
-    private map: Map
+class Residents implements EntityApi<Resident> {
+    #map: Map
+
+    get map() { return this.#map }
 
     constructor(map: Map) {
-        this.map = map
+        this.#map = map
     }
 
     readonly fromTown = async (townName: string) => {
@@ -22,19 +25,17 @@ class Residents implements Base {
     }
     
     /** @internal */
-    private mergeIfAurora = async (res: Resident) => this.map.name === 'aurora' ? { 
-        ...await OfficialAPI.resident(res.name), 
-        ...res 
-    } : res
+    // private mergeIfAurora = async (res: Resident) => this.map.name === 'aurora' ? { 
+    //     ...await OfficialAPI.resident(res.name), 
+    //     ...res 
+    // } : res
 
     readonly get = async (...residentList: string[]): Promise<Resident[] | Resident> => {
         const residents = await this.all()
         if (!residents) throw new FetchError('Error fetching residents! Please try again.')
 
-        const existing = fn.getExisting(residents, residentList, 'name')
-        return existing instanceof Array 
-            ? Promise.all(existing.map(async res => await this.mergeIfAurora(res))) 
-            : Promise.resolve(await this.mergeIfAurora(existing))
+        const existing = fn.getExisting(residents, residentList, 'name').filter(r => r.name != "NotFoundError") as Resident[]
+        return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 
     readonly all = async (towns?: Town[]) => {

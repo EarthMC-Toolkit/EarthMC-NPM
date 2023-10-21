@@ -5,13 +5,16 @@ import * as endpoint from '../utils/endpoint.js'
 import { FetchError } from "../utils/errors.js"
       
 import { Map } from '../Map.js'
-import { Base, OnlinePlayer, Player } from '../types.js'
+import { OnlinePlayer, Player } from '../types.js'
+import { EntityApi } from './EntityApi.js'
 
-class Players implements Base {
-    private map: Map
+class Players implements EntityApi<Player> {
+    #map: Map
+
+    get map() { return this.#map }
 
     constructor(map: Map) {
-        this.map = map
+        this.#map = map
     }
 
     readonly get = async (...playerList: string[]) => {
