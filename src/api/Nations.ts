@@ -1,13 +1,13 @@
 import * as fn from '../utils/functions.js'
 
-import { FetchError } from "../utils/errors.js"
+import { FetchError, NotFoundError } from "../utils/errors.js"
 import { Nation, Town } from '../types.js'
 import { Map } from "../Map.js"
 import { EntityApi } from './EntityApi.js'
 
 //import OfficialAPI from '../OAPI.js'
 
-class Nations implements EntityApi<Nation> {
+class Nations implements EntityApi<Nation | NotFoundError> {
     #map: Map
 
     get map() { return this.#map }
@@ -22,11 +22,11 @@ class Nations implements EntityApi<Nation> {
     //     ...nation
     // } : nation
 
-    readonly get = async (...nationList: string[]): Promise<Nation[] | Nation> => {
+    readonly get = async (...nationList: string[]) => {
         const nations = await this.all()
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
     
-        const existing = fn.getExisting(nations, nationList, 'name').filter(n => n.name !== "NotFoundError") as Nation[]
+        const existing = fn.getExisting(nations, nationList, 'name')
         return existing.length > 1 ? Promise.all(existing): Promise.resolve(existing[0])
     }
 

@@ -2,14 +2,14 @@ import striptags from 'striptags'
 
 import * as fn from '../utils/functions.js'
 
-import { FetchError, InvalidError } from "../utils/errors.js"
+import { FetchError, InvalidError, NotFoundError } from "../utils/errors.js"
 import { Nation, Town } from '../types.js'
 import { Map } from "../Map.js"
 import { EntityApi } from './EntityApi.js'
 
 //import OfficialAPI from '../OAPI.js'
 
-class Towns implements EntityApi<Town> {
+class Towns implements EntityApi<Town | NotFoundError> {
     #map: Map
 
     get map() { return this.#map }
@@ -33,11 +33,11 @@ class Towns implements EntityApi<Town> {
     //     ...town
     // } : town
 
-    readonly get = async (...townList: string[]): Promise<Town[] | Town> => {
+    readonly get = async (...townList: string[])=> {
         const towns = await this.all()
         if (!towns) throw new FetchError('Error fetching towns! Please try again.')
 
-        const existing = fn.getExisting(towns, townList, 'name').filter(t => t.name != "NotFoundError") as Town[]
+        const existing = fn.getExisting(towns, townList, 'name')
         return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 

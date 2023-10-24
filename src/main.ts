@@ -1,10 +1,13 @@
-import OfficialAPI from './OAPI.js'
+import * as endpoint from './utils/endpoint.js'
 
-import { MCAPI } from "mojang-lib"
+import { FetchError } from "./utils/errors.js"
 import { Map } from './Map.js'
 
-import * as endpoint from './utils/endpoint.js'
-import * as Errors from "./utils/errors.js"
+import MCAPI from "mojang-lib"
+import OfficialAPI from './OAPI.js'
+
+const Aurora = new Map('aurora')
+const Nova = new Map('nova')
 
 async function fetchServer(name = "play.earthmc.net") {
     const server = await MCAPI.servers.get(name)
@@ -18,29 +21,35 @@ async function fetchServer(name = "play.earthmc.net") {
 
 async function getServerInfo() {
     try {
-        const serverData = await fetchServer(),
-              novaData = await endpoint.playerData("nova"),
-              auroraData = await endpoint.playerData("aurora")
+        const serverData = await fetchServer()
+        const novaData = await endpoint.playerData("nova")
+        const auroraData = await endpoint.playerData("aurora")
 
         const online = serverData.online
         const novaCount = novaData.currentcount ?? 0
         const auroraCount = auroraData.currentcount ?? 0
 
-        const serverInfo = { ...serverData, nova: novaCount, aurora: auroraCount }
-        const queue = online < 1 ? 0 : online - auroraCount - novaCount
+        const serverInfo = { 
+            ...serverData, 
+            nova: novaCount, 
+            aurora: auroraCount 
+        }
 
-        return { queue, ...serverInfo }
+        return { 
+            queue: online < 1 ? 0 : online - auroraCount - novaCount,
+            ...serverInfo 
+        }
     } catch (err: unknown) {
-        throw new Errors.FetchError(`Error fetching server info!\n${err}`)
+        throw new FetchError(`Error fetching server info!\n${err}`)
     }
 }
 
-const Aurora = new Map('aurora')
-const Nova = new Map('nova')
-
 export { formatString } from './utils/functions.js'
+
+export * from "./types.js"
+export * from "./utils/errors.js"
+
 export {
-    Errors,
     MCAPI as MojangLib,
     OfficialAPI, 
     endpoint,

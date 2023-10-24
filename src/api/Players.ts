@@ -2,13 +2,13 @@ import striptags from 'striptags'
 
 import * as fn from '../utils/functions.js'
 import * as endpoint from '../utils/endpoint.js'
-import { FetchError } from "../utils/errors.js"
+import { FetchError, NotFoundError } from "../utils/errors.js"
       
 import { Map } from '../Map.js'
 import { OnlinePlayer, Player } from '../types.js'
 import { EntityApi } from './EntityApi.js'
 
-class Players implements EntityApi<Player> {
+class Players implements EntityApi<Player | NotFoundError> {
     #map: Map
 
     get map() { return this.#map }
@@ -21,7 +21,8 @@ class Players implements EntityApi<Player> {
         const players = await this.all()
         if (!players) throw new FetchError('Error fetching players! Please try again.')
         
-        return fn.getExisting(players, playerList, 'name') as Player | Player[]
+        const existing = fn.getExisting(players, playerList, 'name')
+        return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 
     readonly all = async () => {

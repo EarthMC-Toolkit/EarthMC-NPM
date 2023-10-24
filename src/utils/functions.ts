@@ -70,12 +70,13 @@ const sqr = (a: Point2D, b: Point2D, range: number) => Math.hypot(
 const average = (nums: Point2D[], key: keyof Point2D) => {
     const sum = nums.map(obj => obj[key]).reduce((a, b) => safeParseInt(a) + safeParseInt(b))
     return safeParseInt(sum) / nums.length
-}
-const getExisting = <T>(a1: T[], a2: string[], key: keyof T) => {
-    const filter = (x: string) => a1.find(e => x?.toLowerCase() == String(e[key])?.toLowerCase()) ?? NotFound(x)
+}    
 
-    // TODO: Ensure this is returning T[] and not a string of names.
-    return a2.flat().map(x => filter(x))
+// TODO: Ensure this is returning T[] and not a string of names.
+const getExisting = <T>(a1: T[], a2: string[], key: keyof T) => {
+    return a2.flat().map(x =>
+        a1.find(e => x?.toLowerCase() == String(e[key])?.toLowerCase()
+    ) ?? NotFound(x))
 }
 
 const hypot = (num: number, args: [input: number, radius: number]) => {

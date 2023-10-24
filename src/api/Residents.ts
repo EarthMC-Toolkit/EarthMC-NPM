@@ -1,12 +1,12 @@
 import * as fn from '../utils/functions.js'
 //import OfficialAPI from "../OAPI.js"
 
-import { FetchError, InvalidError } from "../utils/errors.js"
+import { FetchError, InvalidError, NotFoundError } from "../utils/errors.js"
 import { Resident, Town } from '../types.js'
 import { Map } from "../Map.js"
 import { EntityApi } from './EntityApi.js'
 
-class Residents implements EntityApi<Resident> {
+class Residents implements EntityApi<Resident | NotFoundError> {
     #map: Map
 
     get map() { return this.#map }
@@ -30,11 +30,11 @@ class Residents implements EntityApi<Resident> {
     //     ...res 
     // } : res
 
-    readonly get = async (...residentList: string[]): Promise<Resident[] | Resident> => {
+    readonly get = async (...residentList: string[]) => {
         const residents = await this.all()
         if (!residents) throw new FetchError('Error fetching residents! Please try again.')
 
-        const existing = fn.getExisting(residents, residentList, 'name').filter(r => r.name != "NotFoundError") as Resident[]
+        const existing = fn.getExisting(residents, residentList, 'name')
         return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 

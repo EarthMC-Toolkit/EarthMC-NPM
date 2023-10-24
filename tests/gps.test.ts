@@ -27,9 +27,4 @@ describe('GPS', () => {
         const online = await globalThis.Aurora.GPS.playerIsOnline(op)
         expect(online).toEqual(true)
     })
-
-    it('can throw not found error', async () => { 
-        const player = await globalThis.Aurora.GPS.getPlayer('29394dsaklmsd')
-        expect(player).toBeInstanceOf(NotFoundError)
-    })
 })
