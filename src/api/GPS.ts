@@ -15,10 +15,28 @@ const NativeMap = globalThis.Map
 
 class GPS extends Mitt {
     static readonly Routes = Routes
-    private emittedUnderground = false
-    private lastLoc: undefined | {
+
+    #emittedUnderground = false
+
+    get emittedUnderground() {
+        return this.#emittedUnderground
+    }
+
+    protected set emittedUnderground(val: boolean) {
+        this.#emittedUnderground = val
+    }
+
+    #lastLoc: undefined | {
         x: number
         z: number
+    }
+
+    get lastLoc() {
+        return this.#lastLoc
+    }
+
+    protected set lastLoc(val: { x: number, z: number }) {
+        this.#lastLoc = val
     }
 
     #map: Map
@@ -30,27 +48,31 @@ class GPS extends Mitt {
         this.#map = map
     }
 
-    readonly getPlayer = async (name: string) => {
+    #getPlayer = async (name: string) => {
         const player = await this.map.Players.get(name)
         return player
     }
 
-    readonly playerIsOnline = (player: Player) => {
-        if (!player.online)
-            this.emit('error', { err: "INVALID_PLAYER", msg: "Player is offline or does not exist!" })
+    #playerIsOnline = (player: Player) => {
+        if (!player.online) {
+            this.emit('error', { 
+                err: "INVALID_PLAYER", 
+                msg: "Player is offline or does not exist!" 
+            })
+        }
 
         return player.online
     }
 
     readonly track = async(playerName: string, interval = 3000, route = Routes.FASTEST) => {
         setInterval(async () => {
-            const player = await this.getPlayer(playerName).catch(e => {
+            const player = await this.#getPlayer(playerName).catch(e => {
                 this.emit('error', { err: "FETCH_ERROR", msg: e.message })
                 return null
             }) as Player
 
             if (!player) return
-            if (!this.playerIsOnline(player)) return
+            if (!this.#playerIsOnline(player)) return
 
             if (player.underground) {
                 if (!this.emittedUnderground) {
@@ -149,24 +171,24 @@ class GPS extends Mitt {
         return { nation, distance, direction } as RouteInfo
     }
 
-    static cardinalDirection(loc1: Location, loc2: Location) {
+    static cardinalDirection(origin: Location, destination: Location) {
         // Calculate the differences in x and z coordinates
-        const deltaX = fn.safeParseInt(loc2.x) - fn.safeParseInt(loc1.x)
-        const deltaZ = fn.safeParseInt(loc2.z) - fn.safeParseInt(loc1.z)
+        const deltaX = fn.safeParseInt(origin.x) - fn.safeParseInt(destination.x)
+        const deltaZ = fn.safeParseInt(origin.z) - fn.safeParseInt(destination.z)
 
-        const angleRad = Math.atan2(deltaZ, deltaX) // Calculate the angle in radians
-        const angleDeg = (angleRad * 180) / Math.PI // Convert the angle from radians to degrees
-
+        // Calculates radians with atan2, then converted to degrees.
+        const angle = Math.atan2(deltaZ, deltaX) * 180 / Math.PI
+ 
         // Determine the cardinal direction
-        if (angleDeg >= -45 && angleDeg < 45) 
+        if (angle >= -45 && angle < 45) 
             return "east"
-        
-        if (angleDeg >= 45 && angleDeg < 135) 
+    
+        if (angle >= 45 && angle < 135) 
             return "north"
         
-        if (angleDeg >= 135 || angleDeg < -135) 
+        if (angle >= 135 || angle < -135) 
             return "west"
-        
+
         return "south"
     }
 }

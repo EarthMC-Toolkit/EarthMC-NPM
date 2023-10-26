@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { NotFoundError } from '../src/utils/errors'
 
 describe('GPS', () => {
-    const sampleLoc = { x: -5100, z: 240 }
+    const sampleLoc = { x: -8000, z: 100 }
 
     it('can find the safest route', async () => {
         const route = await globalThis.Aurora.GPS.safestRoute(sampleLoc)

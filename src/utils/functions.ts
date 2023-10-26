@@ -70,7 +70,7 @@ const sqr = (a: Point2D, b: Point2D, range: number) => Math.hypot(
 const average = (nums: Point2D[], key: keyof Point2D) => {
     const sum = nums.map(obj => obj[key]).reduce((a, b) => safeParseInt(a) + safeParseInt(b))
     return safeParseInt(sum) / nums.length
-}    
+}
 
 // TODO: Ensure this is returning T[] and not a string of names.
 const getExisting = <T>(a1: T[], a2: string[], key: keyof T) => {
@@ -99,8 +99,8 @@ function genRandomString(maxAmount = 20) {
     const len = validChars.length
 
     for (let i = 0; i < maxAmount; i++) {
-      const randomIndex = Math.floor(Math.random() * len)
-      token += validChars.charAt(randomIndex)
+        const randomIndex = Math.floor(Math.random() * len)
+        token += validChars.charAt(randomIndex)
     }
   
     return token
