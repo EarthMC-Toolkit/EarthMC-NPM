@@ -62,11 +62,11 @@ const mapData = async (mapName: ValidMapName) => {
     return res as MapResponse
 }
     
-const townyData = async (endpoint = '', version = 'v2') => {
+const townyData = async (endpoint = '') => {
     if (endpoint.startsWith("/"))
         endpoint.replace("/", "")
 
-    const url = get("towny", `${version}/aurora`)
+    const url = get("towny", "aurora")
     return await asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown
 }
 
