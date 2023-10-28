@@ -33,7 +33,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
     //     ...town
     // } : town
 
-    readonly get = async (...townList: string[])=> {
+    readonly get = async (...townList: string[]) => {
         const towns = await this.all()
         if (!towns) throw new FetchError('Error fetching towns! Please try again.')
 

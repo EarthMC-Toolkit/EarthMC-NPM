@@ -99,7 +99,7 @@ class Nations implements EntityApi<Nation | NotFoundError> {
             fn.hypot(n.capital.z, [zInput, zRadius]))
     }
 
-    readonly joinable = async (townName: string, nationless = true): Promise<Nation[] | FetchError> => {
+    readonly joinable = async (townName: string, nationless = true) => {
         let town: Town = null
         try {
             town = await this.map.Towns.get(townName) as Town
