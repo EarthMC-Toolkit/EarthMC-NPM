@@ -364,11 +364,6 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@fastify/busboy@2.0.0:
-    resolution: {integrity: sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==}
-    engines: {node: '>=14'}
-    dev: false
-
   /@humanwhocodes/config-array@0.11.11:
     resolution: {integrity: sha512-N2brEuAadi0CcdeMXUkhbZB84eskAc8MEX1By6qEchoVywSgXPIjou4rYsl0V3Hj0ZnuGycGCjdNgockbzeWNA==}
     engines: {node: '>=10.10.0'}
@@ -3545,14 +3540,12 @@ packages:
     resolution: {integrity: sha512-2rJh4ndI10SjR6v+0LGCRisewxmGH0/+rYcnmhNqlcqNGHBVH58l4p5gtyMV1PU1lC85RhGGRwqWi+DSsd+JoA==}
     dependencies:
       tslib: 2.6.2
-      undici: 6.6.2
+      undici: 6.11.1
     dev: false
 
-  /undici@6.6.2:
-    resolution: {integrity: sha512-vSqvUE5skSxQJ5sztTZ/CdeJb1Wq0Hf44hlYMciqHghvz+K88U0l7D6u1VsndoFgskDcnU+nG3gYmMzJVzd9Qg==}
+  /undici@6.11.1:
+    resolution: {integrity: sha512-KyhzaLJnV1qa3BSHdj4AZ2ndqI0QWPxYzaIOio0WzcEJB9gvuysprJSLtpvc2D9mhR9jPDUk7xlJlZbH2KR5iw==}
     engines: {node: '>=18.0'}
-    dependencies:
-      '@fastify/busboy': 2.0.0
     dev: false
 
   /universalify@0.1.2:
@@ -3612,7 +3605,7 @@ packages:
       mlly: 1.4.1
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 4.5.2(@types/node@20.5.7)
+      vite: 4.5.3(@types/node@20.5.7)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -3624,8 +3617,8 @@ packages:
       - terser
     dev: true
 
-  /vite@4.5.2(@types/node@20.5.7):
-    resolution: {integrity: sha512-tBCZBNSBbHQkaGyhGCDUGqeo2ph8Fstyp6FMSvTtsXeZSPpSMGlviAOav2hxVTqFcx8Hj/twtWKsMJXNY0xI8w==}
+  /vite@4.5.3(@types/node@20.5.7):
+    resolution: {integrity: sha512-kQL23kMeX92v3ph7IauVkXkikdDRsYMGTVl5KY2E9OY4ONLvkHf04MDTbnfo6NKxZiDLWzVpP5oTa8hQD8U3dg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -3713,7 +3706,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.0
       tinypool: 0.7.0
-      vite: 4.5.2(@types/node@20.5.7)
+      vite: 4.5.3(@types/node@20.5.7)
       vite-node: 0.34.3(@types/node@20.5.7)
       webdriverio: 8.16.3(typescript@5.2.2)
       why-is-node-running: 2.2.2
