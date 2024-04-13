@@ -1,6 +1,6 @@
 {
   "name": "earthmc",
-  "version": "8.3.2",
+  "version": "8.3.3",
   "description": "An unofficial EarthMC library providing handy methods and extensive info.",
   "type": "module",
   "types": "./dist/main.d.ts",
@@ -48,7 +48,7 @@
     "async-mutex": "^0.4.0",
     "mitt": "^3.0.1",
     "modern-diacritics": "^2.3.1",
-    "mojang-lib": "^1.13.0",
+    "mojang-lib": "^1.13.2",
     "striptags": "3.2.0",
     "timed-cache": "^2.0.0",
     "tslib": "^2.6.2",
