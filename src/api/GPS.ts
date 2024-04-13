@@ -53,7 +53,7 @@ class GPS extends Mitt {
         return player
     }
 
-    #playerIsOnline = (player: Player) => {
+    playerIsOnline = (player: Player) => {
         if (!player.online) {
             this.emit('error', { 
                 err: "INVALID_PLAYER", 
@@ -72,7 +72,7 @@ class GPS extends Mitt {
             }) as Player
 
             if (!player) return
-            if (!this.#playerIsOnline(player)) return
+            if (!this.playerIsOnline(player)) return
 
             if (player.underground) {
                 if (!this.emittedUnderground) {

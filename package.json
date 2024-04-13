@@ -1,6 +1,6 @@
 {
   "name": "earthmc",
-  "version": "8.3.0",
+  "version": "8.3.2",
   "description": "An unofficial EarthMC library providing handy methods and extensive info.",
   "type": "module",
   "types": "./dist/main.d.ts",
@@ -10,11 +10,11 @@
     "default": "./dist/main.cjs"
   },
   "scripts": {
-    "prepublishOnly": "npm run ci && npm run docs",
-    "ci": "pnpm run lint && pnpm run test && pnpm run build",
+    "prepublishOnly": "bun run docs",
+    "ci": "bun run lint && bun run test && bun run build",
     "lint": "npx eslint .",
     "clean": "rimraf dist",
-    "build": "npm run clean && rollup -c && tsc --declaration true --emitDeclarationOnly true --declarationMap",
+    "build": "bun run clean && rollup -c && tsc --declaration true --emitDeclarationOnly true --declarationMap",
     "docs": "npx typedoc --options typedoc.json",
     "test": "vitest run --config ./vitest.config.ts",
     "test-browser": "vitest run --browser.name=chrome --browser.headless --config ./vitest.config.ts"
@@ -52,7 +52,7 @@
     "striptags": "3.2.0",
     "timed-cache": "^2.0.0",
     "tslib": "^2.6.2",
-    "undici-shim": "^1.5.2"
+    "undici-shim": "^1.5.3"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.4",

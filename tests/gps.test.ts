@@ -21,7 +21,7 @@ describe('GPS', () => {
 
     it('can check player is online when emitting', async () => {
         const ops = await globalThis.Aurora.Players.online()
-        const op = await globalThis.Aurora.GPS.getPlayer(ops[0]['name'])
+        const op = await globalThis.Aurora.GPS.map.Players.get(ops[0]['name'])
         expect(op).not.toBeInstanceOf(NotFoundError)
 
         const online = await globalThis.Aurora.GPS.playerIsOnline(op)
