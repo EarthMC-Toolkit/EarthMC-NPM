@@ -12,6 +12,7 @@
       "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_configuration.php"
     },
     "towny": {
-      "aurora": "https://api.earthmc.net/v2/aurora"
+      "v2/aurora": "https://api.earthmc.net/v2/aurora",
+      "v3/aurora": "https://api.earthmc.net/v3/aurora"
     }
 }

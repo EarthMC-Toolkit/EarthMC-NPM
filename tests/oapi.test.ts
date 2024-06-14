@@ -42,7 +42,7 @@ describe('OfficialAPI', async () => {
         //console.log(nation)
     })
 
-    it('can get valid nation', async () => {
+    it('can get valid town', async () => {
         const town = await OfficialAPI.town('venice')
 
         expect(town).toBeDefined()

@@ -49,11 +49,11 @@ const getArchive = async (url: string, unixTs = Date.now()) => {
     return await asJSON(`https://web.archive.org/web/${formattedTs}id_/${decodeURIComponent(url)}`)
 }
 
-const configData = (mapName: ValidMapName) => 
-    asJSON(get("config", mapName)) as unknown as ConfigResponse
+const configData = async (mapName: ValidMapName) => 
+    await asJSON(get("config", mapName)) as ConfigResponse
 
-const playerData = (mapName: ValidMapName) => 
-    asJSON(get("players", mapName)) as unknown as PlayersResponse
+const playerData = async (mapName: ValidMapName) => 
+    await asJSON(get("players", mapName)) as PlayersResponse
 
 const mapData = async (mapName: ValidMapName) => {
     const url = await get("map", mapName)
@@ -61,12 +61,18 @@ const mapData = async (mapName: ValidMapName) => {
 
     return res as MapResponse
 }
-    
+
+/**
+ * Gets info from a given Official API endpoint.
+ * 
+ * By "towny" we are referring to the data that we receive (balance, registration date etc).
+ * @param endpoint The endpoint not including the domain, e.g: "lists/nations"
+ */
 const townyData = async (endpoint = '') => {
     if (endpoint.startsWith("/"))
         endpoint.replace("/", "")
 
-    const url = get("towny", "aurora")
+    const url = get("towny", "v2/aurora")
     return await asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown
 }
 
