@@ -1,11 +1,11 @@
 {
     "map": {
       "nova": "https://earthmc.net/map/nova/standalone/MySQL_markers.php?marker=_markers_/marker_earth.json",
-      "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_markers.php?marker=_markers_/marker_earth.json"
+      "aurora": "https://map.earthmc.net/tiles/minecraft_overworld/markers.json"
     },
     "players": {
       "nova": "https://earthmc.net/map/nova/standalone/MySQL_update.php?world=earth",
-      "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_update.php?world=earth"
+      "aurora": "https://map.earthmc.net/tiles/players.json"
     },
     "config": {
       "nova": "https://earthmc.net/map/nova/standalone/MySQL_configuration.php",
