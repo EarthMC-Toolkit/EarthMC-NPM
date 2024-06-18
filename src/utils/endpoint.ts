@@ -1,10 +1,8 @@
-import { request, useDefaultAgent } from "undici-shim"
+import { request } from "undici"
 import endpoints from '../endpoints.json'
 import { ConfigResponse, MapResponse, PlayersResponse, ValidMapName } from "../types.js"
 
 import { genRandomString } from './functions.js'
-
-if (useDefaultAgent) useDefaultAgent()
 
 /**
  * @internal
@@ -20,19 +18,12 @@ const get = (dataType: keyof typeof endpoints, map: ValidMapName) => {
  * Used internally to send a **GET** request to the specified URL 
  * and retrieve the response as a **JSON** object.
  * 
- * This method does the following:
- * - Uses a proxy when in browser environment to bypass CORS.
- * - Retries a failed request up to 3 times by default.
- * 
  * @param url - The full URL to send the request to.
- * @param retries - The amount of retries to attempt before erroring.
+ * @param retries - The amount of retries to attempt before erroring. Default is 3.
  */
 const asJSON = async (url: string, retries = 3) => {
-    const isBrowser = typeof window === "object"
-    if (isBrowser) url = `https://corsproxy.io/?${encodeURIComponent(url)}`
-
     const res = await request(url)
-        .then((res: any) => res.body?.json() || res.json())
+        .then(res => res.body?.json())
         .catch(async err => await retry(err, url, retries))
     
     return res ?? await retry(null, url, retries)
@@ -43,8 +34,8 @@ const retry = (val: any, url: string, amt: number): any => amt === 1 ? val : asJ
 let archiveTs = 0
 const useArchive = (ts: number) => archiveTs = ts
 const getArchive = async (url: string, unixTs = Date.now()) => {
-    const date = new Date(unixTs * 1000),
-          formattedTs = date.toISOString().replace(/[^0-9]/g, '').slice(0, -3)
+    const date = new Date(unixTs * 1000)
+    const formattedTs = date.toISOString().replace(/[^0-9]/g, '').slice(0, -3)
 
     return await asJSON(`https://web.archive.org/web/${formattedTs}id_/${decodeURIComponent(url)}`)
 }

@@ -51,8 +51,7 @@
     "mojang-lib": "^1.13.2",
     "striptags": "3.2.0",
     "timed-cache": "^2.0.0",
-    "tslib": "^2.6.2",
-    "undici-shim": "^1.5.3"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.4",

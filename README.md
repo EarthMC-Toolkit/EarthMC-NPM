@@ -10,31 +10,10 @@ pnpm add earthmc
 ## Basic Usage
 View the full documentation [here](https://emctoolkit.vercel.app/docs/npm).
 
-### Node
-```js
+```ts
 import { Aurora } from 'earthmc' // ESM
 const { Aurora } = require('earthmc') // CJS
 
 const towns = await Aurora.Towns.all().catch(console.error)
 console.log(towns.length)
-```
-
-### Browser
-```js
-<button onclick="townAmount()">Show town amount</button>
-
-<script type="module" src="https://unpkg.com/earthmc@latest/dist/main.js"></script>
-<script>
-import { Aurora } from 'earthmc'
-
-window.townAmount = async function() {
-  try {
-    const towns = await Aurora.Towns.all()
-    alert(towns.length)
-  }
-  catch(e) {
-    console.error(e)
-  }
-}
-</script>
 ```

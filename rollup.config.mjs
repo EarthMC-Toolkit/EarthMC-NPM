@@ -28,8 +28,7 @@ const umd = {
     format: 'umd',
     name: 'earthmc',
     globals: {
-        'undici-shim': 'undici',
-        'mojang-lilb': 'mojanglib',
+        'mojang-lib': 'mojanglib',
         'timed-cache': 'timedcache'
     }
 }
