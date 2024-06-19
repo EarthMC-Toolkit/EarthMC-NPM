@@ -3,10 +3,10 @@ import {
     expectTypeOf, assertType 
 } from 'vitest'
 
-import { Town } from '../src/types'
-import { Map } from '../src/Map' 
+import { Town } from '../../src/types'
+import { Map } from '../../src/Map' 
 
-describe('Towns', () => {
+describe('[Dynmap] Towns', () => {
     it('can get all towns', async () => {
         const towns = await globalThis.Aurora.Towns.all()
         assertType<Town[]>(towns)

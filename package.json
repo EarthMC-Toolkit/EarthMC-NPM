@@ -12,10 +12,10 @@
   "scripts": {
     "prepublishOnly": "bun run docs",
     "ci": "bun run lint && bun run test && bun run build",
-    "lint": "npx eslint .",
+    "lint": "eslint .",
     "clean": "rimraf dist",
     "build": "bun run clean && rollup -c && tsc --declaration true --emitDeclarationOnly true --declarationMap",
-    "docs": "npx typedoc --options typedoc.json",
+    "docs": "typedoc --options typedoc.json",
     "test": "vitest run --config ./vitest.config.ts",
     "test-browser": "vitest run --browser.name=chrome --browser.headless --config ./vitest.config.ts"
   },

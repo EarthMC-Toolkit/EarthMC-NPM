@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest'
 
-import { NotFoundError } from '../src/utils/errors'
+import { NotFoundError } from '../../src/utils/errors'
 
-describe('GPS', () => {
+describe('[Dynmap] GPS', () => {
     const sampleLoc = { x: -8000, z: 100 }
 
     it('can find the safest route', async () => {

@@ -22,5 +22,5 @@
         }
     },
     "include": ["src"],
-    "exclude": ["node_modules", "docs", "tests", "dist"]
+    "exclude": ["node_modules", "docs", "tests", "dist"],
 }

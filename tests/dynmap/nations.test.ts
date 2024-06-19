@@ -1,9 +1,9 @@
 import { describe, it, expect, expectTypeOf, assertType } from 'vitest'
 
-import { Nation } from '../src/types'
-import { Map } from '../src/Map'
+import { Nation } from '../../src/types'
+import { Map } from '../../src/Map'
 
-describe('Nations', () => {
+describe('[Dynmap] Nations', () => {
     it('can get all nations', async () => {
         const nations = await globalThis.Aurora.Nations.all()
         assertType<Nation[]>(nations)

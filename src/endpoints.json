@@ -1,15 +1,19 @@
 {
     "map": {
       "nova": "https://earthmc.net/map/nova/standalone/MySQL_markers.php?marker=_markers_/marker_earth.json",
-      "aurora": "https://map.earthmc.net/tiles/minecraft_overworld/markers.json"
+      "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_markers.php?marker=_markers_/marker_earth.json"
     },
     "players": {
       "nova": "https://earthmc.net/map/nova/standalone/MySQL_update.php?world=earth",
-      "aurora": "https://map.earthmc.net/tiles/players.json"
+      "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_update.php?world=earth"
     },
     "config": {
       "nova": "https://earthmc.net/map/nova/standalone/MySQL_configuration.php",
       "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_configuration.php"
+    },
+    "squaremap": {
+      "map": "https://map.earthmc.net/tiles/minecraft_overworld/markers.json",
+      "players": "https://map.earthmc.net/tiles/players.json"
     },
     "towny": {
       "v2/aurora": "https://api.earthmc.net/v2/aurora",
