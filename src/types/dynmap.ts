@@ -1,4 +1,9 @@
 import { CardinalDirection, Location } from '../types.js'
+import { 
+    StringContainedWithin,
+    HexString, 
+    Opacity
+} from './util.js'
 
 export type MapResponse = {
     timestamp: number
@@ -16,13 +21,6 @@ export type Markerset = {
     lines: any
 }
 
-type StringContainedWithin<T extends string, U extends string> = `${T}${string}${U}`
-type DivString = StringContainedWithin<"<div><div>", "</div></div>">
-
-type HexString = `#${string}`
-
-type Opacity = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1
-
 export type MapArea = {
     label: string
     x: number[]
@@ -31,7 +29,7 @@ export type MapArea = {
     color: HexString
     fillopacity: Opacity
     opacity: Opacity
-    desc: DivString
+    desc: StringContainedWithin<"<div><div>", "</div></div>">
 }
 
 export type TownHome = Omit<MapArea, 
