@@ -7,8 +7,6 @@ import { Nation, Town } from '../types.js'
 import { Map } from "../Map.js"
 import { EntityApi } from './EntityApi.js'
 
-//import OfficialAPI from '../OAPI.js'
-
 class Towns implements EntityApi<Town | NotFoundError> {
     #map: Map
 
@@ -50,14 +48,14 @@ class Towns implements EntityApi<Town | NotFoundError> {
             throw new ReferenceError('No areas found on markerset!')
         }
 
-        const townsArray: Town[] = [], 
-              areas = Object.values(markerset.areas)
+        const townsArray: Town[] = []
+        const areas = Object.values(markerset.areas)
               
         const len = areas.length
         for (let i = 0; i < len; i++) {
-            const town = areas[i], 
-                  rawinfo = town.desc.split("<br />"), 
-                  info = rawinfo.map(i => striptags(i, ['a']))
+            const town = areas[i]
+            const rawinfo = town.desc.split("<br />")
+            const info = rawinfo.map(i => striptags(i, ['a']))
 
             const firstEl = info[0]
             if (firstEl.includes("(Shop)")) continue
@@ -68,11 +66,11 @@ class Towns implements EntityApi<Town | NotFoundError> {
             let split: string | string[] = firstEl.split(" (")
             split = (split[2] ?? split[1]).slice(0, -1)
 
-            const residents = info[2].slice(9).split(", "), 
-                  capital = fn.asBool(info[9]?.slice(9))
+            const residents = info[2].slice(9).split(", ")
+            const capital = fn.asBool(info[9]?.slice(9))
 
-            let nationName = split, 
-                wikiPage = null
+            let nationName = split
+            let wikiPage = null
 
             // Check if we have a wiki
             if (split.includes('href')) {
