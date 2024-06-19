@@ -40,7 +40,7 @@ describe('[v2] OfficialAPI', async () => {
         expect(info.players.maxPlayers).toBeGreaterThan(0)
         expect(info.stats.numTowns).toBeGreaterThanOrEqual(1000)
         expect(info.stats.numNations).toBeGreaterThanOrEqual(100)
-    })
+    }, 10000)
 
     it('can get valid resident', async () => {
         const res = await OfficialAPI.V2.resident('fruitloopins')
@@ -50,7 +50,7 @@ describe('[v2] OfficialAPI', async () => {
 
         expect(res.name).toBe("Fruitloopins")
         //console.log(res)
-    })
+    }, 10000)
 
     it('can get valid nation', async () => {
         const nation = await OfficialAPI.V2.nation('venice')
@@ -60,7 +60,7 @@ describe('[v2] OfficialAPI', async () => {
 
         expect(nation.name).toBe("Venice")
         //console.log(nation)
-    })
+    }, 10000)
 
     it('can get valid town', async () => {
         const town = await OfficialAPI.V2.town('venice')
@@ -70,5 +70,5 @@ describe('[v2] OfficialAPI', async () => {
 
         expect(town.name).toBe("Venice")
         //console.log(town)
-    })
+    }, 10000)
 })
