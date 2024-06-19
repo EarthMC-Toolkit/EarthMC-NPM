@@ -36,9 +36,9 @@ class Nations implements EntityApi<Nation | NotFoundError> {
             if (!towns) throw new Error() // TODO: Implement appropriate error.
         }
 
-        const raw: Record<string, Nation> = {}, 
-              nations: Nation[] = [],
-              len = towns.length
+        const raw: Record<string, Nation> = {}
+        const nations: Nation[] = []
+        const len = towns.length
 
         for (let i = 0; i < len; i++) {
             const town = towns[i]
