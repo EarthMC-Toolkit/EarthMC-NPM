@@ -53,7 +53,7 @@ export type OAPIResident = NestedOmit<RawResident,
 //#endregion
 
 //#region Raw, unparsed types
-export type RawEntity = {
+export interface RawEntity {
     uuid: string
     status: RawEntityStatus
     stats: RawEntityStats
@@ -71,7 +71,7 @@ export type RawEntityStatus = Partial<{
     isNPC: boolean
 }>
 
-export type RawEntityStats = {
+export interface RawEntityStats {
     maxTownBlocks?: number
     numTownBlocks?: number
     numResidents?: number
@@ -79,28 +79,28 @@ export type RawEntityStats = {
     balance: number
 }
 
-export type RawResidentPerms = {
+export interface RawResidentPerms {
     friend: boolean
     town: boolean
     ally: boolean
     outsider: boolean
 }
 
-export type RawTownPerms = {
+export interface RawTownPerms {
     resident: boolean
     nation: boolean
     ally: boolean
     outsider: boolean
 }
 
-export type RawFlagPerms = {
+export interface RawFlagPerms {
     pvp: boolean
     explosion: boolean
     fire: boolean
     mobs: boolean
 }
 
-export type RawEntityPerms<PermsType> = {
+export interface RawEntityPerms<PermsType> {
     flagPerms: RawFlagPerms
     rnaoPerms: {
         buildPerms: PermsType
@@ -116,7 +116,7 @@ export type RawEntitySpawn = Prettify<Location & {
     yaw?: number
 }>
 
-export type RawTownCoordinates = {
+export interface RawTownCoordinates {
     spawn: RawEntitySpawn 
     home: number[]
     townBlocks: {
@@ -153,7 +153,7 @@ export type RawNation = Prettify<RawEntity & {
     enemies?: string[]
 }>
 
-export type Timestamps = {
+export interface Timestamps {
     joinedNationAt?: number
     joinedTownAt?: number
     registered: number
@@ -171,7 +171,7 @@ export type RawResident = Prettify<RawEntity & {
     friends?: string[]
 }>
 
-export type RawServerInfo = {
+export interface RawServerInfoV2 {
     world: {
         hasStorm: boolean
         isThundering: boolean
@@ -189,6 +189,36 @@ export type RawServerInfo = {
         numTowns: number
         numNations: number
         numTownBlocks: number
+    }
+}
+
+export interface RawServerInfoV3 {
+    version: string
+    moonPhase: string
+    timestamps: {
+        newDayTime: number
+        serverTimeOfDay: number
+    }
+    status: {
+        hasStorm: boolean
+        isThundering: boolean
+    }
+    stats: {
+        time: number
+        fullTime: number
+        maxPlayers: number
+        numOnlinePlayers: number
+        numResidents: number
+        numNomads: number
+        numTowns: number
+        numNations: number
+        numTownBlocks: number
+        numCuboids: number
+        numQuarters: number
+    }
+    voteParty: {
+        target: number,
+        numRemaining: number
     }
 }
 //#endregion

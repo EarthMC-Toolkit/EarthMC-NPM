@@ -8,3 +8,5 @@ export type ValidateShape<T, Shape> = T extends Shape ? Exclude<keyof T, keyof S
 export type Prettify<T> = {
     [K in keyof T]: T[K]
 } & unknown
+
+export type AssertPositive<N extends number> = number extends N ? N : `${N}` extends `-${string}` ? never : N;

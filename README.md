@@ -4,8 +4,14 @@ This package is part of the [EarthMC Toolkit](https://emctoolkit.vercel.app) and
 
 ## Install
 ```bash
-pnpm add earthmc
+bun add earthmc
 ```
+
+While I recommend [Bun](https://bun.sh) for its speed, you can install with any other package manager.
+
+PNPM ➤ `pnpm add earthmc`\
+Yarn ➤ `yarn add earthmc`\
+NPM (ew) ➤ `npm i earthmc`
 
 ## Basic Usage
 View the full documentation [here](https://emctoolkit.vercel.app/docs/npm).

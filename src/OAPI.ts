@@ -2,10 +2,11 @@ import {
     RawTown,
     RawNation, 
     RawResident,
-    RawServerInfo,
     OAPITown,
     OAPIResident,
-    OAPINation
+    OAPINation,
+    RawServerInfoV2,
+    RawServerInfoV3
 } from './types.js'
 
 import { townyData } from './utils/endpoint.js'
@@ -92,13 +93,15 @@ const parseNation = (nation: RawNation) => {
 const ParamErr = () => new SyntaxError(`Parameter 'name' is invalid. Must be of type string!`)
 const FetchErr = (type: string, name: string) => new FetchError(`Could not fetch ${type} '${name}'. Invalid response received!`)
 
-class OfficialAPI {
-    static serverInfo = async () => await townyData() as RawServerInfo
+class OAPIV2 {
+    static serverInfo = async (): Promise<RawServerInfoV2> => {
+        return townyData('', 'v2')
+    }
 
     static resident = async (name: string) => {
         if (!name) throw ParamErr()
 
-        const res = await townyData(`/residents/${name}`) as RawResident
+        const res = await townyData(`/residents/${name}`, 'v2') as RawResident
         if (!res) throw FetchErr('resident', name)
 
         return parseResident(res)
@@ -107,7 +110,7 @@ class OfficialAPI {
     static town = async (name: string) => {
         if (!name) throw ParamErr()
 
-        const town = await townyData(`/towns/${name}`) as RawTown
+        const town = await townyData(`/towns/${name}`, 'v2') as RawTown
         if (!town) throw FetchErr('town', name)
 
         return parseTown(town)
@@ -116,14 +119,20 @@ class OfficialAPI {
     static nation = async (name: string) => {
         if (!name) throw ParamErr()
 
-        const nation = await townyData(`/nations/${name}`) as RawNation
+        const nation = await townyData(`/nations/${name}`, 'v2') as RawNation
         if (!nation) throw FetchErr('nation', name)
 
         return parseNation(nation)
     }
 }
 
+class OAPIV3 {
+    static serverInfo = async (): Promise<RawServerInfoV3> => {
+        return townyData('', 'v3')
+    }
+}
+
 export {
-    OfficialAPI,
-    OfficialAPI as default
+    OAPIV3 as default,
+    OAPIV3, OAPIV2
 }
