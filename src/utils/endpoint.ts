@@ -1,8 +1,18 @@
-import { request } from "undici"
-import endpoints from '../endpoints.json'
+import { request, Dispatcher } from "undici"
 import { ConfigResponse, MapResponse, PlayersResponse, ValidMapName } from "../types.js"
+import endpoints from '../endpoints.json'
 
 import { genRandomString } from './functions.js'
+
+export type V3RequestBody = {
+    query: string
+    [key: string]: any
+}
+
+export type EndpointVersion = 'v2' | 'v3'
+export type ReqOptions = { dispatcher?: Dispatcher } 
+    & Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> 
+    & Partial<Pick<Dispatcher.RequestOptions, 'method'>>
 
 /**
  * @internal
@@ -21,15 +31,15 @@ const get = (dataType: keyof typeof endpoints, map: ValidMapName) => {
  * @param url - The full URL to send the request to.
  * @param retries - The amount of retries to attempt before erroring. Default is 3.
  */
-const asJSON = async (url: string, retries = 3) => {
-    const res = await request(url)
+const asJSON = async (url: string, options: ReqOptions = null, retries = 3) => {
+    const res = await request(url, options)
         .then(res => res.body?.json())
         .catch(async err => await retry(err, url, retries))
     
     return res ?? await retry(null, url, retries)
 }
 
-const retry = (val: any, url: string, amt: number): any => amt === 1 ? val : asJSON(url, amt - 1)
+const retry = (val: any, url: string, amt: number): any => amt === 1 ? val : asJSON(url, null, amt - 1)
 
 let archiveTs = 0
 const useArchive = (ts: number) => archiveTs = ts
@@ -59,12 +69,22 @@ const mapData = async (mapName: ValidMapName) => {
  * By "towny" we are referring to the data that we receive (balance, registration date etc).
  * @param endpoint The endpoint not including the domain, e.g: "lists/nations"
  */
-const townyData = async (endpoint = '') => {
-    if (endpoint.startsWith("/"))
+const townyData = async (endpoint = '', version: EndpointVersion = 'v3', body?: V3RequestBody) => {
+    if (endpoint.startsWith("/")) {
         endpoint.replace("/", "")
+    }
+
+    if (version == "v3") {
+        const url = get("towny", "v3/aurora")
+
+        return body ? asJSON(`${url}${endpoint}`, {
+            method: "GET",
+            body: JSON.stringify(body)
+        }) : asJSON(`${url}${endpoint}`)
+    }
 
     const url = get("towny", "v2/aurora")
-    return await asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown
+    return asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown     
 }
 
 export {

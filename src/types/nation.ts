@@ -2,7 +2,7 @@ import {
     RawEntitySpawn, 
     RawEntityStats, 
     RawEntityStatus 
-} from "./oapi_v2.js"
+} from "../types.js"
 
 export type Nation = {
     name: string

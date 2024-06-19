@@ -4,7 +4,7 @@ import { FetchError } from "./utils/errors.js"
 import { Map } from './Map.js'
 
 import MCAPI from "mojang-lib"
-import OfficialAPI from './OAPI.js'
+import { OAPIV2, OAPIV3 } from './OAPI.js'
 
 const Aurora = new Map('aurora')
 const Nova = new Map('nova')
@@ -48,6 +48,11 @@ export { formatString } from './utils/functions.js'
 
 export * from "./types.js"
 export * from "./utils/errors.js"
+
+const OfficialAPI = {
+    V2: OAPIV2,
+    V3: OAPIV3
+}
 
 export {
     MCAPI as MojangLib,
