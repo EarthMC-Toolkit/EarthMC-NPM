@@ -1,48 +1,29 @@
 import { 
-    describe, it, expect, 
-    expectTypeOf, assertType 
+    describe, it, 
+    expect, assertType
 } from 'vitest'
 
 import { Town } from '../../src/types'
-import { Map } from '../../src/Map' 
 
-describe('[Dynmap] Towns', () => {
+describe('[Dynmap/Nova] Towns', () => {
     it('can get all towns', async () => {
-        const towns = await globalThis.Aurora.Towns.all()
+        const towns = await globalThis.Nova.Towns.all()
         assertType<Town[]>(towns)
     })
 
-    it('can get single town without error', async () => {
-        const town = await globalThis.Aurora.Towns.get('venice')
+    it('can get single town', async () => {
+        const town = await globalThis.Nova.Towns.get('kraftier')
 
+        expect(town).toBeTruthy()
         expect(town).toBeDefined()
-        expectTypeOf(town).not.toEqualTypeOf<Error>()
-        assertType<Town[]>(town)
-
-        //console.log(town)
+        assertType<Town | Town[]>(town)
     })
 
     it('can get towns invitable to specified nation', async () => {
-        const invitableTowns = await globalThis.Aurora.Towns.invitable('venice')
+        const invitableTowns = await globalThis.Nova.Towns.invitable('sudan')
 
+        expect(invitableTowns).toBeTruthy()
         expect(invitableTowns).toBeDefined()
-        expectTypeOf(invitableTowns).not.toEqualTypeOf<Error>()
         assertType<Town[]>(invitableTowns)
-    })
-
-    it('should return different town info on Aurora and Nova', async () => {
-        const Nova = new Map('nova')
-        const [novaTown, auroraTown] = await Promise.all([
-            Nova.Towns.get('Venice'), 
-            globalThis.Aurora.Towns.get('Venice')
-        ])
-
-        expect(novaTown).not.toEqual(auroraTown)
-        expect(novaTown['stats']).toBeUndefined()
-
-        expect(auroraTown.wiki).toBeDefined()
-        //expect(auroraTown.stats).toBeDefined()
-        //expect(auroraTown.founder).toBeDefined()
-        //expect(auroraTown.created).toBeDefined()
     })
 })

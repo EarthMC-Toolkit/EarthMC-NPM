@@ -154,7 +154,10 @@ class GPS extends Mitt {
         // Use reduce to find the minimum distance and corresponding nation
         const { distance, nation } = filtered.reduce((acc: any, nation: Nation) => {
             const capital = nation.capital
-            const dist = fn.manhattan(capital.x, capital.z, fn.safeParseInt(loc.x), fn.safeParseInt(loc.z))
+            const dist = fn.manhattan(
+                fn.safeParseInt(capital.x), fn.safeParseInt(capital.z), 
+                fn.safeParseInt(loc.x), fn.safeParseInt(loc.z)
+            )
 
             // Update acc if this nation is closer
             const closer = !acc.distance || dist < acc.distance

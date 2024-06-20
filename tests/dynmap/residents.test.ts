@@ -5,14 +5,14 @@ import { Resident } from '../../src/types'
 //     Map
 // } from '../src/main'
 
-describe('[Dynmap] Residents', () => {
-    it('[Aurora] can get all residents', async () => {
-        const residents = await globalThis.Aurora.Residents.all()
+describe('[Dynmap/Nova] Residents', () => {
+    it('can get all residents', async () => {
+        const residents = await globalThis.Nova.Residents.all()
         assertType<Resident[]>(residents)
     })
 
-    it('[Aurora] can get single resident without error', async () => {
-        const resident = await globalThis.Aurora.Residents.get('3meraldk')
+    it('can get single resident', async () => {
+        const resident = await globalThis.Nova.Residents.get('3meraldk')
 
         expect(resident).toBeDefined()
         expectTypeOf(resident).not.toEqualTypeOf<Error>()
@@ -23,14 +23,4 @@ describe('[Dynmap] Residents', () => {
         //expect(resident.timestamps).toBeDefined()
         //expect(resident.timestamps.registered).toEqual(1652454407381)
     })
-
-    // it('should return different resident info on Aurora and Nova', async () => {
-    //     const Nova = new Map('nova')
-    //     const [novaRes, auroraRes] = await Promise.all([
-    //         Nova.Residents.get('3meraldK'), 
-    //         globalThis.Aurora.Residents.get('3meraldK')
-    //     ]) as Resident[]
-
-    //     expect(auroraRes.town).not.toBe(novaRes.town)
-    // })
 })

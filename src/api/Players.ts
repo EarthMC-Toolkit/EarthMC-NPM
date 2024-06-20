@@ -48,15 +48,15 @@ class Players implements EntityApi<Player | NotFoundError> {
         const onlinePlayers = await this.online()
         if (!onlinePlayers) return null
 
-        const allResidents: string[] = [],
-              markerset = mapData.sets["townyPlugin.markerset"],
-              areas = Object.values(markerset.areas)
+        const allResidents: string[] = []
+        const markerset = mapData.sets["townyPlugin.markerset"]
+        const areas = Object.values(markerset.areas)
         
         const len = areas.length
         for (let i = 0; i < len; i++) {
-            const town = areas[i],
-                  rawinfo = town.desc.split("<br />"),
-                  info = rawinfo.map(x => striptags(x))
+            const town = areas[i]
+            const rawinfo = town.desc.split("<br />")
+            const info = rawinfo.map(x => striptags(x))
 
             if (info[0].endsWith("(Shop)")) continue
 
@@ -83,12 +83,12 @@ class Players implements EntityApi<Player | NotFoundError> {
         const residents = await this.map.Residents.all()
         if (!residents) return null
 
-        const merged = [], 
-              len = onlinePlayers.length
+        const merged = []
+        const len = onlinePlayers.length
 
         for (let i = 0; i < len; i++) {
-            const curOp = onlinePlayers[i],
-                  foundRes = residents.find(res => res.name === curOp.name)
+            const curOp = onlinePlayers[i]
+            const foundRes = residents.find(res => res.name === curOp.name)
 
             merged.push({ ...curOp, ...foundRes })
         }

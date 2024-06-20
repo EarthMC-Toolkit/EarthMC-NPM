@@ -1,4 +1,5 @@
 import { 
+    Point2D,
     RawEntitySpawn, 
     RawEntityStats, 
     RawEntityStatus 
@@ -23,8 +24,6 @@ export type Nation = {
     mapColorHexCode?: string
 }
 
-export type NationCapital = {
+export type NationCapital = Point2D & {
     name: string
-    x: number
-    z: number
 }

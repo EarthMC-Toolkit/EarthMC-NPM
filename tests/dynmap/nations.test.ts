@@ -1,35 +1,21 @@
 import { describe, it, expect, expectTypeOf, assertType } from 'vitest'
 
 import { Nation } from '../../src/types'
-import { Map } from '../../src/Map'
 
-describe('[Dynmap] Nations', () => {
+describe('[Dynmap/Nova] Nations', () => {
     it('can get all nations', async () => {
-        const nations = await globalThis.Aurora.Nations.all()
+        const nations = await globalThis.Nova.Nations.all()
         assertType<Nation[]>(nations)
     })
 
-    it('can get single nation without error', async () => {
-        const nation = await globalThis.Aurora.Nations.get('venice')
+    it('can get single nation', async () => {
+        const nation = await globalThis.Nova.Nations.get('sudan')
 
         expect(nation).toBeDefined()
         expectTypeOf(nation).not.toEqualTypeOf<Error>()
         assertType<Nation | Nation[]>(nation)
 
-        expect(nation.name).toBe('Venice')
+        expect(nation.name).toBe('Sudan')
         //console.log(nation)
-    })
-
-    it('should return different nation info on Aurora and Nova', async () => {
-        const Nova = new Map('nova')
-        const [novaNation, auroraNation] = await Promise.all([
-            Nova.Nations.get('Yue'), 
-            globalThis.Aurora.Nations.get('Yue')
-        ]) as Nation[]
-        
-        expect(novaNation).not.toEqual(auroraNation)
-
-        expect(novaNation.stats).toBeUndefined()
-        //expect(auroraNation.stats).toBeDefined()
     })
 })

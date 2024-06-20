@@ -82,7 +82,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
 
             const home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
             const [townX, townZ] = [town.x, town.z]
-            const area =  fn.calcArea(townX, townZ, townX.length)
+            const area = fn.calcArea(townX, townZ, townX.length)
 
             const currentTown: Town = {
                 name: fn.formatString(town.label, removeAccents),

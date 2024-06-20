@@ -95,8 +95,8 @@ class Nations implements EntityApi<Nation | NotFoundError> {
         }
     
         return nations.filter(n => 
-            fn.hypot(n.capital.x, [xInput, xRadius]) && 
-            fn.hypot(n.capital.z, [zInput, zRadius]))
+            fn.hypot(fn.safeParseInt(n.capital.x), [xInput, xRadius]) && 
+            fn.hypot(fn.safeParseInt(n.capital.z), [zInput, zRadius]))
     }
 
     readonly joinable = async (townName: string, nationless = true) => {
