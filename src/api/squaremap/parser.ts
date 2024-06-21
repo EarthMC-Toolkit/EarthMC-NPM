@@ -3,13 +3,13 @@
 import striptags from 'striptags'
 
 import { mapData } from '../../utils/endpoint.js'
-import { calcArea, formatString, roundToNearest16 } from '../../utils/functions.js'
+import { asBool, calcArea, formatString, range, roundToNearest16 } from '../../utils/functions.js'
 
 import {
     Point2D,
     SquaremapMapResponse,
     SquaremapMarkerset,
-    Town
+    SquaremapTown
 } from '../../types.js'
 
 //#region TESTING
@@ -47,9 +47,7 @@ const parseTooltip = (tooltip: string) => {
     return cleaned
 }
 
-const parseInfoString = (str: string) => {
-    return str.slice(str.indexOf(":") + 1).trim()
-}
+const parseInfoString = (str: string) => str.slice(str.indexOf(":") + 1).trim()
 
 interface TownCoords {
     townX: number[]
@@ -68,7 +66,7 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
     //     return acc
     // }, []))
 
-    const towns: Town[] = []
+    const towns: SquaremapTown[] = []
 
     const len = res.markers.length
     for (let i = 0; i < len; i++) {
@@ -94,16 +92,19 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
             assistants.shift()
         }
 
-        const town = {
+        const town: SquaremapTown = {
             name: formatString(parsedTooltip[0], removeAccents),
             nation: parsedTooltip[1] ? formatString(parsedTooltip[1], removeAccents) : "No Nation",
             mayor: parseInfoString(info[1]),
-            assistants, residents,
+            assistants, 
+            residents,
             area: calcArea(townX, townZ, townX.length),
-            bounds,
+            bounds: bounds as any,
+            x: range(townX),
+            z: range(townZ),
             flags: {
-                pvp: parseInfoString(info[3])
-            },
+                pvp: asBool(parseInfoString(info[3]))
+            } as any,
             colours: {
                 fill: curMarker.fillColor,
                 outline: curMarker.color
@@ -112,7 +113,7 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
                 fill: curMarker.fillOpacity,
                 outline: curMarker.opacity
             }
-        } as unknown as Town
+        }
 
         towns.push(town)
     }

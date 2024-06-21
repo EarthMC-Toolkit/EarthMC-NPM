@@ -1,23 +1,14 @@
 import { HexString, Opacity, Prettify } from "./util.js"
 
-export type Town = Prettify<{
+export interface BaseTown {
     name: string
     nation: string | "No Nation"
-    founder?: string
     mayor: string
+    residents: string[]
     area: number
     bounds: TownBounds
     x: number
     z: number
-    residents: string[]
-    flags: TownFlags
-    balance?: number
-    timestamps?: {
-        joinedNation?: number
-        founded: number
-    }
-    trusted?: string[]
-    outlaws?: string[]
     colours: {
         fill: HexString
         outline: HexString
@@ -27,6 +18,25 @@ export type Town = Prettify<{
         outline: Opacity
     },
     wiki?: string
+    balance?: number
+    timestamps?: {
+        joinedNation?: number
+        founded: number
+    }
+    founder?: string
+    trusted?: string[]
+    outlaws?: string[]
+}
+
+export type SquaremapTown = Prettify<BaseTown & {
+    assistants: string[]
+    flags: {
+        pvp: boolean
+    }
+}>
+
+export type Town = Prettify<BaseTown & {
+    flags: TownFlags
 }>
 
 export type TownBounds = {
