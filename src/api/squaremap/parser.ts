@@ -17,7 +17,7 @@ const run = async() => {
     const markerset = await fetchMarkerset()
 
     const t0 = performance.now()
-    const out = await parseTowns(markerset)//.then(console.log)
+    const out = await parseTowns(markerset).then(console.log)
     
     console.log("Took: " + (performance.now() - t0))
 

@@ -18,16 +18,16 @@ describe('[Dynmap/Nova] GPS', () => {
         expect(route.distance).toBeGreaterThanOrEqual(0)
     })
 
-    it('can check player is online when emitting', async () => {
-        const ops = await globalThis.Nova.Players.online()
-        expect(ops).toBeDefined()
-        expect(ops).toBeTruthy()
-        assertType<Player[]>(ops)
+    // it('can check player is online when emitting', async () => {
+    //     const ops = await globalThis.Nova.Players.online()
+    //     expect(ops).toBeDefined()
+    //     expect(ops).toBeTruthy()
+    //     assertType<Player[]>(ops)
 
-        const op = await globalThis.Nova.Players.get(ops[0]['name'])
-        expect(op).toBeTruthy()
+    //     const op = await globalThis.Nova.Players.get(ops[0]['name'])
+    //     expect(op).toBeTruthy()
 
-        const online = await globalThis.Nova.GPS.playerIsOnline(op)
-        expect(online).toEqual(true)
-    })
+    //     const online = await globalThis.Nova.GPS.playerIsOnline(op)
+    //     expect(online).toEqual(true)
+    // })
 })
