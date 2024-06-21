@@ -1,4 +1,4 @@
-import { SquaremapMapResponse, ValidMapName } from "src/types.js"
+import { Point2D, SquaremapMapResponse, ValidMapName } from "../..//types.js"
 import DataHandler from "../../helpers/DataHandler.js"
 
 import Towns from '../squaremap/Towns.js'
@@ -33,6 +33,16 @@ class Squaremap extends DataHandler {
     markerset = async () => {
         const res = await this.mapData<SquaremapMapResponse>()
         return res.find(x => x.id == "towny")
+    }
+
+    buildMapLink = (zoom?: number, location?: Point2D): URL => {
+        const url = new URL(`https://map.earthmc.net/?mapname=flat`)
+        if (zoom) url.searchParams.append("zoom", zoom.toString())
+
+        if (location?.x) url.searchParams.append("x", location.x.toString())
+        if (location?.z) url.searchParams.append("z", location.z.toString())
+
+        return url
     }
 }
 
