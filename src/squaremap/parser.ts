@@ -17,7 +17,7 @@ const run = async() => {
     const markerset = await fetchMarkerset()
 
     const t0 = performance.now()
-    const out = await parseTowns(markerset)// .then(console.log)
+    const out = await parseTowns(markerset)//.then(console.log)
     
     console.log("Took: " + (performance.now() - t0))
 
@@ -84,8 +84,8 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
 
         const parsedTooltip = parseTooltip(curMarker.tooltip)
 
-        const points: Point2D[] = curMarker.points.flat(2)
-        const { townX, townZ } = points.reduce((acc: TownCoords, p) => {
+        const bounds: Point2D[] = curMarker.points.flat(2)
+        const { townX, townZ } = bounds.reduce((acc: TownCoords, p) => {
             acc.townX.push(roundToNearest16(p.x as number))
             acc.townZ.push(roundToNearest16(p.z as number))
 
@@ -104,10 +104,7 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
             mayor: parseInfoString(info[1]),
             assistants, residents,
             area: calcArea(townX, townZ, townX.length),
-            bounds: {
-                x: townX,
-                z: townZ
-            },
+            bounds,
             flags: {
                 pvp: parseInfoString(info[3])
             },
@@ -118,6 +115,7 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
         } as unknown as Town
 
         towns.push(town)
+        console.log(town)
     }
 
     return towns
