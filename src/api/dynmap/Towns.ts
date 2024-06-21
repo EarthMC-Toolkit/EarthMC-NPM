@@ -4,8 +4,9 @@ import * as fn from '../../utils/functions.js'
 
 import { FetchError, InvalidError, NotFoundError } from "../../utils/errors.js"
 import { Nation, Town } from '../../types.js'
-import { Dynmap } from "./Dynmap.js"
-import { EntityApi } from './EntityApi.js'
+import { EntityApi } from '../../helpers/EntityApi.js'
+
+import Dynmap from "./Dynmap.js"
 
 class Towns implements EntityApi<Town | NotFoundError> {
     #map: Dynmap

@@ -1,9 +1,11 @@
 import { SquaremapMapResponse, ValidMapName } from "src/types.js"
 import DataHandler from "../../helpers/DataHandler.js"
 
+import Towns from '../squaremap/Towns.js'
+
 class Squaremap extends DataHandler {
     //#region Data classes
-    // readonly Towns: Towns
+    readonly Towns: Towns
     // readonly Nations: Nations
     // readonly Residents: Residents
     // readonly Players: Players
@@ -20,7 +22,7 @@ class Squaremap extends DataHandler {
         
         this.name = mapName
 
-        // this.Towns = new Towns(this)
+        this.Towns = new Towns(this)
         // this.Nations = new Nations(this)
         // this.Residents = new Residents(this)
         // this.Players = new Players(this)

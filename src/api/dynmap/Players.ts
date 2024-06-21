@@ -6,7 +6,7 @@ import { FetchError, NotFoundError } from "../../utils/errors.js"
       
 import Dynmap from './Dynmap.js'
 import { MapResponse, OnlinePlayer, Player } from '../../types.js'
-import { EntityApi } from './EntityApi.js'
+import { EntityApi } from '../../helpers/EntityApi.js'
 
 class Players implements EntityApi<Player | NotFoundError> {
     #map: Dynmap

@@ -1,34 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import striptags from 'striptags'
-
-import { mapData } from '../../utils/endpoint.js'
 import { asBool, calcArea, formatString, range, roundToNearest16 } from '../../utils/functions.js'
 
 import {
     Point2D,
-    SquaremapMapResponse,
     SquaremapMarkerset,
     SquaremapTown
 } from '../../types.js'
-
-//#region TESTING
-const run = async() => {
-    const markerset = await fetchMarkerset()
-
-    const t0 = performance.now()
-    const out = await parseTowns(markerset).then(console.log)
-    
-    console.log("Took: " + (performance.now() - t0))
-
-    return out
-}
-
-const fetchMarkerset = async() => {
-    const res: SquaremapMapResponse = await mapData('Aurora')
-    return res.find(x => x.id == "towny")
-}
-//#endregion
 
 /**
  * Parses the tooltip on a marker - removing white space, new lines and HTML tags.
@@ -124,8 +103,6 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
 // const parseNations = async(towns: Town[]) => {
 
 // }
-
-run()
 
 export {
     parseTowns
