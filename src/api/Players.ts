@@ -5,7 +5,7 @@ import * as endpoint from '../utils/endpoint.js'
 import { FetchError, NotFoundError } from "../utils/errors.js"
       
 import { Map } from '../Map.js'
-import { OnlinePlayer, Player } from '../types.js'
+import { MapResponse, OnlinePlayer, Player } from '../types.js'
 import { EntityApi } from './EntityApi.js'
 
 class Players implements EntityApi<Player | NotFoundError> {
@@ -42,11 +42,11 @@ class Players implements EntityApi<Player | NotFoundError> {
     }
     
     readonly townless = async () => {
-        const mapData = await endpoint.mapData("aurora")
-        if (!mapData) throw new FetchError('Error fetching townless! Please try again.')
-    
         const onlinePlayers = await this.online()
         if (!onlinePlayers) return null
+
+        const mapData = await endpoint.mapData<MapResponse>("aurora")
+        if (!mapData) throw new FetchError('Error fetching townless! Please try again.')
 
         const allResidents: string[] = []
         const markerset = mapData.sets["townyPlugin.markerset"]

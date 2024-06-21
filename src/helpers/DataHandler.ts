@@ -2,7 +2,7 @@ import { editPlayerProps } from '../utils/functions.js'
 import * as endpoint from '../utils/endpoint.js'
 
 import { Mutex } from 'async-mutex'
-import { MapResponse, ValidMapName } from '../types.js'
+import { ConfigResponse, MapResponse, PlayersResponse, ValidMapName } from '../types.js'
 
 class DataHandler {
     #isNode = true
@@ -64,8 +64,8 @@ class DataHandler {
             this.handle('mapData')?.unref()
     }
 
-    readonly playerData = () => endpoint.playerData(this.#map)
-    readonly configData = () => endpoint.configData(this.#map)
+    readonly playerData = () => endpoint.playerData<PlayersResponse>(this.#map)
+    readonly configData = () => endpoint.configData<ConfigResponse>(this.#map)
 
     readonly onlinePlayerData = async () => {
         const pData = await this.playerData()

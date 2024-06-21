@@ -4,6 +4,7 @@
         "moduleResolution": "NodeNext",
         "moduleDetection": "force",
         "target": "ES2017",
+        "lib": ["ES2023"],
         "outDir": "dist",
         "noImplicitAny": true,
         "noUnusedLocals": true,

@@ -1,5 +1,5 @@
 import { request, Dispatcher } from "undici"
-import { ConfigResponse, MapResponse, PlayersResponse, ValidMapName } from "../types.js"
+import { ValidMapName } from "../types.js"
 import endpoints from '../endpoints.json'
 
 import { genRandomString } from './functions.js'
@@ -18,7 +18,7 @@ export type ReqOptions = { dispatcher?: Dispatcher }
  * @internal
  * Gets the appropriate endpoint from the given keys.
  */
-const get = (dataType: keyof typeof endpoints, map: ValidMapName) => {
+const get = (dataType: keyof typeof endpoints, map: string) => {
     //@ts-ignore
     return (endpoints[dataType][map.toLowerCase()]) as string
 }
@@ -50,17 +50,12 @@ const getArchive = async (url: string, unixTs = Date.now()) => {
     return await asJSON(`https://web.archive.org/web/${formattedTs}id_/${decodeURIComponent(url)}`)
 }
 
-const configData = async (mapName: ValidMapName) => 
-    await asJSON(get("config", mapName)) as ConfigResponse
+const configData = async <T>(mapName: ValidMapName): Promise<T> => asJSON(get("config", mapName)) as T
+const playerData = async <T>(mapName: ValidMapName): Promise<T> => asJSON(get("players", mapName))
 
-const playerData = async (mapName: ValidMapName) => 
-    await asJSON(get("players", mapName)) as PlayersResponse
-
-const mapData = async (mapName: ValidMapName) => {
-    const url = await get("map", mapName)
-    const res: unknown = await !archiveTs ? asJSON(url) : getArchive(url, archiveTs)
-
-    return res as MapResponse
+const mapData = async <T>(mapName: ValidMapName): Promise<T> => {
+    const url = mapName.toLowerCase() == 'aurora' ? get('squaremap', 'map') : get("map", mapName)
+    return !archiveTs ? asJSON(url) : getArchive(url, archiveTs)
 }
 
 /**

@@ -32,6 +32,8 @@ const editPlayerProp = (player: RawPlayer): Player => ({
     online: true
 })
 
+export const roundToNearest16 = (num: number) => Math.round(num / 16) * 16
+
 function calcArea(X: number[], Z: number[], numPoints: number, divisor = 256) { 
     let i = 0, j = numPoints - 1, area = 0
     

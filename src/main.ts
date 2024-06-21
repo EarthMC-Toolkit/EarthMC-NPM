@@ -5,6 +5,7 @@ import { Map } from './Map.js'
 
 import MCAPI from "mojang-lib"
 import { OAPIV2, OAPIV3 } from './OAPI.js'
+import { PlayersResponse } from './types.js'
 
 const Aurora = new Map('aurora')
 const Nova = new Map('nova')
@@ -22,8 +23,8 @@ async function fetchServer(name = "play.earthmc.net") {
 async function getServerInfo() {
     try {
         const serverData = await fetchServer()
-        const novaData = await endpoint.playerData("nova")
-        const auroraData = await endpoint.playerData("aurora")
+        const novaData = await endpoint.playerData<PlayersResponse>("nova")
+        const auroraData = await endpoint.playerData<PlayersResponse>("aurora")
 
         const online = serverData.online
         const novaCount = novaData.currentcount ?? 0
