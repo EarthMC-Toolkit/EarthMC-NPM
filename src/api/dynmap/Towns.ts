@@ -1,6 +1,11 @@
 import striptags from 'striptags'
 
-import * as fn from '../../utils/functions.js'
+import {
+    formatString, asBool, 
+    calcArea, hypot, range,
+    getExisting,
+    isInvitable
+} from '../../utils/functions.js'
 
 import { FetchError, InvalidError, NotFoundError } from "../../utils/errors.js"
 import { Nation, Town } from '../../types.js'
@@ -35,7 +40,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
         const towns = await this.all()
         if (!towns) throw new FetchError('Error fetching towns! Please try again.')
 
-        const existing = fn.getExisting(towns, townList, 'name')
+        const existing = getExisting(towns, townList, 'name')
         return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 
@@ -67,7 +72,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
             split = (split[2] ?? split[1]).slice(0, -1)
 
             const residents = info[2].slice(9).split(", ")
-            const capital = fn.asBool(info[9]?.slice(9))
+            const capital = asBool(info[9]?.slice(9))
 
             let nationName = split
             let wikiPage = null
@@ -82,25 +87,25 @@ class Towns implements EntityApi<Town | NotFoundError> {
 
             const home = nationName != "" ? markerset.markers[`${town.label}__home`] : null
             const [townX, townZ] = [town.x, town.z]
-            const area = fn.calcArea(townX, townZ, townX.length)
+            const area = calcArea(townX, townZ, townX.length)
 
             const currentTown: Town = {
-                name: fn.formatString(town.label, removeAccents),
-                nation: nationName == "" ? "No Nation" : fn.formatString(nationName.trim(), removeAccents),
+                name: formatString(town.label, removeAccents),
+                nation: nationName == "" ? "No Nation" : formatString(nationName.trim(), removeAccents),
                 mayor, area,
-                x: home?.x ?? fn.range(townX),
-                z: home?.z ?? fn.range(townZ),
+                x: home?.x ?? range(townX),
+                z: home?.z ?? range(townZ),
                 bounds: {
                     x: townX.map(num => Math.round(num)),
                     z: townZ.map(num => Math.round(num))
                 },
                 residents: residents,
                 flags: {
-                    pvp: fn.asBool(info[4]?.slice(5)),
-                    mobs: fn.asBool(info[5]?.slice(6)),
-                    public: fn.asBool(info[6]?.slice(8)),
-                    explosion: fn.asBool(info[7]?.slice(11)),
-                    fire: fn.asBool(info[8]?.slice(6)),
+                    pvp: asBool(info[4]?.slice(5)),
+                    mobs: asBool(info[5]?.slice(6)),
+                    public: asBool(info[6]?.slice(8)),
+                    explosion: asBool(info[7]?.slice(11)),
+                    fire: asBool(info[8]?.slice(6)),
                     capital: capital
                 },
                 colours: {
@@ -154,9 +159,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
             if (!towns) return null
         }
 
-        return towns.filter(t => 
-            fn.hypot(t.x, [xInput, xRadius]) &&
-            fn.hypot(t.z, [zInput, zRadius]))
+        return towns.filter(t => hypot(t.x, [xInput, xRadius]) && hypot(t.z, [zInput, zRadius]))
     }
 
     readonly invitable = async (nationName: string, includeBelonging = false) => {
@@ -166,13 +169,8 @@ class Towns implements EntityApi<Town | NotFoundError> {
         const towns = await this.all()
         if (!towns) throw new FetchError('An error occurred fetching towns!')
 
-        return towns.filter(t => invitable(t, nation, this.map.inviteRange, includeBelonging))
+        return towns.filter(t => isInvitable(t, nation, this.map.inviteRange, includeBelonging))
     }
-}
-
-const invitable = (town: Town, nation: Nation, range: number, belonging: boolean) => {
-    const sqr = fn.sqr(town, nation.capital, range) && town.nation != nation.name
-    return belonging ? sqr : sqr && town.nation == "No Nation"
 }
 
 export {
