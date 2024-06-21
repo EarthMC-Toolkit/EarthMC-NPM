@@ -12,7 +12,7 @@ import {
     Town
 } from '../../types.js'
 
-// TESTING
+//#region TESTING
 const run = async() => {
     const markerset = await fetchMarkerset()
 
@@ -28,6 +28,7 @@ const fetchMarkerset = async() => {
     const res: SquaremapMapResponse = await mapData('Aurora')
     return res.find(x => x.id == "towny")
 }
+//#endregion
 
 /**
  * Parses the tooltip on a marker - removing white space, new lines and HTML tags.

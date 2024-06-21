@@ -4,16 +4,15 @@ import * as fn from '../../utils/functions.js'
 import * as endpoint from '../../utils/endpoint.js'
 import { FetchError, NotFoundError } from "../../utils/errors.js"
       
-import { Map } from '../../Map.js'
+import Dynmap from './Dynmap.js'
 import { MapResponse, OnlinePlayer, Player } from '../../types.js'
 import { EntityApi } from './EntityApi.js'
 
 class Players implements EntityApi<Player | NotFoundError> {
-    #map: Map
-
+    #map: Dynmap
     get map() { return this.#map }
 
-    constructor(map: Map) {
+    constructor(map: Dynmap) {
         this.#map = map
     }
 

@@ -1,5 +1,5 @@
 import * as fn from '../../utils/functions.js'
-import { Map } from '../../Map.js'
+import Dynmap from './Dynmap.js'
 
 import { 
     Route, Routes,
@@ -39,11 +39,10 @@ class GPS extends Mitt {
         this.#lastLoc = val
     }
 
-    #map: Map
-
+    #map: Dynmap
     get map() { return this.#map }
 
-    constructor(map: Map) {
+    constructor(map: Dynmap) {
         super()
         this.#map = map
     }

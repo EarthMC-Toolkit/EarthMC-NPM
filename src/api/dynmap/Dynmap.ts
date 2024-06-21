@@ -1,30 +1,25 @@
-import DataHandler from './helpers/DataHandler.js'
+import DataHandler from '../../helpers/DataHandler.js'
 
-import Towns from './api/dynmap/Towns.js'
-import Nations from './api/dynmap/Nations.js'
-import Players from './api/dynmap/Players.js'
-import Residents from './api/dynmap/Residents.js'
-import GPS from './api/dynmap/GPS.js'
+import Towns from './Towns.js'
+import Nations from './Nations.js'
+import Players from './Players.js'
+import Residents from './Residents.js'
+import GPS from './GPS.js'
 
-import * as fn from './utils/functions.js'
-import { MapResponse, PlayersResponse, Point2D, TownBounds, ValidMapName } from './types.js'
+import * as fn from '../../utils/functions.js'
+import { MapResponse, PlayersResponse, Point2D, TownBounds, ValidMapName } from '../../types.js'
 
-class Map extends DataHandler {
+class Dynmap extends DataHandler {
     //#region Data classes
     readonly Towns: Towns
-
     readonly Nations: Nations
-
     readonly Residents: Residents
-
     readonly Players: Players
-
     readonly GPS: GPS
     //#endregion
 
     //#region Map-specific properties
     readonly name: ValidMapName
-
     readonly inviteRange: number
     //#endregion
 
@@ -89,6 +84,6 @@ class Map extends DataHandler {
 }
 
 export {
-    Map,
-    Map as default
+    Dynmap,
+    Dynmap as default
 }

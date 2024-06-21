@@ -3,15 +3,14 @@ import * as fn from '../../utils/functions.js'
 
 import { FetchError, InvalidError, NotFoundError } from "../../utils/errors.js"
 import { Resident, Town } from '../../types.js'
-import { Map } from "../../Map.js"
+import { Dynmap } from "./Dynmap.js"
 import { EntityApi } from './EntityApi.js'
 
 class Residents implements EntityApi<Resident | NotFoundError> {
-    #map: Map
-
+    #map: Dynmap
     get map() { return this.#map }
 
-    constructor(map: Map) {
+    constructor(map: Dynmap) {
         this.#map = map
     }
 
