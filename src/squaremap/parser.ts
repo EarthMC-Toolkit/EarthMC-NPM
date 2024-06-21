@@ -17,7 +17,7 @@ const run = async() => {
     const markerset = await fetchMarkerset()
 
     const t0 = performance.now()
-    const out = await parseTowns(markerset)//.then(console.log)
+    const out = await parseTowns(markerset)// .then(console.log)
     
     console.log("Took: " + (performance.now() - t0))
 
@@ -71,8 +71,6 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
     //     if (x.type != "icon") acc.push([parseTooltip(x.tooltip)[0], x])
     //     return acc
     // }, []))
-
-    // console.log(capitals.get('Somalia'))
 
     const towns: Town[] = []
 
