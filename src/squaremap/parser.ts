@@ -67,11 +67,6 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
     //     return acc
     // }, []))
 
-    // const areas = new Map<string, SquaremapArea>(res.markers.reduce((acc: any[], x) => {
-    //     if (x.type != "icon") acc.push([parseTooltip(x.tooltip)[0], x])
-    //     return acc
-    // }, []))
-
     const towns: Town[] = []
 
     const len = res.markers.length
@@ -115,7 +110,6 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
         } as unknown as Town
 
         towns.push(town)
-        console.log(town)
     }
 
     return towns
