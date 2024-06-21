@@ -1,9 +1,10 @@
 import Squaremap from "./Squaremap.js"
 
 import { EntityApi } from "../../helpers/EntityApi.js"
-import { NotFoundError } from "../../utils/errors.js"
+import { FetchError, NotFoundError } from "../../utils/errors.js"
 import { SquaremapTown } from "../../types.js"
 import { parseTowns } from "./parser.js"
+import { getExisting } from "src/utils/functions.js"
 
 class Towns implements EntityApi<SquaremapTown | NotFoundError> {
     #map: Squaremap
@@ -28,8 +29,12 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
         return towns
     }
 
-    readonly get = async(..._list: string[]): Promise<SquaremapTown | SquaremapTown[]> => {
-        return null
+    readonly get = async(...names: string[]) => {
+        const towns = await this.all()
+        if (!towns) throw new FetchError('Error fetching towns! Please try again.')
+
+        const existing = getExisting(towns, names, 'name')
+        return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 }
 
