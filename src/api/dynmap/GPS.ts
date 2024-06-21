@@ -14,33 +14,26 @@ import Mitt from '../../helpers/EventEmitter.js'
 const NativeMap = globalThis.Map
 
 class GPS extends Mitt {
-    static readonly Routes = Routes
-
+    #map: Dynmap
     #emittedUnderground = false
-
-    get emittedUnderground() {
-        return this.#emittedUnderground
-    }
-
-    protected set emittedUnderground(val: boolean) {
-        this.#emittedUnderground = val
-    }
-
     #lastLoc: undefined | {
         x: number
         z: number
     }
 
-    get lastLoc() {
-        return this.#lastLoc
+    get map() { return this.#map }
+
+    get emittedUnderground() { return this.#emittedUnderground }
+    protected set emittedUnderground(val: boolean) {
+        this.#emittedUnderground = val
     }
 
+    get lastLoc() { return this.#lastLoc }
     protected set lastLoc(val: { x: number, z: number }) {
         this.#lastLoc = val
     }
 
-    #map: Dynmap
-    get map() { return this.#map }
+    static readonly Routes = Routes
 
     constructor(map: Dynmap) {
         super()
