@@ -14,11 +14,19 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
     }
 
     readonly all = async(_removeAccents = false): Promise<SquaremapTown[]> => {
-        const markerset = await this.map.markerset()
-        const out = await parseTowns(markerset)
+        const cachedTowns: SquaremapTown[] = this.map.getFromCache('towns')
+        if (cachedTowns) return cachedTowns
 
-        return out
-    } 
+        const markerset = await this.map.markerset()
+        const towns = await parseTowns(markerset)
+
+        if (towns.length > 0) {
+            this.map.putInCache('towns', towns)
+            this.map.unrefIfNode()
+        }
+
+        return towns
+    }
 
     readonly get = async(..._list: string[]): Promise<SquaremapTown | SquaremapTown[]> => {
         return null
