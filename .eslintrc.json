@@ -26,15 +26,15 @@
         "prefer-const": "warn",
         "no-self-compare": "error",
         "no-sparse-arrays": "error",
-        "spaced-comment": ["warn", "always", { 
-            "markers": [
-                "#region",
-                "#endregion",
-                "@ts-expect-error",
-                "@ts-ignore",
-                "import"
-            ] 
-        }],
+        // "spaced-comment": ["warn", "always", { 
+        //     "markers": [
+        //         "#region",
+        //         "#endregion",
+        //         "@ts-expect-error",
+        //         "@ts-ignore",
+        //         "import"
+        //     ]
+        // }],
         "comma-spacing": 2,
         "comma-style": 2,
         "comma-dangle": ["error", "never"],

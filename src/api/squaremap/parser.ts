@@ -2,15 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import striptags from 'striptags'
 
-import { mapData } from '../utils/endpoint.js'
-import { calcArea, formatString, roundToNearest16 } from '../utils/functions.js'
+import { mapData } from '../../utils/endpoint.js'
+import { calcArea, formatString, roundToNearest16 } from '../../utils/functions.js'
 
 import {
     Point2D,
     SquaremapMapResponse,
     SquaremapMarkerset,
     Town
-} from '../types.js'
+} from '../../types.js'
 
 // TESTING
 const run = async() => {
@@ -103,9 +103,13 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
             flags: {
                 pvp: parseInfoString(info[3])
             },
-            colourCodes: {
+            colours: {
                 fill: curMarker.fillColor,
                 outline: curMarker.color
+            },
+            opacities: {
+                fill: curMarker.fillOpacity,
+                outline: curMarker.opacity
             }
         } as unknown as Town
 

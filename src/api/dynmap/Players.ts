@@ -1,11 +1,11 @@
 import striptags from 'striptags'
 
-import * as fn from '../utils/functions.js'
-import * as endpoint from '../utils/endpoint.js'
-import { FetchError, NotFoundError } from "../utils/errors.js"
+import * as fn from '../../utils/functions.js'
+import * as endpoint from '../../utils/endpoint.js'
+import { FetchError, NotFoundError } from "../../utils/errors.js"
       
-import { Map } from '../Map.js'
-import { MapResponse, OnlinePlayer, Player } from '../types.js'
+import { Map } from '../../Map.js'
+import { MapResponse, OnlinePlayer, Player } from '../../types.js'
 import { EntityApi } from './EntityApi.js'
 
 class Players implements EntityApi<Player | NotFoundError> {

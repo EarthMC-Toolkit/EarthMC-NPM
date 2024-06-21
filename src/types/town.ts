@@ -1,4 +1,4 @@
-import { Prettify } from "./util.js"
+import { HexString, Opacity, Prettify } from "./util.js"
 
 export type Town = Prettify<{
     name: string
@@ -18,10 +18,14 @@ export type Town = Prettify<{
     }
     trusted?: string[]
     outlaws?: string[]
-    colourCodes: {
-        fill: string
-        outline: string
-    }
+    colours: {
+        fill: HexString
+        outline: HexString
+    },
+    opacities?: {
+        fill: Opacity
+        outline: Opacity
+    },
     wiki?: string
 }>
 

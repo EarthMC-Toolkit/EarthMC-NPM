@@ -1,13 +1,13 @@
 import DataHandler from './helpers/DataHandler.js'
 
-import Towns from './api/Towns.js'
-import Nations from './api/Nations.js'
-import Players from './api/Players.js'
-import Residents from './api/Residents.js'
-import GPS from './api/GPS.js'
+import Towns from './api/dynmap/Towns.js'
+import Nations from './api/dynmap/Nations.js'
+import Players from './api/dynmap/Players.js'
+import Residents from './api/dynmap/Residents.js'
+import GPS from './api/dynmap/GPS.js'
 
 import * as fn from './utils/functions.js'
-import { Point2D, TownBounds, ValidMapName } from './types.js'
+import { MapResponse, PlayersResponse, Point2D, TownBounds, ValidMapName } from './types.js'
 
 class Map extends DataHandler {
     //#region Data classes
@@ -75,6 +75,16 @@ class Map extends DataHandler {
         const withinZ = locZ >= Math.min(...bounds.z) && locZ <= Math.max(...bounds.z)
 
         return withinX && withinZ
+    }
+
+    readonly onlinePlayerData = async () => {
+        const pData = await this.playerData<PlayersResponse>()
+        return pData?.players ? fn.editPlayerProps(pData.players) : null
+    }
+
+    readonly markerset = async () => {
+        const mapData = await this.mapData<MapResponse>()
+        return mapData?.sets["townyPlugin.markerset"]
     }
 }
 

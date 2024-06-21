@@ -1,14 +1,14 @@
-import { editPlayerProps } from '../utils/functions.js'
 import * as endpoint from '../utils/endpoint.js'
 
 import { Mutex } from 'async-mutex'
-import { ConfigResponse, MapResponse, PlayersResponse, ValidMapName } from '../types.js'
+import { ValidMapName } from '../types.js'
 
 class DataHandler {
     #isNode = true
     #cache: any
 
     #map: ValidMapName
+    get map() { return this.#map }
 
     #cacheLock: Mutex
 
@@ -36,16 +36,33 @@ class DataHandler {
     }
     
     readonly handle = (key: string) => this.#cache?.cache[`__cache__${key}`]?.handle
-    readonly mapData = async () => {
-        if (!this.#cache)
+
+    readonly getFromCache = (key: string) => this.#cache?.get(key)
+    readonly putInCache = (key: string, value: any) => this.#cache.put(key, value)
+
+    readonly refIfNode = () => {
+        if (!this.#isNode) return
+        this.handle('mapData')?.ref()
+    }
+
+    readonly unrefIfNode = () => {
+        if (!this.#isNode) return
+        this.handle('mapData')?.unref()
+    }
+
+    readonly playerData = <T>() => endpoint.playerData<T>(this.map)
+    readonly configData = <T>() => endpoint.configData<T>(this.map)
+
+    readonly mapData = async <T>() => {
+        if (!this.#cache) {
             this.#cache = await this.createCache()
+        }
 
-        if (this.#isNode)
-            this.handle('mapData')?.ref()
-
-        let md: MapResponse | null = null
+        this.refIfNode()
 
         const cached = this.getFromCache('mapData')
+        let md: T | null = null
+
         if (!cached) {
             md = await endpoint.mapData(this.#map)
 
@@ -54,27 +71,6 @@ class DataHandler {
         }
 
         return md
-    }
-
-    readonly getFromCache = (key: string) => this.#cache?.get(key)
-    readonly putInCache = (key: string, value: any) => this.#cache.put(key, value)
-
-    readonly unrefIfNode = () => {
-        if (this.#isNode)
-            this.handle('mapData')?.unref()
-    }
-
-    readonly playerData = () => endpoint.playerData<PlayersResponse>(this.#map)
-    readonly configData = () => endpoint.configData<ConfigResponse>(this.#map)
-
-    readonly onlinePlayerData = async () => {
-        const pData = await this.playerData()
-        return pData?.players ? editPlayerProps(pData.players) : null
-    }
-
-    readonly markerset = async () => {
-        const mapData = await this.mapData()
-        return mapData?.sets["townyPlugin.markerset"]
     }
 }
 

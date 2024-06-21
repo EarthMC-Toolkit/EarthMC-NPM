@@ -1,9 +1,9 @@
-import * as fn from '../utils/functions.js'
+import * as fn from '../../utils/functions.js'
 //import OfficialAPI from "../OAPI.js"
 
-import { FetchError, InvalidError, NotFoundError } from "../utils/errors.js"
-import { Resident, Town } from '../types.js'
-import { Map } from "../Map.js"
+import { FetchError, InvalidError, NotFoundError } from "../../utils/errors.js"
+import { Resident, Town } from '../../types.js'
+import { Map } from "../../Map.js"
 import { EntityApi } from './EntityApi.js'
 
 class Residents implements EntityApi<Resident | NotFoundError> {

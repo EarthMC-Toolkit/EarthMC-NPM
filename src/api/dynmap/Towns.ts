@@ -1,10 +1,10 @@
 import striptags from 'striptags'
 
-import * as fn from '../utils/functions.js'
+import * as fn from '../../utils/functions.js'
 
-import { FetchError, InvalidError, NotFoundError } from "../utils/errors.js"
-import { Nation, Town } from '../types.js'
-import { Map } from "../Map.js"
+import { FetchError, InvalidError, NotFoundError } from "../../utils/errors.js"
+import { Nation, Town } from '../../types.js'
+import { Map } from "../../Map.js"
 import { EntityApi } from './EntityApi.js'
 
 class Towns implements EntityApi<Town | NotFoundError> {
@@ -103,9 +103,13 @@ class Towns implements EntityApi<Town | NotFoundError> {
                     fire: fn.asBool(info[8]?.slice(6)),
                     capital: capital
                 },
-                colourCodes: {
+                colours: {
                     fill: town.fillcolor,
                     outline: town.color
+                },
+                opacities: {
+                    fill: town.fillopacity,
+                    outline: town.opacity
                 }
             }
 

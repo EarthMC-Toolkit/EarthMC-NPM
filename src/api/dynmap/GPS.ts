@@ -1,5 +1,5 @@
-import * as fn from '../utils/functions.js'
-import { Map } from '../Map.js'
+import * as fn from '../../utils/functions.js'
+import { Map } from '../../Map.js'
 
 import { 
     Route, Routes,
@@ -7,9 +7,9 @@ import {
     Nation,
     RouteInfo,
     Player
-} from '../types.js'
+} from '../../types.js'
 
-import Mitt from '../helpers/EventEmitter.js'
+import Mitt from '../../helpers/EventEmitter.js'
 
 const NativeMap = globalThis.Map
 

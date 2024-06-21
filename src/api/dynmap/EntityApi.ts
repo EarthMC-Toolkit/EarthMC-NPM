@@ -1,4 +1,4 @@
-import { Map } from "../Map.js"
+import { Map } from "../../Map.js"
 
 export interface EntityApi<T> {
     map: Map
