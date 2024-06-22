@@ -1,6 +1,7 @@
-import { request, Dispatcher } from "undici"
-import { ValidMapName } from "../types.js"
 import endpoints from '../endpoints.json'
+
+import { request, Dispatcher } from "undici"
+import { ValidMapName } from "types"
 
 import { genRandomString } from './functions.js'
 

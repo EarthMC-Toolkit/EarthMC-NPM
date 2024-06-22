@@ -1,9 +1,9 @@
-import { CardinalDirection, Location } from '../types.js'
 import { 
+    CardinalDirection, Location,
     StringContainedWithin,
     HexString, 
     Opacity
-} from './util.js'
+} from 'types'
 
 export type MapResponse = {
     timestamp: number

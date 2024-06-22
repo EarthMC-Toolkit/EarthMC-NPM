@@ -1,11 +1,11 @@
 import Squaremap from "./Squaremap.js"
+import { SquaremapTown } from "types"
 
-import { EntityApi } from "../../helpers/EntityApi.js"
-import { SquaremapTown } from "../../types.js"
+import { EntityApi } from "helpers/EntityApi.js"
 import { parseTowns } from "./parser.js"
 
-import { FetchError, NotFoundError } from "../../utils/errors.js"
-import { getExisting } from "../../utils/functions.js"
+import { FetchError, NotFoundError } from "utils/errors.js"
+import { getExisting } from "utils/functions.js"
 
 class Towns implements EntityApi<SquaremapTown | NotFoundError> {
     #map: Squaremap

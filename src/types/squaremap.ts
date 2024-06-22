@@ -1,9 +1,9 @@
-import { Point2D } from '../types.js'
-import {
+import { 
+    Point2D,
     HexString,
     Opacity,
     Prettify
-} from './util.js'
+ } from 'types'
 
 export interface SquaremapPlayersResponse {
     max: number

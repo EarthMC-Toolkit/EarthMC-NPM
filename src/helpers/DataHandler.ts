@@ -1,7 +1,7 @@
-import * as endpoint from '../utils/endpoint.js'
+import * as endpoint from 'utils/endpoint.js'
 
 import { Mutex } from 'async-mutex'
-import { ValidMapName } from '../types.js'
+import { ValidMapName } from 'types'
 
 class DataHandler {
     #isNode = true

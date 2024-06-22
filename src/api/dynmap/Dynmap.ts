@@ -1,13 +1,16 @@
-import DataHandler from '../../helpers/DataHandler.js'
+import { 
+    MapResponse, PlayersResponse, 
+    Point2D, TownBounds, ValidMapName 
+} from 'types'
+
+import * as fn from 'utils/functions.js'
+import DataHandler from 'helpers/DataHandler.js'
 
 import Towns from './Towns.js'
 import Nations from './Nations.js'
 import Players from './Players.js'
 import Residents from './Residents.js'
 import GPS from './GPS.js'
-
-import * as fn from '../../utils/functions.js'
-import { MapResponse, PlayersResponse, Point2D, TownBounds, ValidMapName } from '../../types.js'
 
 class Dynmap extends DataHandler {
     //#region Data classes

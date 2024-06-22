@@ -1,9 +1,15 @@
-import * as fn from '../../utils/functions.js'
+import { 
+    Nation, Town 
+} from 'types'
 
-import { FetchError, NotFoundError } from "../../utils/errors.js"
-import { Nation, Town } from '../../types.js'
 import { Dynmap } from "./Dynmap.js"
-import { EntityApi } from '../../helpers/EntityApi.js'
+import { EntityApi } from 'helpers/EntityApi.js'
+
+import * as fn from 'utils/functions.js'
+import { 
+    FetchError,
+    NotFoundError 
+} from "utils/errors.js"
 
 //import OfficialAPI from '../OAPI.js'
 

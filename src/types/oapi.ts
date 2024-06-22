@@ -1,5 +1,8 @@
-import { Location } from '../types.js'
-import { NestedOmit, Prettify } from './util.js'
+import { 
+    Location, 
+    NestedOmit,
+    Prettify 
+} from 'types'
 
 //#region V2
 //#region Parsed

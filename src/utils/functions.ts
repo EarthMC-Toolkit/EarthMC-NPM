@@ -1,7 +1,7 @@
 import striptags from 'striptags'
 import { removeDiacritics } from "modern-diacritics"
 
-import { RawPlayer, Player, Town, Point2D, BaseTown, BaseNation } from '../types.js'
+import { RawPlayer, Player, Town, Point2D, BaseTown, BaseNation } from 'types'
 import { NotFound } from './errors.js'
 
 export const removeDuplicates = <T>(arr: T[]) => [...new Set(arr)]
@@ -16,7 +16,7 @@ export function formatString(str: string, removeAccents = false) {
     return removeAccents ? removeDiacritics(str) : str
 }
 
-export  function editPlayerProps(props: RawPlayer[]) {
+export function editPlayerProps(props: RawPlayer[]) {
     if (!props) throw new ReferenceError("Can't edit player props! The parameter is null or undefined.")
 
     if (props instanceof Array) return props.length > 0 ? props.map(p => editPlayerProp(p)) : []

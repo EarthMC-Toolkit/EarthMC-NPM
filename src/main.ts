@@ -6,7 +6,7 @@ import Squaremap from './api/squaremap/Squaremap.js'
 
 import MCAPI from "mojang-lib"
 import { OAPIV2, OAPIV3 } from './OAPI.js'
-import { PlayersResponse } from './types.js'
+import { PlayersResponse } from 'types'
 
 const Aurora = new Squaremap('aurora')
 const Nova = new Dynmap('nova')
@@ -46,11 +46,6 @@ async function getServerInfo() {
     }
 }
 
-export { formatString } from './utils/functions.js'
-
-export * from "./types.js"
-export * from "./utils/errors.js"
-
 const OfficialAPI = {
     V2: OAPIV2,
     V3: OAPIV3
@@ -65,3 +60,7 @@ export {
     Aurora, Nova,
     Dynmap, Squaremap
 }
+
+export * from "types"
+export * from "./utils/errors.js"
+export { formatString } from './utils/functions.js'

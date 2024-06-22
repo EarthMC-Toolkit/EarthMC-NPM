@@ -1,17 +1,12 @@
-import * as fn from '../../utils/functions.js'
+import * as fn from 'utils/functions.js'
 import Dynmap from './Dynmap.js'
 
 import { 
-    Route, Routes,
-    Location,
-    Nation,
-    RouteInfo,
-    Player
-} from '../../types.js'
+    Route, Routes, RouteInfo,
+    Location, Nation, Player
+} from 'types'
 
 import Mitt from '../../helpers/EventEmitter.js'
-
-const NativeMap = globalThis.Map
 
 class GPS extends Mitt {
     #map: Dynmap
@@ -120,7 +115,7 @@ class GPS extends Mitt {
         // Scan all nations for closest match.
         // Computationally more expensive to include PVP disabled nations.
         const [towns, nations] = await Promise.all([this.map.Towns.all(), this.map.Nations.all()])
-        const townMap = new NativeMap(towns.map(town => [town.name, town]))
+        const townsMap = new Map(towns.map(t => [t.name, t]))
 
         const len = nations.length
         const filtered = []
@@ -129,7 +124,7 @@ class GPS extends Mitt {
             const nation = nations[i]
             const capitalName = nation.capital.name
 
-            const capital = townMap.get(capitalName)
+            const capital = townsMap.get(capitalName)
             if (!capital) continue
 
             // Filter out nations where either capital is not public 
