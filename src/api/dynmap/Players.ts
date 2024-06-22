@@ -1,16 +1,15 @@
 import striptags from 'striptags'
-import Dynmap from './Dynmap.js'
+import type Dynmap from './Dynmap.js'
 
-import { 
+import type { 
     MapResponse, 
     OnlinePlayer, Player 
 } from 'types'
 
 import * as fn from 'utils/functions.js'
 import * as endpoint from 'utils/endpoint.js'
-import { FetchError, NotFoundError } from "utils/errors.js"
-      
-import { EntityApi } from 'helpers/EntityApi.js'
+import { FetchError, type NotFoundError } from "utils/errors.js"
+import type { EntityApi } from 'helpers/EntityApi.js'
 
 class Players implements EntityApi<Player | NotFoundError> {
     #map: Dynmap

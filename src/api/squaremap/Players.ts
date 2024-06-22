@@ -1,11 +1,11 @@
-import Squaremap from "./Squaremap.js"
+import type Squaremap from "./Squaremap.js"
 
-import {
+import type {
     EntityApi
 } from "helpers/EntityApi.js"
 
-import { Player } from "types"
-import { NotFoundError } from "utils/errors.js"
+import type { Player } from "types"
+import type { NotFoundError } from "utils/errors.js"
 
 class Players implements EntityApi<Player | NotFoundError> {
     #map: Squaremap
@@ -15,14 +15,14 @@ class Players implements EntityApi<Player | NotFoundError> {
         this.#map = map
     }
 
-    readonly get = (...names: string[]): Promise<any> => {
+    readonly get = async(...names: string[]): Promise<any> => {
         return null
     }
     
-    readonly all = (): Promise<any> => {
+    readonly all = async(): Promise<any> => {
         return null
     }
-}   
+}
 
 export {
     Players,

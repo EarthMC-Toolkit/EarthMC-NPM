@@ -1,11 +1,11 @@
-import { 
+import type { 
     Point2D,
     RawEntitySpawn, 
     RawEntityStats, 
     RawEntityStatus 
 } from "types"
 
-import { Prettify } from "./util.js"
+import type { Prettify } from "./util.js"
 
 export type BaseNation = {
     name: string

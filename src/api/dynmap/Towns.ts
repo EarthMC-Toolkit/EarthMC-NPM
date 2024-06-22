@@ -1,5 +1,5 @@
 import striptags from 'striptags'
-import Dynmap from "./Dynmap.js"
+import type Dynmap from "./Dynmap.js"
 
 import {
     formatString, asBool, 
@@ -11,11 +11,11 @@ import {
 import { 
     FetchError, 
     InvalidError, 
-    NotFoundError 
+    type NotFoundError 
 } from "utils/errors.js"
 
-import { EntityApi } from 'helpers/EntityApi.js'
-import { Nation, Town } from 'types'
+import type { EntityApi } from 'helpers/EntityApi.js'
+import type { Nation, Town } from 'types'
 
 class Towns implements EntityApi<Town | NotFoundError> {
     #map: Dynmap

@@ -1,4 +1,4 @@
-import { HexString, Opacity, Prettify } from "./util.js"
+import type { HexString, Opacity, Prettify } from "./util.js"
 
 export interface BaseTown {
     name: string

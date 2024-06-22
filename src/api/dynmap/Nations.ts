@@ -1,14 +1,14 @@
-import { 
+import type { 
     Nation, Town 
 } from 'types'
 
-import { Dynmap } from "./Dynmap.js"
-import { EntityApi } from 'helpers/EntityApi.js'
+import type { Dynmap } from "./Dynmap.js"
+import type { EntityApi } from 'helpers/EntityApi.js'
 
 import * as fn from 'utils/functions.js'
 import { 
     FetchError,
-    NotFoundError 
+    type NotFoundError 
 } from "utils/errors.js"
 
 //import OfficialAPI from '../OAPI.js'

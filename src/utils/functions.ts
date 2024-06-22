@@ -1,7 +1,12 @@
 import striptags from 'striptags'
 import { removeDiacritics } from "modern-diacritics"
 
-import { RawPlayer, Player, Town, Point2D, BaseTown, BaseNation } from 'types'
+import type { 
+    Point2D,
+    RawPlayer, Player, Town,
+    BaseTown, BaseNation
+} from 'types'
+
 import { NotFound } from './errors.js'
 
 export const removeDuplicates = <T>(arr: T[]) => [...new Set(arr)]

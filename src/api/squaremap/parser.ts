@@ -3,7 +3,7 @@
 import striptags from 'striptags'
 import { asBool, calcArea, formatString, range, roundToNearest16 } from 'utils/functions.js'
 
-import {
+import type {
     Point2D,
     SquaremapMarkerset,
     SquaremapTown

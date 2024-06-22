@@ -1,9 +1,9 @@
 import * as fn from 'utils/functions.js'
-import Dynmap from './Dynmap.js'
+import type Dynmap from './Dynmap.js'
 
 import { 
-    Route, Routes, RouteInfo,
-    Location, Nation, Player
+    type Route, Routes, type RouteInfo,
+    type Location, type Nation, type Player
 } from 'types'
 
 import Mitt from '../../helpers/EventEmitter.js'

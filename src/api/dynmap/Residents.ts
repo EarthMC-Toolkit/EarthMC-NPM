@@ -1,19 +1,19 @@
 import * as fn from '../../utils/functions.js'
 
-import Dynmap from "./Dynmap.js"
+import type Dynmap from "./Dynmap.js"
 //import OfficialAPI from "../OAPI.js"
 
-import { 
+import type { 
     Resident, Town 
 } from 'types'
 
 import { 
     FetchError, 
     InvalidError, 
-    NotFoundError 
+    type NotFoundError 
 } from "utils/errors.js"
 
-import { EntityApi } from 'helpers/EntityApi.js'
+import type { EntityApi } from 'helpers/EntityApi.js'
 
 class Residents implements EntityApi<Resident | NotFoundError> {
     #map: Dynmap

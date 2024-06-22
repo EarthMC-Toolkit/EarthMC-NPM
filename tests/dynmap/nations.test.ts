@@ -1,6 +1,6 @@
 import { describe, it, expect, expectTypeOf, assertType } from 'vitest'
 
-import { Nation } from '../../src/types'
+import type { Nation } from '../../src/types'
 
 describe('[Dynmap/Nova] Nations', () => {
     it('can get all nations', async () => {

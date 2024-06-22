@@ -1,4 +1,9 @@
-import { Point2D, SquaremapMapResponse, ValidMapName } from "types"
+import type { 
+    Point2D,
+    SquaremapMapResponse, 
+    ValidMapName
+} from "types"
+
 import DataHandler from "helpers/DataHandler.js"
 
 import Towns from './Towns.js'

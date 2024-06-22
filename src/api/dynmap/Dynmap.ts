@@ -1,4 +1,4 @@
-import { 
+import type { 
     MapResponse, PlayersResponse, 
     Point2D, TownBounds, ValidMapName 
 } from 'types'
