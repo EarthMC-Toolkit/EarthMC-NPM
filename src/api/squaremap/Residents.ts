@@ -6,14 +6,14 @@ import type { NotFoundError } from "utils/errors.js"
 
 class Residents implements EntityApi<Resident | NotFoundError> {
     #map: Squaremap
-    
+    get map() { return this.#map }
+
     constructor(map: Squaremap) {
         this.#map = map
     }
 
     readonly get = async(...names: string[]): Promise<any> => {
-        this.#map.Nations.all()
-        
+
         return null
     }
     

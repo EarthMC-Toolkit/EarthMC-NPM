@@ -3,7 +3,7 @@ import type {
     HexString,
     Opacity,
     Prettify
- } from 'types'
+} from 'types'
 
 export interface SquaremapPlayersResponse {
     max: number
