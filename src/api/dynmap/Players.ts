@@ -19,7 +19,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         this.#map = map
     }
 
-    readonly get = async (...playerList: string[]) => {
+    readonly get = async(...playerList: string[]) => {
         const players = await this.all()
         if (!players) throw new FetchError('Error fetching players! Please try again.')
         
@@ -27,7 +27,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 
-    readonly all = async () => {
+    readonly all = async() => {
         const onlinePlayers = await this.map.onlinePlayerData()
         if (!onlinePlayers) return
 
@@ -43,7 +43,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         return merged as Player[]
     }
     
-    readonly townless = async () => {
+    readonly townless = async() => {
         const onlinePlayers = await this.online()
         if (!onlinePlayers) return null
 
@@ -77,7 +77,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         })
     }
 
-    readonly online = async (includeResidentInfo = false) => {
+    readonly online = async(includeResidentInfo = false) => {
         const onlinePlayers = await this.map.onlinePlayerData()
         if (!onlinePlayers) return null
         if (!includeResidentInfo) return onlinePlayers
@@ -98,7 +98,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         return merged as Player[]
     }
 
-    readonly nearby = async (xInput: number, zInput: number, xRadius: number, zRadius: number, players?: OnlinePlayer[]) => {
+    readonly nearby = async(xInput: number, zInput: number, xRadius: number, zRadius: number, players?: OnlinePlayer[]) => {
         if (!players) {
             players = await this.all()
             if (!players) return null

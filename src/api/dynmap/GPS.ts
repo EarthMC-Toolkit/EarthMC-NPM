@@ -35,11 +35,6 @@ class GPS extends Mitt {
         this.#map = map
     }
 
-    #getPlayer = async (name: string) => {
-        const player = await this.map.Players.get(name)
-        return player
-    }
-
     playerIsOnline = (player: Player) => {
         if (!player.online) {
             this.emit('error', { 
@@ -53,7 +48,7 @@ class GPS extends Mitt {
 
     readonly track = async(playerName: string, interval = 3000, route = Routes.FASTEST) => {
         setInterval(async () => {
-            const player = await this.#getPlayer(playerName).catch(e => {
+            const player = await this.map.Players.get(playerName).catch(e => {
                 this.emit('error', { err: "FETCH_ERROR", msg: e.message })
                 return null
             }) as Player
@@ -80,7 +75,7 @@ class GPS extends Mitt {
                         this.emit('error', { err: "INVALID_LAST_LOC", msg: e.message })
                     }
                 }
-            } 
+            }
             else {
                 this.lastLoc = { 
                     x: fn.safeParseInt(player.x), 
@@ -106,7 +101,7 @@ class GPS extends Mitt {
     readonly safestRoute = (loc: Location) => this.findRoute(loc, Routes.SAFEST)
     readonly fastestRoute = (loc: Location) => this.findRoute(loc, Routes.FASTEST)
 
-    readonly findRoute = async (loc: Location, options: Route) => {
+    readonly findRoute = async(loc: Location, options: Route) => {
         if (fn.strictFalsy(loc.x) || fn.strictFalsy(loc.z)) {
             const obj = JSON.stringify(loc)
             throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)

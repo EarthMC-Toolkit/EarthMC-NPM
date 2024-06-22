@@ -25,13 +25,13 @@ class Towns implements EntityApi<Town | NotFoundError> {
         this.#map = map
     }
 
-    readonly fromNation = async (nationName: string) => {
+    readonly fromNation = async(nationName: string) => {
         if (!nationName) throw new InvalidError(`Parameter 'nation' is ${nationName}`)
 
         const nation = await this.map.Nations.get(nationName) as Nation
         if (nation instanceof Error) throw nation
 
-        return await this.get(...nation.towns) as Town[]
+        return await this.get(...nation.towns)
     }
 
     /** @internal */
@@ -40,7 +40,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
     //     ...town
     // } : town
 
-    readonly get = async (...townList: string[]) => {
+    readonly get = async(...townList: string[]) => {
         const towns = await this.all()
         if (!towns) throw new FetchError('Error fetching towns! Please try again.')
 
@@ -48,7 +48,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
         return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 
-    readonly all = async (removeAccents = false) => {
+    readonly all = async(removeAccents = false) => {
         let cachedTowns = this.map.getFromCache('towns')
         if (cachedTowns) return cachedTowns as Town[]
 
@@ -153,7 +153,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
         return cachedTowns as Town[]
     }
 
-    readonly nearby = async (
+    readonly nearby = async(
         xInput: number, zInput: number, 
         xRadius: number, zRadius: number, 
         towns?: Town[]
@@ -166,7 +166,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
         return towns.filter(t => hypot(t.x, [xInput, xRadius]) && hypot(t.z, [zInput, zRadius]))
     }
 
-    readonly invitable = async (nationName: string, includeBelonging = false) => {
+    readonly invitable = async(nationName: string, includeBelonging = false) => {
         const nation = await this.map.Nations.get(nationName) as Nation
         if (!nation) throw new Error("Could not fetch the nation")
 

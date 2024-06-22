@@ -1,10 +1,14 @@
 import type Squaremap from "./Squaremap.js"
-import type { SquaremapTown } from "types"
+import type { Nation, SquaremapTown } from "types"
 
 import type { EntityApi } from "helpers/EntityApi.js"
 import { parseTowns } from "./parser.js"
 
-import { FetchError, type NotFoundError } from "utils/errors.js"
+import { 
+    FetchError, InvalidError, 
+    type NotFoundError 
+} from "utils/errors.js"
+
 import { getExisting } from "utils/functions.js"
 
 class Towns implements EntityApi<SquaremapTown | NotFoundError> {
@@ -13,6 +17,15 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
 
     constructor(map: Squaremap) {
         this.#map = map
+    }
+
+    readonly fromNation = async(nationName: string) => {
+        if (!nationName) throw new InvalidError(`Parameter 'nation' is ${nationName}`)
+
+        const nation = await this.map.Nations.get(nationName) as Nation
+        if (nation instanceof Error) throw nation
+
+        return await this.get(...nation.towns)
     }
 
     readonly get = async(...names: string[]) => {

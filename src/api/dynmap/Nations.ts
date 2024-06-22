@@ -27,7 +27,7 @@ class Nations implements EntityApi<Nation | NotFoundError> {
     //     ...nation
     // } : nation
 
-    readonly get = async (...nationList: string[]) => {
+    readonly get = async(...nationList: string[]) => {
         const nations = await this.all()
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
     
@@ -35,7 +35,7 @@ class Nations implements EntityApi<Nation | NotFoundError> {
         return existing.length > 1 ? Promise.all(existing): Promise.resolve(existing[0])
     }
 
-    readonly all = async (towns?: Town[]) => {
+    readonly all = async(towns?: Town[]) => {
         if (!towns) {
             towns = await this.map.Towns.all()
             if (!towns) throw new Error() // TODO: Implement appropriate error.

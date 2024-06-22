@@ -29,7 +29,7 @@ class Residents implements EntityApi<Resident | NotFoundError> {
         const town = await this.map.Towns.get(townName) as Town
         if (town instanceof Error) throw town
 
-        return await this.get(...town.residents) as Resident[]
+        return await this.get(...town.residents)
     }
     
     /** @internal */

@@ -110,19 +110,19 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
 
 // }
 
-const parseResidents = (towns: SquaremapTown[]) => {
-    const residentsArray: Resident[] = towns.reduce((acc: any[], town: SquaremapTown) => [
-        ...acc, 
-        ...town.residents.map(res => ({
+const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => [
+    ...acc,
+    ...town.residents.map(res => {
+        const r: Resident = {
             name: res,
             town: town.name,
             nation: town.nation,
             rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
-        }))
-    ], [])
+        }
 
-    return residentsArray
-}
+        return r
+    })
+], [])
 
 const parsePlayers = async(res: SquaremapRawPlayer[]) => {
     
