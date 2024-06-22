@@ -65,7 +65,7 @@ export type UpdatedTile = {
 export type ConfigResponse = {
     updaterate: number
     components: Array<ConfigComponent>
-    worlds: ConfigWorld[]
+    worlds: WorldConfig[]
     confighash: number
     defaultmap: MapTypeName
     title: string
@@ -141,16 +141,16 @@ type BaseComponent = {
     type: string
 }
 
-type ConfigWorld = {
+type WorldConfig = {
     sealevel: boolean
     protected: boolean
-    maps: ConfigMap[]
+    maps: MapConfig[]
     center: Location
 }
 
 type MapTypeName = "flat" | "surface" | "Flat" | "Surface"
 
-type ConfigMap = {
+type MapConfig = {
     name: MapTypeName
     scale: number
     icon?: string
@@ -177,12 +177,3 @@ type ConfigMap = {
     mapzoomout: number
     boostzoom: number
 }
-
-const Maps = {
-    aurora: "aurora",
-    nova: "nova",
-    Aurora: "Aurora",
-    Nova: "Nova"
-} as const
-
-export type ValidMapName = typeof Maps[keyof typeof Maps] | `${string}aurora`

@@ -1,7 +1,8 @@
 import type { 
     Point2D,
+    SquaremapMap,
     SquaremapMapResponse, 
-    ValidMapName
+    SquaremapPlayersResponse
 } from "types"
 
 import DataHandler from "helpers/DataHandler.js"
@@ -10,6 +11,8 @@ import Towns from './Towns.js'
 import Nations from './Nations.js'
 import Players from "./Players.js"
 import Residents from "./Residents.js"
+
+import { parsePlayers } from "./parser.js"
 
 class Squaremap extends DataHandler {
     //#region Data classes
@@ -21,11 +24,13 @@ class Squaremap extends DataHandler {
     //#endregion
 
     //#region Map-specific properties
-    readonly name: ValidMapName
+    readonly name: SquaremapMap
     readonly inviteRange: number = 3500
     //#endregion
 
-    constructor(mapName: ValidMapName) {
+    cacheTTL = 60
+
+    constructor(mapName: SquaremapMap) {
         super(mapName)
         
         this.name = mapName
@@ -38,12 +43,17 @@ class Squaremap extends DataHandler {
         // this.GPS = new GPS(this)
     }
 
-    markerset = async () => {
+    readonly onlinePlayerData = async() => {
+        const res = await this.playerData<SquaremapPlayersResponse>()
+        return parsePlayers(res.players)
+    }
+
+    readonly markerset = async() => {
         const res = await this.mapData<SquaremapMapResponse>()
         return res.find(x => x.id == "towny")
     }
 
-    buildMapLink = (zoom?: number, location?: Point2D): URL => {
+    readonly buildMapLink = (zoom?: number, location?: Point2D): URL => {
         const url = new URL(`https://map.earthmc.net/?mapname=flat`)
         if (zoom) url.searchParams.append("zoom", zoom.toString())
 

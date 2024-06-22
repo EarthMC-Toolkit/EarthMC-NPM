@@ -1,6 +1,7 @@
 import type { 
     MapResponse, PlayersResponse, 
-    Point2D, TownBounds, ValidMapName 
+    Point2D, TownBounds,
+    DynmapMap
 } from 'types'
 
 import * as fn from 'utils/functions.js'
@@ -22,11 +23,11 @@ class Dynmap extends DataHandler {
     //#endregion
 
     //#region Map-specific properties
-    readonly name: ValidMapName
+    readonly name: DynmapMap
     readonly inviteRange: number
     //#endregion
 
-    constructor(mapName: ValidMapName) {
+    constructor(mapName: DynmapMap) {
         super(mapName)
 
         this.name = mapName

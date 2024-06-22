@@ -1,31 +1,33 @@
 import * as endpoint from 'utils/endpoint.js'
 
 import { Mutex } from 'async-mutex'
-import type { ValidMapName } from 'types'
+import type { AnyMap } from 'types'
 
 class DataHandler {
-    #isNode = true
-    #cache: any
-
-    #map: ValidMapName
+    #map: AnyMap
     get map() { return this.#map }
 
+    #cache: any
+    #cacheTTL: number
     #cacheLock: Mutex
 
-    constructor(mapName: ValidMapName) {
+    #isNode = true
+
+    constructor(mapName: AnyMap, cacheTTL = 60) {
         this.#map = mapName
         this.#isNode = globalThis.process?.release?.name == 'node'
 
         this.#cacheLock = new Mutex()
+        this.#cacheTTL = cacheTTL
     }
 
-    private createCache = async (ttl = 120*1000) => {
+    private createCache = async () => {
         const release = await this.#cacheLock.acquire()
         let cacheInstance = null
 
         try {
-            //@ts-expect-error 
-            cacheInstance = import('timed-cache').then(tc => new tc.default({ defaultTtl: ttl }))
+            //@ts-expect-error
+            cacheInstance = import('timed-cache').then(tc => new tc.default({ defaultTtl: this.#cacheTTL }))
         } catch (e) {
             console.error(e)
         } finally {

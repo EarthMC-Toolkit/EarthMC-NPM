@@ -7,7 +7,7 @@ import type {
     Point2D,
     Resident,
     SquaremapMarkerset,
-    SquaremapPlayersResponse,
+    SquaremapRawPlayer,
     SquaremapTown
 } from 'types'
 
@@ -124,7 +124,7 @@ const parseResidents = (towns: SquaremapTown[]) => {
     return residentsArray
 }
 
-const parsePlayers = async(res: SquaremapPlayersResponse) => {
+const parsePlayers = async(res: SquaremapRawPlayer[]) => {
     
 }
 

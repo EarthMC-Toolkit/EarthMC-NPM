@@ -9,6 +9,8 @@ export type Prettify<T> = {
     [K in keyof T]: T[K]
 } & unknown
 
+export type ValuesOf<T> = T[keyof T]
+
 export type AssertPositive<N extends number> = number extends N ? N : `${N}` extends `-${string}` ? never : N;
 
 export type StringStartsWith<T extends string> = `${T}${string}`

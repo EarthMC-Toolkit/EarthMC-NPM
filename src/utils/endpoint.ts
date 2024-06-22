@@ -1,7 +1,7 @@
 import endpoints from '../endpoints.json'
 
 import { request, type Dispatcher } from "undici"
-import type { ValidMapName } from "types"
+import type { AnyMap } from "types"
 
 import { genRandomString } from './functions.js'
 
@@ -51,10 +51,10 @@ const getArchive = async (url: string, unixTs = Date.now()) => {
     return await asJSON(`https://web.archive.org/web/${formattedTs}id_/${decodeURIComponent(url)}`)
 }
 
-const configData = async <T>(mapName: ValidMapName): Promise<T> => asJSON(get("config", mapName)) as T
-const playerData = async <T>(mapName: ValidMapName): Promise<T> => asJSON(get("players", mapName))
+const configData = async <T>(mapName: AnyMap): Promise<T> => asJSON(get("config", mapName)) as T
+const playerData = async <T>(mapName: AnyMap): Promise<T> => asJSON(get("players", mapName))
 
-const mapData = async <T>(mapName: ValidMapName): Promise<T> => {
+const mapData = async <T>(mapName: AnyMap): Promise<T> => {
     const url = mapName.toLowerCase() == 'aurora' ? get('squaremap', 'map') : get("map", mapName)
     return !archiveTs ? asJSON(url) : getArchive(url, archiveTs)
 }
