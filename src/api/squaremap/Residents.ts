@@ -2,7 +2,9 @@ import type Squaremap from "./Squaremap.js"
 
 import type { EntityApi } from "helpers/EntityApi.js"
 import type { Resident } from "types"
-import type { NotFoundError } from "utils/errors.js"
+import { type NotFoundError } from "utils/errors.js"
+import { getExisting } from "utils/functions.js"
+import { parseResidents } from "./parser.js"
 
 class Residents implements EntityApi<Resident | NotFoundError> {
     #map: Squaremap
@@ -12,13 +14,18 @@ class Residents implements EntityApi<Resident | NotFoundError> {
         this.#map = map
     }
 
-    readonly get = async(...names: string[]): Promise<any> => {
+    readonly get = async(...names: string[]) => {
+        const residents = await this.all()
+        const existing = getExisting(residents, names, 'name')
 
-        return null
+        return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
     
-    readonly all = async(): Promise<any> => {
-        return null
+    readonly all = async() => {
+        const towns = await this.map.Towns.all()
+
+        // TODO: Cache residents to avoid parsing every time.
+        return parseResidents(towns)
     }
 }
 

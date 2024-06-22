@@ -9,12 +9,13 @@ import DataHandler from "helpers/DataHandler.js"
 import Towns from './Towns.js'
 import Nations from './Nations.js'
 import Players from "./Players.js"
+import Residents from "./Residents.js"
 
 class Squaremap extends DataHandler {
     //#region Data classes
     readonly Towns: Towns
     readonly Nations: Nations
-    // readonly Residents: Residents
+    readonly Residents: Residents
     readonly Players: Players
     // readonly GPS: GPS
     //#endregion
@@ -31,7 +32,7 @@ class Squaremap extends DataHandler {
 
         this.Towns = new Towns(this)
         this.Nations = new Nations(this)
-        // this.Residents = new Residents(this)
+        this.Residents = new Residents(this)
         this.Players = new Players(this)
 
         // this.GPS = new GPS(this)

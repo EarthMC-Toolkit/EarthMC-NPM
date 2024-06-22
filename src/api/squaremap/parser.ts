@@ -5,7 +5,9 @@ import { asBool, calcArea, formatString, range, roundToNearest16 } from 'utils/f
 
 import type {
     Point2D,
+    Resident,
     SquaremapMarkerset,
+    SquaremapPlayersResponse,
     SquaremapTown
 } from 'types'
 
@@ -37,23 +39,24 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
     if (res.id == "chunky") throw new Error("Error parsing towns: Chunky markerset detected, pass a towny markerset instead.")
     if (!res?.markers) throw new ReferenceError('Error parsing towns: Missing or invalid markers!')
 
-    // const capitals = new Map<string, SquaremapArea>(res.markers.reduce((acc: any[], x) => {
-    //     if (x.type == "icon" && x.icon.includes("capital")) {
-    //         acc.push([parseTooltip(x.tooltip)[0], x])
-    //     }
+    // Using a set is faster and does not allow duplicate keys.
+    const capitals = res.markers.reduce((acc, x) => {
+        if (x.type == "icon" && x.icon.includes("capital")) {
+            acc.add(parseTooltip(x.tooltip)[0])
+        }
 
-    //     return acc
-    // }, []))
-
-    const towns: SquaremapTown[] = []
+        return acc
+    }, new Set<string>())
 
     const len = res.markers.length
+    const towns: SquaremapTown[] = []
+
     for (let i = 0; i < len; i++) {
         const curMarker = res.markers[i]
         if (curMarker.type == "icon") continue
 
         const rawInfo = curMarker.popup.replaceAll('\n', '')
-        const info = striptags(rawInfo, ['a']).split("        ")
+        const info = striptags(rawInfo, ['a']).split("        ") // TODO: Probably not reliable, replace with trim ?
 
         const parsedTooltip = parseTooltip(curMarker.tooltip)
 
@@ -71,8 +74,10 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
             assistants.shift()
         }
 
+        const townName = parsedTooltip[0]
+
         const town: SquaremapTown = {
-            name: formatString(parsedTooltip[0], removeAccents),
+            name: formatString(townName, removeAccents),
             nation: parsedTooltip[1] ? formatString(parsedTooltip[1], removeAccents) : "No Nation",
             mayor: parseInfoString(info[1]),
             assistants, 
@@ -82,7 +87,8 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
             x: range(townX),
             z: range(townZ),
             flags: {
-                pvp: asBool(parseInfoString(info[3]))
+                pvp: asBool(parseInfoString(info[3])),
+                capital: capitals.has(townName)
             } as any,
             colours: {
                 fill: curMarker.fillColor,
@@ -104,6 +110,26 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
 
 // }
 
+const parseResidents = (towns: SquaremapTown[]) => {
+    const residentsArray: Resident[] = towns.reduce((acc: any[], town: SquaremapTown) => [
+        ...acc, 
+        ...town.residents.map(res => ({
+            name: res,
+            town: town.name,
+            nation: town.nation,
+            rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
+        }))
+    ], [])
+
+    return residentsArray
+}
+
+const parsePlayers = async(res: SquaremapPlayersResponse) => {
+    
+}
+
 export {
-    parseTowns
+    parseTowns,
+    parsePlayers,
+    parseResidents
 }

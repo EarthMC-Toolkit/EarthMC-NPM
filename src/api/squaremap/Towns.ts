@@ -15,6 +15,14 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
         this.#map = map
     }
 
+    readonly get = async(...names: string[]) => {
+        const towns = await this.all()
+        if (!towns) throw new FetchError('Error fetching towns! Please try again.')
+
+        const existing = getExisting(towns, names, 'name')
+        return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
+    }
+
     readonly all = async(_removeAccents = false): Promise<SquaremapTown[]> => {
         const cachedTowns: SquaremapTown[] = this.map.getFromCache('towns')
         if (cachedTowns) return cachedTowns
@@ -28,14 +36,6 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
         }
 
         return towns
-    }
-
-    readonly get = async(...names: string[]) => {
-        const towns = await this.all()
-        if (!towns) throw new FetchError('Error fetching towns! Please try again.')
-
-        const existing = getExisting(towns, names, 'name')
-        return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 }
 
