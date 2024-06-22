@@ -38,7 +38,7 @@ const source = {
 	external: [...Object.keys(pkg.dependencies)],
     output: [esm, umd],
     plugins: [
-        typescriptPaths(),
+        typescriptPaths({ preserveExtensions: true }),
         json(),
         nodePolyfills(),
         resolve({ preferBuiltins: true }),
