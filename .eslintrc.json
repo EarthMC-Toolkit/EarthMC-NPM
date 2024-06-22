@@ -1,7 +1,7 @@
 {
     "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
+    "plugins": ["@typescript-eslint", "named-import-spacing"],
     "root": true,
     "env": {
         "browser": true,
@@ -16,6 +16,7 @@
         "no-useless-escape": "off",
         "no-undef": "warn",
         "no-unused-vars": "off",
+        "named-import-spacing/named-import-spacing": 2,
         "@typescript-eslint/consistent-type-imports": "warn",
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/ban-ts-comment": "off",
