@@ -110,19 +110,32 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
 
 // }
 
-export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => [
-    ...acc,
-    ...town.residents.map(res => {
-        const r: Resident = {
-            name: res,
-            town: town.name,
-            nation: town.nation,
-            rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
-        }
+// ~ 70-80ms
+// export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => [
+//     ...acc,
+//     ...town.residents.map(res => {
+//         const r: Resident = {
+//             name: res,
+//             town: town.name,
+//             nation: town.nation,
+//             rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
+//         }
 
-        return r
-    })
-], [])
+//         return r
+//     })
+// ], [])
+
+// ~ 1-2ms
+export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => {
+    acc.push.apply(acc, town.residents.map(res => ({
+        name: res,
+        town: town.name,
+        nation: town.nation,
+        rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
+    })))
+
+    return acc
+}, [])
 
 export const parsePlayers = async(res: SquaremapRawPlayer[]) => {
     

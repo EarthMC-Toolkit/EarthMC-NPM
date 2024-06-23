@@ -52,20 +52,16 @@ class Residents implements EntityApi<Resident | NotFoundError> {
             if (!towns) return null
         }
     
-        const residentsArray = towns.reduce((acc: any[], town: Town) => {
-            const townResidents = town.residents.map(res => {
-                return {
-                    name: res,
-                    town: town.name,
-                    nation: town.nation,
-                    rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
-                }
-            })
+        return towns.reduce((acc: Resident[], town: Town) => {
+            acc.push.apply(acc, town.residents.map(res => ({
+                name: res,
+                town: town.name,
+                nation: town.nation,
+                rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
+            })))
 
-            return [...acc, ...townResidents]
+            return acc
         }, [])
-    
-        return residentsArray as Resident[]
     }
 }
 

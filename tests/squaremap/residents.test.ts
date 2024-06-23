@@ -6,12 +6,15 @@ describe('[Squaremap/Aurora] Residents', () => {
 
     it('can get all residents', async () => {
         const residents = await globalThis.Aurora.Residents.all()
+
+        expect(residents).toBeTruthy()
         assertType<Resident[]>(residents)
     })
 
     it('can get single resident', async () => {
         const resident = await globalThis.Aurora.Residents.get('3meraldk')
 
+        expect(resident).toBeTruthy()
         expect(resident).toBeDefined()
         expectTypeOf(resident).not.toEqualTypeOf<Error>()
         assertType<Resident | Resident[]>(resident)

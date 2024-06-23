@@ -16,6 +16,6 @@ describe('[Squaremap/Aurora] Nations', () => {
         assertType<Nation | Nation[]>(nation)
 
         expect(nation.name).toBe('Madagascar')
-        console.log(nation.residents.length)
+        //console.log(nation.residents.length)
     })
 })
