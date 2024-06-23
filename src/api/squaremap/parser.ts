@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import striptags from 'striptags'
-import { asBool, calcArea, formatString, range, roundToNearest16 } from 'utils/functions.js'
+import { asBool, calcArea, fastMergeUnique, formatString, range, roundToNearest16 } from 'utils/functions.js'
 
 import type {
+    Nation,
     Player,
     Point2D,
     Resident,
@@ -107,9 +108,56 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
     return towns
 }
 
-// const parseNations = async(towns: Town[]) => {
+export const parseNations = async(towns: SquaremapTown[]) => {
+    const raw: Record<string, Nation> = {}
+    const nations: Nation[] = []
+    const len = towns.length
 
-// }
+    for (let i = 0; i < len; i++) {
+        const town = towns[i]
+        
+        const nationName = town.nation
+        if (nationName == "No Nation") continue
+
+        // Doesn't already exist, create new.
+        if (!raw[nationName]) {          
+            raw[nationName] = { 
+                name: nationName,
+                residents: town.residents,
+                towns: [],
+                area: 0,
+                king: undefined,
+                capital: undefined
+            }
+
+            nations.push(raw[nationName])
+        }
+
+        //#region Add extra stuff
+        const resNames = raw[nationName].residents
+
+        raw[nationName].residents = fastMergeUnique(resNames, town.residents) 
+        raw[nationName].area += town.area
+
+        // Current town is in existing nation
+        if (raw[nationName].name == nationName) 
+            raw[nationName].towns?.push(town.name)
+
+        if (town.flags.capital) {
+            //if (town.wiki) raw[nationName].wiki = town.wiki
+
+            raw[nationName].king = town.mayor
+            raw[nationName].capital = {
+                name: town.name,
+                x: town.x,
+                z: town.z
+            }
+        }
+        //#endregion
+    }
+
+    return nations
+}
 
 // ~ 70-80ms
 // export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => [
