@@ -3,7 +3,7 @@ import type Dynmap from "./Dynmap.js"
 
 import {
     formatString, asBool, 
-    calcArea, hypot, range,
+    calcArea, range,
     getExisting,
     isInvitable
 } from 'utils/functions.js'
@@ -15,7 +15,8 @@ import {
 } from "utils/errors.js"
 
 import type { EntityApi } from 'helpers/EntityApi.js'
-import type { Nation, Town } from 'types'
+import type { Nation, StrictPoint2D, Town } from 'types'
+import { getNearest } from '../common.js'
 
 class Towns implements EntityApi<Town | NotFoundError> {
     #map: Dynmap
@@ -153,18 +154,8 @@ class Towns implements EntityApi<Town | NotFoundError> {
         return cachedTowns as Town[]
     }
 
-    readonly nearby = async(
-        xInput: number, zInput: number, 
-        xRadius: number, zRadius: number, 
-        towns?: Town[]
-    ) => {
-        if (!towns) {
-            towns = await this.all()
-            if (!towns) return null
-        }
-
-        return towns.filter(t => hypot(t.x, [xInput, xRadius]) && hypot(t.z, [zInput, zRadius]))
-    }
+    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, towns?: Town[]) => 
+        getNearest<Town>(location, radius, towns, this.all)
 
     readonly invitable = async(nationName: string, includeBelonging = false) => {
         const nation = await this.map.Nations.get(nationName) as Nation

@@ -1,5 +1,5 @@
 import type Squaremap from "./Squaremap.js"
-import type { Nation, SquaremapTown } from "types"
+import type { Nation, SquaremapTown, StrictPoint2D } from "types"
 
 import type { EntityApi } from "helpers/EntityApi.js"
 import { parseTowns } from "./parser.js"
@@ -10,6 +10,7 @@ import {
 } from "utils/errors.js"
 
 import { getExisting } from "utils/functions.js"
+import { getNearest } from "../common.js"
 
 class Towns implements EntityApi<SquaremapTown | NotFoundError> {
     #map: Squaremap
@@ -50,6 +51,9 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
 
         return towns
     }
+
+    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, towns?: SquaremapTown[]) => 
+        getNearest<SquaremapTown>(location, radius, towns, this.all)
 }
 
 export {
