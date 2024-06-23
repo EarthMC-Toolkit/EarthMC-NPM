@@ -34,6 +34,7 @@ class Residents implements EntityApi<Resident | NotFoundError> {
         const towns = await this.map.Towns.all()
 
         // TODO: Cache residents to avoid parsing every time.
+        // Edit: this is now a 1-2ms hit from ~75, re-evaluate if caching is needed
         return parseResidents(towns)
     }
 }
