@@ -22,7 +22,7 @@ describe('[Squaremap/Aurora] Residents', () => {
         res = resident
     })
 
-    it ('resident has correct info', () => {
+    it('resident has correct info', () => {
         expect(res).toBeTruthy()
 
         expect(res.name).toBe("3meraldK")

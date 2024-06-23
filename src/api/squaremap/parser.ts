@@ -4,6 +4,7 @@ import striptags from 'striptags'
 import { asBool, calcArea, formatString, range, roundToNearest16 } from 'utils/functions.js'
 
 import type {
+    Player,
     Point2D,
     Resident,
     SquaremapMarkerset,
@@ -17,7 +18,7 @@ import type {
  * Returns an array of one or two string elements. 0 = town, 1 = nation
  * @param tooltip Input string
  */
-const parseTooltip = (tooltip: string) => {
+export const parseTooltip = (tooltip: string) => {
     const cleaned = striptags(tooltip.replaceAll('\n', '')).trim().split(" ")
 
     // If we have a nation, remove its brackets.
@@ -28,7 +29,7 @@ const parseTooltip = (tooltip: string) => {
     return cleaned
 }
 
-const parseInfoString = (str: string) => str.slice(str.indexOf(":") + 1).trim()
+export const parseInfoString = (str: string) => str.slice(str.indexOf(":") + 1).trim()
 
 interface TownCoords {
     townX: number[]
@@ -137,6 +138,20 @@ export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Res
     return acc
 }, [])
 
-export const parsePlayers = async(res: SquaremapRawPlayer[]) => {
-    
+const editPlayerProps = (player: SquaremapRawPlayer): Player => ({
+    name: player.name,
+    nickname: striptags(formatString(player.display_name)),
+    x: player.x,
+    z: player.z,
+    y: player.yaw,
+    underground: player.world != 'earth',
+    world: player.world,
+    online: true
+})
+
+export const parsePlayers = (players: SquaremapRawPlayer[]) => {
+    if (!players) throw new Error("Error parsing players: Input was null or undefined!")
+    if (!(players instanceof Array)) throw new TypeError("Error parsing players: Input type must be `Object` or `Array`.")
+
+    return players.length > 0 ? players.map(p => editPlayerProps(p)) : []
 }

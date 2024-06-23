@@ -52,7 +52,10 @@ const getArchive = async (url: string, unixTs = Date.now()) => {
 }
 
 const configData = async <T>(mapName: AnyMap): Promise<T> => asJSON(get("config", mapName)) as T
-const playerData = async <T>(mapName: AnyMap): Promise<T> => asJSON(get("players", mapName))
+const playerData = async <T>(mapName: AnyMap): Promise<T> => {
+    const url = mapName.toLowerCase() == 'aurora' ? get('squaremap', 'players') : get("players", mapName)
+    return asJSON(url)
+}
 
 const mapData = async <T>(mapName: AnyMap): Promise<T> => {
     const url = mapName.toLowerCase() == 'aurora' ? get('squaremap', 'map') : get("map", mapName)

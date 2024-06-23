@@ -4,7 +4,6 @@ import type {
     DynmapMap
 } from 'types'
 
-import * as fn from 'utils/functions.js'
 import DataHandler from 'helpers/DataHandler.js'
 
 import Towns from './Towns.js'
@@ -12,6 +11,11 @@ import Nations from './Nations.js'
 import Players from './Players.js'
 import Residents from './Residents.js'
 import GPS from './GPS.js'
+
+import { 
+    editPlayerProps, 
+    safeParseInt, strictFalsy 
+} from 'utils/functions.js'
 
 class Dynmap extends DataHandler {
     //#region Data classes
@@ -61,13 +65,13 @@ class Dynmap extends DataHandler {
     readonly isWilderness = async (location: Point2D) => !(await this.withinTown(location))
 
     readonly withinBounds = (location: Point2D, bounds: TownBounds) => {
-        if (fn.strictFalsy(location.x) || fn.strictFalsy(location.z)) {
+        if (strictFalsy(location.x) || strictFalsy(location.z)) {
             const obj = JSON.stringify(location)
             throw new ReferenceError(`(withinBounds) - Invalid location:\n${obj}`)
         }
 
-        const locX = fn.safeParseInt(location.x)
-        const locZ = fn.safeParseInt(location.z)
+        const locX = safeParseInt(location.x)
+        const locZ = safeParseInt(location.z)
 
         // Check if the given coordinates are within the bounds or on the bounds
         const withinX = locX >= Math.min(...bounds.x) && locX <= Math.max(...bounds.x)
@@ -78,7 +82,7 @@ class Dynmap extends DataHandler {
 
     readonly onlinePlayerData = async () => {
         const pData = await this.playerData<PlayersResponse>()
-        return pData?.players ? fn.editPlayerProps(pData.players) : null
+        return pData?.players ? editPlayerProps(pData.players) : null
     }
 
     readonly markerset = async () => {

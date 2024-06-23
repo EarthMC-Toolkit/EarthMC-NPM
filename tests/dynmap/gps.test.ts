@@ -1,5 +1,4 @@
-import { describe, it, expect, assertType } from 'vitest'
-import { Player } from '../../src/types'
+import { describe, it, expect } from 'vitest'
 
 describe('[Dynmap/Nova] GPS', () => {
     const sampleLoc = { x: -8000, z: 100 }
