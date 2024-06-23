@@ -62,7 +62,7 @@ class Dynmap extends DataHandler {
         return inBounds
     }
 
-    readonly isWilderness = async (location: Point2D) => !(await this.withinTown(location))
+    readonly isWilderness = async(location: Point2D) => !(await this.withinTown(location))
 
     readonly withinBounds = (location: Point2D, bounds: TownBounds) => {
         if (strictFalsy(location.x) || strictFalsy(location.z)) {
@@ -80,12 +80,12 @@ class Dynmap extends DataHandler {
         return withinX && withinZ
     }
 
-    readonly onlinePlayerData = async () => {
+    readonly onlinePlayerData = async() => {
         const pData = await this.playerData<PlayersResponse>()
         return pData?.players ? editPlayerProps(pData.players) : null
     }
 
-    readonly markerset = async () => {
+    readonly markerset = async() => {
         const mapData = await this.mapData<MapResponse>()
         return mapData?.sets["townyPlugin.markerset"]
     }

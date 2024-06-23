@@ -93,7 +93,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         })
     }
 
-    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, players?: OnlinePlayer[]) => 
+    readonly nearby = async(location: StrictPoint2D, radius: StrictPoint2D, players?: OnlinePlayer[]) => 
         getNearest<OnlinePlayer>(location, radius, players, this.all, true)
 }
 

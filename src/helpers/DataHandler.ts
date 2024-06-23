@@ -21,7 +21,7 @@ class DataHandler {
         this.#cacheTTL = cacheTTL
     }
 
-    private createCache = async () => {
+    private createCache = async() => {
         const release = await this.#cacheLock.acquire()
         let cacheInstance = null
 
@@ -55,7 +55,7 @@ class DataHandler {
     readonly playerData = <T>() => endpoint.playerData<T>(this.map)
     readonly configData = <T>() => endpoint.configData<T>(this.map)
 
-    readonly mapData = async <T>() => {
+    readonly mapData = async<T>() => {
         if (!this.#cache) {
             this.#cache = await this.createCache()
         }

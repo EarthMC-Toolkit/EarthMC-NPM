@@ -23,7 +23,7 @@ class Residents implements EntityApi<Resident | NotFoundError> {
         this.#map = map
     }
 
-    readonly fromTown = async (townName: string) => {
+    readonly fromTown = async(townName: string) => {
         if (!townName) throw new InvalidError(`Parameter 'town' is ${townName}`)
 
         const town = await this.map.Towns.get(townName) as Town
@@ -38,7 +38,7 @@ class Residents implements EntityApi<Resident | NotFoundError> {
     //     ...res 
     // } : res
 
-    readonly get = async (...residentList: string[]) => {
+    readonly get = async(...residentList: string[]) => {
         const residents = await this.all()
         if (!residents) throw new FetchError('Error fetching residents! Please try again.')
 
@@ -46,7 +46,7 @@ class Residents implements EntityApi<Resident | NotFoundError> {
         return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 
-    readonly all = async (towns?: Town[]) => {
+    readonly all = async(towns?: Town[]) => {
         if (!towns) {
             towns = await this.map.Towns.all()
             if (!towns) return null

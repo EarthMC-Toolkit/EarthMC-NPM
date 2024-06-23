@@ -1,4 +1,5 @@
 import type { 
+    AnyMap,
     Point2D,
     SquaremapMap,
     SquaremapMapResponse, 
@@ -13,8 +14,19 @@ import Players from "./Players.js"
 import Residents from "./Residents.js"
 
 import { parsePlayers } from "./parser.js"
+import type { EntityApi } from "helpers/EntityApi.js"
 
-class Squaremap extends DataHandler {
+export interface IMap {
+    readonly Towns: EntityApi<any>
+    readonly Nations: EntityApi<any>
+    readonly Residents: EntityApi<any>
+    readonly Players: EntityApi<any>
+
+    readonly name: AnyMap
+    readonly inviteRange: number
+}
+
+class Squaremap extends DataHandler implements IMap {
     //#region Data classes
     readonly Towns: Towns
     readonly Nations: Nations
