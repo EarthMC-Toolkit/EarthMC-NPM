@@ -12,6 +12,7 @@
         "globalThis": "readonly"
     },
     "rules": {
+        "prefer-spread": "off",
         "no-console": "off",
         "no-useless-escape": "off",
         "no-undef": "warn",

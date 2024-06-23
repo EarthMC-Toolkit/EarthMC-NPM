@@ -11,7 +11,7 @@ import { NotFound } from './errors.js'
 
 // Thoroughly tested, faster than both spread and concat w/ high No. of items.
 export const fastMerge = <T>(original: T[], args: T[]) => {
-    original.push.apply(args)
+    original.push.apply(original, args)
     return original
 }
 
