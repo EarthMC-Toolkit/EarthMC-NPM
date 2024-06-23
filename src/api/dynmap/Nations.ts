@@ -1,15 +1,23 @@
 import type { 
-    Nation, Town 
+    Nation, StrictPoint2D, Town 
 } from 'types'
 
 import type { Dynmap } from "./Dynmap.js"
 import type { EntityApi } from 'helpers/EntityApi.js'
 
-import * as fn from 'utils/functions.js'
 import { 
     FetchError,
     type NotFoundError 
 } from "utils/errors.js"
+
+import { 
+    getNearest
+} from '../common.js'
+
+import { 
+    sqr, getExisting, 
+    fastMergeUnique
+} from 'utils/functions.js'
 
 //import OfficialAPI from '../OAPI.js'
 
@@ -31,7 +39,7 @@ class Nations implements EntityApi<Nation | NotFoundError> {
         const nations = await this.all()
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
     
-        const existing = fn.getExisting(nations, nationList, 'name')
+        const existing = getExisting(nations, nationList, 'name')
         return existing.length > 1 ? Promise.all(existing): Promise.resolve(existing[0])
     }
 
@@ -66,7 +74,9 @@ class Nations implements EntityApi<Nation | NotFoundError> {
             }
     
             //#region Add extra stuff
-            raw[nationName].residents = fn.removeDuplicates(raw[nationName].residents.concat(town.residents))       
+            const resNames = raw[nationName].residents
+
+            raw[nationName].residents = fastMergeUnique(resNames, town.residents)    
             raw[nationName].area += town.area
     
             // Current town is in existing nation
@@ -86,23 +96,11 @@ class Nations implements EntityApi<Nation | NotFoundError> {
             //#endregion
         }
 
-        return nations as Nation[]
+        return nations
     }
 
-    readonly nearby = async (
-        xInput: number, zInput: number, 
-        xRadius: number, zRadius: number, 
-        nations?: Nation[]
-    ) => {
-        if (!nations) {
-            nations = await this.all()
-            if (!nations) return null
-        }
-    
-        return nations.filter(n => 
-            fn.hypot(fn.safeParseInt(n.capital.x), [xInput, xRadius]) && 
-            fn.hypot(fn.safeParseInt(n.capital.z), [zInput, zRadius]))
-    }
+    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, nations?: Nation[]) => 
+        getNearest<Nation>(location, radius, nations, this.all)
 
     readonly joinable = async (townName: string, nationless = true) => {
         let town: Town = null
@@ -116,7 +114,7 @@ class Nations implements EntityApi<Nation | NotFoundError> {
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
 
         return nations.filter(n => {
-            const joinable = fn.sqr(n.capital, town, this.map.inviteRange)
+            const joinable = sqr(n.capital, town, this.map.inviteRange)
             return nationless ? joinable && town.nation == "No Nation" : joinable
         }) as Nation[]
     }

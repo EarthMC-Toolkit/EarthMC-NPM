@@ -35,7 +35,7 @@ interface TownCoords {
     townZ: number[]
 }
 
-const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
+export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
     if (res.id == "chunky") throw new Error("Error parsing towns: Chunky markerset detected, pass a towny markerset instead.")
     if (!res?.markers) throw new ReferenceError('Error parsing towns: Missing or invalid markers!')
 
@@ -110,7 +110,7 @@ const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
 
 // }
 
-const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => [
+export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => [
     ...acc,
     ...town.residents.map(res => {
         const r: Resident = {
@@ -124,12 +124,6 @@ const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[]
     })
 ], [])
 
-const parsePlayers = async(res: SquaremapRawPlayer[]) => {
+export const parsePlayers = async(res: SquaremapRawPlayer[]) => {
     
-}
-
-export {
-    parseTowns,
-    parsePlayers,
-    parseResidents
 }

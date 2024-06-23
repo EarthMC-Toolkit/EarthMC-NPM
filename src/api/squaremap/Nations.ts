@@ -1,9 +1,13 @@
 import { FetchError, type NotFoundError } from "utils/errors.js"
 import type { EntityApi } from "helpers/EntityApi.js"
-import type { Nation, SquaremapTown } from "types"
+import type { Nation, SquaremapTown, StrictPoint2D } from "types"
 
 import type Squaremap from "./Squaremap.js"
-import { getExisting, removeDuplicates } from "utils/functions.js"
+import { getExisting, fastMergeUnique } from "utils/functions.js"
+
+import { 
+    getNearest
+} from "../common.js"
 
 class Nations implements EntityApi<Nation | NotFoundError> {
     #map: Squaremap
@@ -50,9 +54,11 @@ class Nations implements EntityApi<Nation | NotFoundError> {
     
                 nations.push(raw[nationName])
             }
-    
+
             //#region Add extra stuff
-            raw[nationName].residents = removeDuplicates(raw[nationName].residents.concat(town.residents))       
+            const resNames = raw[nationName].residents
+
+            raw[nationName].residents = fastMergeUnique(resNames, town.residents) 
             raw[nationName].area += town.area
     
             // Current town is in existing nation
@@ -72,8 +78,11 @@ class Nations implements EntityApi<Nation | NotFoundError> {
             //#endregion
         }
 
-        return nations as Nation[]
+        return nations
     }
+
+    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, nations?: Nation[]) => 
+        getNearest<Nation>(location, radius, nations, this.all)
 }
 
 export {

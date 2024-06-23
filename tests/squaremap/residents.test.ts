@@ -26,6 +26,6 @@ describe('[Squaremap/Aurora] Residents', () => {
         expect(res.rank).toBe("Mayor")
         expect(res.town).toBe("Krn")
 
-        console.log(res)
+        //console.log(res)
     })
 })
