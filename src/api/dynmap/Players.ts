@@ -3,13 +3,15 @@ import type Dynmap from './Dynmap.js'
 
 import type { 
     MapResponse, 
-    OnlinePlayer, Player 
+    OnlinePlayer, Player, 
+    StrictPoint2D
 } from 'types'
 
 import * as fn from 'utils/functions.js'
 import * as endpoint from 'utils/endpoint.js'
 import { FetchError, type NotFoundError } from "utils/errors.js"
 import type { EntityApi } from 'helpers/EntityApi.js'
+import { getNearest } from '../common.js'
 
 class Players implements EntityApi<Player | NotFoundError> {
     #map: Dynmap
@@ -85,7 +87,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         const residents = await this.map.Residents.all()
         if (!residents) return null
 
-        const merged = []
+        const merged: Player[] = []
         const len = onlinePlayers.length
 
         for (let i = 0; i < len; i++) {
@@ -95,21 +97,11 @@ class Players implements EntityApi<Player | NotFoundError> {
             merged.push({ ...curOp, ...foundRes })
         }
     
-        return merged as Player[]
+        return merged
     }
 
-    readonly nearby = async(xInput: number, zInput: number, xRadius: number, zRadius: number, players?: OnlinePlayer[]) => {
-        if (!players) {
-            players = await this.all()
-            if (!players) return null
-        }
-
-        return players.filter(p => {            
-            if (p.x == 0 && p.z == 0) return
-            return fn.hypot(fn.safeParseInt(p.x), [xInput, xRadius]) && 
-                   fn.hypot(fn.safeParseInt(p.z), [zInput, zRadius])
-        })
-    }
+    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, players?: OnlinePlayer[]) => 
+        getNearest<OnlinePlayer>(location, radius, players, this.all, true)
 }
 
 export {

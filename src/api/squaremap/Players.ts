@@ -5,10 +5,11 @@ import type {
     EntityApi
 } from "helpers/EntityApi.js"
 
-import type { Player } from "types"
+import type { OnlinePlayer, Player, StrictPoint2D } from "types"
 import { FetchError, type NotFoundError } from "utils/errors.js"
 import { getExisting } from "utils/functions.js"
 import { parseInfoString } from "./parser.js"
+import { getNearest } from "../common.js"
 
 class Players implements EntityApi<Player | NotFoundError> {
     #map: Squaremap
@@ -50,7 +51,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         const residents = await this.map.Residents.all()
         if (!residents) return null
 
-        const merged = []
+        const merged: Player[] = []
         const len = onlinePlayers.length
 
         for (let i = 0; i < len; i++) {
@@ -60,7 +61,7 @@ class Players implements EntityApi<Player | NotFoundError> {
             merged.push({ ...curOp, ...foundRes })
         }
     
-        return merged as Player[]
+        return merged
     }
 
     readonly townless = async() => {
@@ -91,6 +92,9 @@ class Players implements EntityApi<Player | NotFoundError> {
             return bName < aName ? 1 : bName > aName ? -1 : 0
         })
     }
+
+    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, players?: OnlinePlayer[]) => 
+        getNearest<OnlinePlayer>(location, radius, players, this.all, true)
 }
 
 export {
