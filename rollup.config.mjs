@@ -8,7 +8,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import { typescriptPaths } from 'rollup-plugin-typescript-paths'
 
 import nodePolyfills from 'rollup-plugin-polyfill-node'
-import dts from 'rollup-plugin-dts'
+//import dts from 'rollup-plugin-dts'
 
 const generatedCode = {
     arrowFunctions: true,
@@ -47,13 +47,13 @@ const source = {
     ]
 }
 
-const types = {
-    input: 'src/types/index.ts',
-    output: [{ 
-        file: pkg.types, 
-        format: 'es'
-    }],
-    plugins: [dts()]
-}
+// const types = {
+//     input: 'src/types/index.ts',
+//     output: [{ 
+//         file: pkg.types, 
+//         format: 'es'
+//     }],
+//     plugins: [dts()]
+// }
 
-export default [source, types]
+export default [source]

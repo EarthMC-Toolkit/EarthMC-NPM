@@ -15,6 +15,7 @@
         "importHelpers": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
+        "incremental": true,
         "types": ["node"],
         "baseUrl": ".",
         "paths": {
