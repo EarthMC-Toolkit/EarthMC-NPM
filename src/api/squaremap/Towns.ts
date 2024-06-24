@@ -46,7 +46,7 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
 
         if (towns.length > 0) {
             this.map.putInCache('towns', towns)
-            this.map.unrefIfNode()
+            //this.map.unrefIfNode()
         }
 
         return towns
