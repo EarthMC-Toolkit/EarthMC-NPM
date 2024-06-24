@@ -1,15 +1,15 @@
 import type Squaremap from "./Squaremap.js"
-import type { Nation, SquaremapTown, StrictPoint2D } from "types"
+import type { Nation, SquaremapTown, StrictPoint2D } from "../../types"
 
-import type { EntityApi } from "helpers/EntityApi.js"
+import type { EntityApi } from "../../helpers/EntityApi.js"
 import { parseTowns } from "./parser.js"
 
 import { 
     FetchError, InvalidError, 
     NotFoundError 
-} from "utils/errors.js"
+} from "../../utils/errors.js"
 
-import { getExisting, isInvitable } from "utils/functions.js"
+import { getExisting, isInvitable } from "../../utils/functions.js"
 import { getNearest } from "../common.js"
 
 class Towns implements EntityApi<SquaremapTown | NotFoundError> {

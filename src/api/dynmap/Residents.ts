@@ -5,15 +5,15 @@ import type Dynmap from "./Dynmap.js"
 
 import type { 
     Resident, Town 
-} from 'types'
+} from '../../types'
 
 import { 
     FetchError, 
     InvalidError, 
     type NotFoundError 
-} from "utils/errors.js"
+} from "../../utils/errors.js"
 
-import type { EntityApi } from 'helpers/EntityApi.js'
+import type { EntityApi } from '../../helpers/EntityApi.js'
 
 class Residents implements EntityApi<Resident | NotFoundError> {
     #map: Dynmap

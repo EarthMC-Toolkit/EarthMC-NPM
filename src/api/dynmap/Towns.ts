@@ -6,16 +6,16 @@ import {
     calcArea, range,
     getExisting,
     isInvitable
-} from 'utils/functions.js'
+} from '../../utils/functions.js'
 
 import { 
     FetchError, 
     InvalidError, 
     NotFoundError 
-} from "utils/errors.js"
+} from "../../utils/errors.js"
 
-import type { EntityApi } from 'helpers/EntityApi.js'
-import type { Nation, StrictPoint2D, Town } from 'types'
+import type { EntityApi } from '../../helpers/EntityApi.js'
+import type { Nation, StrictPoint2D, Town } from '../../types'
 import { getNearest } from '../common.js'
 
 class Towns implements EntityApi<Town | NotFoundError> {

@@ -2,9 +2,9 @@ import type {
     MapResponse, PlayersResponse, 
     Point2D, TownBounds,
     DynmapMap
-} from 'types'
+} from '../../types'
 
-import DataHandler from 'helpers/DataHandler.js'
+import DataHandler from '../../helpers/DataHandler.js'
 
 import Towns from './Towns.js'
 import Nations from './Nations.js'
@@ -14,7 +14,7 @@ import GPS from './GPS.js'
 
 import { 
     editPlayerProps
-} from 'utils/functions.js'
+} from '../../utils/functions.js'
 
 import { withinBounds, withinTown } from '../common.js'
 

@@ -5,12 +5,12 @@ import type {
     MapResponse, 
     OnlinePlayer, Player, 
     StrictPoint2D
-} from 'types'
+} from '../../types'
 
-import * as fn from 'utils/functions.js'
-import * as endpoint from 'utils/endpoint.js'
-import { FetchError, type NotFoundError } from "utils/errors.js"
-import type { EntityApi } from 'helpers/EntityApi.js'
+import * as fn from '../../utils/functions.js'
+import * as endpoint from '../../utils/endpoint.js'
+import { FetchError, type NotFoundError } from "../../utils/errors.js"
+import type { EntityApi } from '../../helpers/EntityApi.js'
 import { getNearest } from '../common.js'
 
 class Players implements EntityApi<Player | NotFoundError> {

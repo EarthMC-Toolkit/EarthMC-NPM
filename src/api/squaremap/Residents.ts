@@ -1,9 +1,10 @@
 import type Squaremap from "./Squaremap.js"
 
-import type { EntityApi } from "helpers/EntityApi.js"
-import type { Resident, SquaremapTown } from "types"
-import { InvalidError, type NotFoundError } from "utils/errors.js"
-import { getExisting } from "utils/functions.js"
+import type { Resident, SquaremapTown } from "../../types"
+
+import type { EntityApi } from "../../helpers/EntityApi.js"
+import { InvalidError, type NotFoundError } from "../../utils/errors.js"
+import { getExisting } from "../../utils/functions.js"
 import { parseResidents } from "./parser.js"
 
 class Residents implements EntityApi<Resident | NotFoundError> {

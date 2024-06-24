@@ -4,9 +4,9 @@ import type {
     SquaremapMapResponse, 
     SquaremapPlayersResponse,
     TownBounds
-} from "types"
+} from "../../types"
 
-import DataHandler from "helpers/DataHandler.js"
+import DataHandler from "../../helpers/DataHandler.js"
 
 import Towns from './Towns.js'
 import Nations from './Nations.js'

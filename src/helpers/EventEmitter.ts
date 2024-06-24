@@ -15,7 +15,6 @@ export default class Mitt {
     protected emit: any
 
     constructor() {
-        // @ts-expect-error
         const emitter = mitt()
   
         Object.keys(emitter).forEach(() => {

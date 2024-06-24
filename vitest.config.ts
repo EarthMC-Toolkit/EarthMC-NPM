@@ -8,7 +8,6 @@ export default defineConfig({
     globals: true,
     watch: false,
     globalSetup: "./tests/setup.ts",
-    reporters: 'verbose',
-    threads: false
+    reporters: 'verbose'
   }
 })

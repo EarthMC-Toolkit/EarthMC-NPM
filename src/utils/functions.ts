@@ -5,7 +5,7 @@ import type {
     Point2D,
     RawPlayer, Player, Town,
     BaseTown, BaseNation
-} from 'types'
+} from '../types'
 
 import { NotFound } from './errors.js'
 

@@ -1,14 +1,14 @@
 import type { 
     Nation, StrictPoint2D, Town 
-} from 'types'
+} from '../../types'
 
 import type { Dynmap } from "./Dynmap.js"
-import type { EntityApi } from 'helpers/EntityApi.js'
+import type { EntityApi } from '../../helpers/EntityApi.js'
 
 import { 
     FetchError,
     type NotFoundError 
-} from "utils/errors.js"
+} from "../../utils/errors.js"
 
 import { 
     getNearest
@@ -17,7 +17,7 @@ import {
 import { 
     sqr, getExisting, 
     fastMergeUnique
-} from 'utils/functions.js'
+} from '../../utils/functions.js'
 
 //import OfficialAPI from '../OAPI.js'
 

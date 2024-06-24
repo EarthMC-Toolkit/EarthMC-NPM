@@ -3,11 +3,11 @@ import type Squaremap from "./Squaremap.js"
 
 import type {
     EntityApi
-} from "helpers/EntityApi.js"
+} from "../../helpers/EntityApi.js"
 
-import type { OnlinePlayer, Player, StrictPoint2D } from "types"
-import { FetchError, type NotFoundError } from "utils/errors.js"
-import { getExisting } from "utils/functions.js"
+import type { OnlinePlayer, Player, StrictPoint2D } from "../../types"
+import { FetchError, type NotFoundError } from "../../utils/errors.js"
+import { getExisting } from "../../utils/functions.js"
 import { parseInfoString } from "./parser.js"
 import { getNearest } from "../common.js"
 

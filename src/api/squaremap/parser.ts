@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import striptags from 'striptags'
-import { asBool, calcArea, fastMergeUnique, formatString, range, roundToNearest16 } from 'utils/functions.js'
+import { asBool, calcArea, fastMergeUnique, formatString, range, roundToNearest16 } from '../../utils/functions.js'
 
 import type {
     Nation,
@@ -11,7 +11,7 @@ import type {
     SquaremapRawPlayer,
     SquaremapTown,
     StrictPoint2D
-} from 'types'
+} from '../../types'
 
 /**
  * Parses the tooltip on a marker - removing white space, new lines and HTML tags.

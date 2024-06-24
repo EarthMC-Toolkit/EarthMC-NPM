@@ -4,7 +4,7 @@ import type {
     Opacity,
     Prettify,
     StrictPoint2D
-} from 'types'
+} from '../types'
 
 export interface SquaremapPlayersResponse {
     max: number

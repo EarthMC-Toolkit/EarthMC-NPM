@@ -7,10 +7,10 @@ import type {
     OAPINation,
     RawServerInfoV2,
     RawServerInfoV3
-} from 'types'
+} from './types'
 
-import { townyData } from 'utils/endpoint.js'
-import { FetchError } from 'utils/errors.js'
+import { townyData } from './utils/endpoint.js'
+import { FetchError } from './utils/errors.js'
 
 const parseResident = (res: RawResident) => {
     const obj: any = {}
