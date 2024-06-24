@@ -31,8 +31,8 @@ class Dynmap extends DataHandler {
     readonly inviteRange: number
     //#endregion
 
-    constructor(mapName: DynmapMap) {
-        super(mapName)
+    constructor(mapName: DynmapMap, cacheTTL = 120) {
+        super(mapName, cacheTTL)
 
         this.name = mapName
         this.inviteRange = mapName == 'nova' ? 3000 : 3500

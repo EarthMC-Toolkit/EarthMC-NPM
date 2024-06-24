@@ -148,7 +148,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
 
         if (cachedTowns.length > 0) {
             this.map.putInCache('towns', cachedTowns)
-            this.map.unrefIfNode()
+            //this.map.unrefIfNode()
         }
 
         return cachedTowns as Town[]

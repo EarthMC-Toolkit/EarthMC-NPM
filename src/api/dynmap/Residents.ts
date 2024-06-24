@@ -38,11 +38,11 @@ class Residents implements EntityApi<Resident | NotFoundError> {
     //     ...res 
     // } : res
 
-    readonly get = async(...residentList: string[]) => {
+    readonly get = async(...names: string[]) => {
         const residents = await this.all()
         if (!residents) throw new FetchError('Error fetching residents! Please try again.')
 
-        const existing = fn.getExisting(residents, residentList, 'name')
+        const existing = fn.getExisting(residents, names, 'name')
         return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 

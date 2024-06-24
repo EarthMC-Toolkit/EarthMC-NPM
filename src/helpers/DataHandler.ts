@@ -11,14 +11,14 @@ class DataHandler {
     #cacheTTL: number
     #cacheLock: Mutex
 
-    #isNode = true
+    //#isNode = true
 
-    constructor(mapName: AnyMap, cacheTTL = 60) {
+    constructor(mapName: AnyMap, cacheTTL: number) {
         this.#map = mapName
-        this.#isNode = globalThis.process?.release?.name == 'node'
+        //this.#isNode = globalThis.process?.release?.name == 'node'
 
         this.#cacheLock = new Mutex()
-        this.#cacheTTL = cacheTTL
+        this.#cacheTTL = cacheTTL < 5 ? 5 : cacheTTL
     }
 
     private createCache = async() => {
@@ -26,8 +26,7 @@ class DataHandler {
         let cacheInstance = null
 
         try {
-            //@ts-expect-error
-            cacheInstance = import('timed-cache').then(tc => new tc.default({ defaultTtl: this.#cacheTTL }))
+            cacheInstance = import('timed-cache').then(tc => new tc.default({ ttl: this.#cacheTTL }))
         } catch (e) {
             console.error(e)
         } finally {
@@ -36,21 +35,10 @@ class DataHandler {
 
         return cacheInstance
     }
-    
-    readonly handle = (key: string) => this.#cache?.cache[`__cache__${key}`]?.handle
 
     readonly getFromCache = (key: string) => this.#cache?.get(key)
-    readonly putInCache = (key: string, value: any) => this.#cache.put(key, value)
-
-    readonly refIfNode = () => {
-        if (!this.#isNode) return
-        this.handle('mapData')?.ref()
-    }
-
-    readonly unrefIfNode = () => {
-        if (!this.#isNode) return
-        this.handle('mapData')?.unref()
-    }
+    readonly putInCache = (key: string, value: any) => this.#cache?.set(key, value)
+    readonly setKeyTTL = (key: string, ttl: number) => this.#cache?.setTTL(key, ttl)
 
     readonly playerData = <T>() => endpoint.playerData<T>(this.map)
     readonly configData = <T>() => endpoint.configData<T>(this.map)
@@ -60,7 +48,7 @@ class DataHandler {
             this.#cache = await this.createCache()
         }
 
-        this.refIfNode()
+        //this.refIfNode()
 
         const cached = this.getFromCache('mapData')
         let md: T | null = null
@@ -69,7 +57,7 @@ class DataHandler {
             md = await endpoint.mapData(this.#map)
 
             this.putInCache('mapData', md)
-            this.unrefIfNode()
+            //this.unrefIfNode()
         }
 
         return md
