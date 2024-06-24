@@ -1,12 +1,14 @@
 import { defineConfig } from 'vitest/config'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
+  plugins: [tsconfigPaths()],
   test: {
-    testTimeout: 8000,
+    testTimeout: 6000,
     globals: true,
     watch: false,
-    threads: false,
-    setupFiles: ["./tests/setup.ts"],
-    reporters: ['verbose'],
+    globalSetup: "./tests/setup.ts",
+    reporters: 'verbose',
+    threads: false
   }
 })

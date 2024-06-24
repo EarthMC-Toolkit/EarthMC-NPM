@@ -1,4 +1,9 @@
-import { CardinalDirection, Location } from '../types.js'
+import type { 
+    CardinalDirection, Location,
+    StringContainedWithin,
+    HexString, 
+    Opacity
+} from 'types'
 
 export type MapResponse = {
     timestamp: number
@@ -16,13 +21,6 @@ export type Markerset = {
     lines: any
 }
 
-type StringContainedWithin<T extends string, U extends string> = `${T}${string}${U}`
-type DivString = StringContainedWithin<"<div><div>", "</div></div>">
-
-type HexString = `#${string}`
-
-type Opacity = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1
-
 export type MapArea = {
     label: string
     x: number[]
@@ -31,7 +29,7 @@ export type MapArea = {
     color: HexString
     fillopacity: Opacity
     opacity: Opacity
-    desc: DivString
+    desc: StringContainedWithin<"<div><div>", "</div></div>">
 }
 
 export type TownHome = Omit<MapArea, 
@@ -67,7 +65,7 @@ export type UpdatedTile = {
 export type ConfigResponse = {
     updaterate: number
     components: Array<ConfigComponent>
-    worlds: ConfigWorld[]
+    worlds: WorldConfig[]
     confighash: number
     defaultmap: MapTypeName
     title: string
@@ -143,16 +141,16 @@ type BaseComponent = {
     type: string
 }
 
-type ConfigWorld = {
+type WorldConfig = {
     sealevel: boolean
     protected: boolean
-    maps: ConfigMap[]
+    maps: MapConfig[]
     center: Location
 }
 
 type MapTypeName = "flat" | "surface" | "Flat" | "Surface"
 
-type ConfigMap = {
+type MapConfig = {
     name: MapTypeName
     scale: number
     icon?: string
@@ -179,12 +177,3 @@ type ConfigMap = {
     mapzoomout: number
     boostzoom: number
 }
-
-const Maps = {
-    aurora: "aurora",
-    nova: "nova",
-    Aurora: "Aurora",
-    Nova: "Nova"
-} as const
-
-export type ValidMapName = typeof Maps[keyof typeof Maps] | `${string}aurora`

@@ -1,30 +1,34 @@
-import { 
+import type { 
+    Point2D,
     RawEntitySpawn, 
     RawEntityStats, 
     RawEntityStatus 
-} from "../types.js"
+} from "types"
 
-export type Nation = {
+import type { Prettify } from "./util.js"
+
+export type BaseNation = {
     name: string
-    uuid?: string
-    board?: string
-    wiki?: string
     king: string
     towns: string[]
     residents: string[]
     area: number
     capital: NationCapital
-    status?: RawEntityStatus
-    stats?: RawEntityStats
-    spawn?: RawEntitySpawn
-    ranks?: { [key: string]: string[] }
-    allies?: string[]
-    enemies?: string[]
-    mapColorHexCode?: string
 }
 
-export type NationCapital = {
+export type Nation = Prettify<BaseNation & Partial<{
+    uuid: string
+    board: string
+    wiki: string
+    status: RawEntityStatus
+    stats: RawEntityStats
+    spawn: RawEntitySpawn
+    ranks: { [key: string]: string[] }
+    allies: string[]
+    enemies: string[]
+    mapColorHexCode: string
+}>>
+
+export type NationCapital = Prettify<Point2D & {
     name: string
-    x: number
-    z: number
-}
+}>

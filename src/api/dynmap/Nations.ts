@@ -1,18 +1,31 @@
-import * as fn from '../utils/functions.js'
+import type { 
+    Nation, StrictPoint2D, Town 
+} from 'types'
 
-import { FetchError, NotFoundError } from "../utils/errors.js"
-import { Nation, Town } from '../types.js'
-import { Map } from "../Map.js"
-import { EntityApi } from './EntityApi.js'
+import type { Dynmap } from "./Dynmap.js"
+import type { EntityApi } from 'helpers/EntityApi.js'
+
+import { 
+    FetchError,
+    type NotFoundError 
+} from "utils/errors.js"
+
+import { 
+    getNearest
+} from '../common.js'
+
+import { 
+    sqr, getExisting, 
+    fastMergeUnique
+} from 'utils/functions.js'
 
 //import OfficialAPI from '../OAPI.js'
 
 class Nations implements EntityApi<Nation | NotFoundError> {
-    #map: Map
-
+    #map: Dynmap
     get map() { return this.#map }
 
-    constructor(map: Map) {
+    constructor(map: Dynmap) {
         this.#map = map
     }
 
@@ -22,23 +35,23 @@ class Nations implements EntityApi<Nation | NotFoundError> {
     //     ...nation
     // } : nation
 
-    readonly get = async (...nationList: string[]) => {
+    readonly get = async(...nationList: string[]) => {
         const nations = await this.all()
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
     
-        const existing = fn.getExisting(nations, nationList, 'name')
+        const existing = getExisting(nations, nationList, 'name')
         return existing.length > 1 ? Promise.all(existing): Promise.resolve(existing[0])
     }
 
-    readonly all = async (towns?: Town[]) => {
+    readonly all = async(towns?: Town[]) => {
         if (!towns) {
             towns = await this.map.Towns.all()
             if (!towns) throw new Error() // TODO: Implement appropriate error.
         }
 
-        const raw: Record<string, Nation> = {}, 
-              nations: Nation[] = [],
-              len = towns.length
+        const raw: Record<string, Nation> = {}
+        const nations: Nation[] = []
+        const len = towns.length
 
         for (let i = 0; i < len; i++) {
             const town = towns[i]
@@ -61,7 +74,9 @@ class Nations implements EntityApi<Nation | NotFoundError> {
             }
     
             //#region Add extra stuff
-            raw[nationName].residents = fn.removeDuplicates(raw[nationName].residents.concat(town.residents))       
+            const resNames = raw[nationName].residents
+
+            raw[nationName].residents = fastMergeUnique(resNames, town.residents)    
             raw[nationName].area += town.area
     
             // Current town is in existing nation
@@ -81,23 +96,11 @@ class Nations implements EntityApi<Nation | NotFoundError> {
             //#endregion
         }
 
-        return nations as Nation[]
+        return nations
     }
 
-    readonly nearby = async (
-        xInput: number, zInput: number, 
-        xRadius: number, zRadius: number, 
-        nations?: Nation[]
-    ) => {
-        if (!nations) {
-            nations = await this.all()
-            if (!nations) return null
-        }
-    
-        return nations.filter(n => 
-            fn.hypot(n.capital.x, [xInput, xRadius]) && 
-            fn.hypot(n.capital.z, [zInput, zRadius]))
-    }
+    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, nations?: Nation[]) => 
+        getNearest<Nation>(location, radius, nations, this.all)
 
     readonly joinable = async (townName: string, nationless = true) => {
         let town: Town = null
@@ -111,7 +114,7 @@ class Nations implements EntityApi<Nation | NotFoundError> {
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')
 
         return nations.filter(n => {
-            const joinable = fn.sqr(n.capital, town, this.map.inviteRange)
+            const joinable = sqr(n.capital, town, this.map.inviteRange)
             return nationless ? joinable && town.nation == "No Nation" : joinable
         }) as Nation[]
     }

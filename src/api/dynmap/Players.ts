@@ -1,23 +1,27 @@
 import striptags from 'striptags'
+import type Dynmap from './Dynmap.js'
 
-import * as fn from '../utils/functions.js'
-import * as endpoint from '../utils/endpoint.js'
-import { FetchError, NotFoundError } from "../utils/errors.js"
-      
-import { Map } from '../Map.js'
-import { OnlinePlayer, Player } from '../types.js'
-import { EntityApi } from './EntityApi.js'
+import type { 
+    MapResponse, 
+    OnlinePlayer, Player, 
+    StrictPoint2D
+} from 'types'
+
+import * as fn from 'utils/functions.js'
+import * as endpoint from 'utils/endpoint.js'
+import { FetchError, type NotFoundError } from "utils/errors.js"
+import type { EntityApi } from 'helpers/EntityApi.js'
+import { getNearest } from '../common.js'
 
 class Players implements EntityApi<Player | NotFoundError> {
-    #map: Map
-
+    #map: Dynmap
     get map() { return this.#map }
 
-    constructor(map: Map) {
+    constructor(map: Dynmap) {
         this.#map = map
     }
 
-    readonly get = async (...playerList: string[]) => {
+    readonly get = async(...playerList: string[]) => {
         const players = await this.all()
         if (!players) throw new FetchError('Error fetching players! Please try again.')
         
@@ -25,7 +29,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         return existing.length > 1 ? Promise.all(existing) : Promise.resolve(existing[0])
     }
 
-    readonly all = async () => {
+    readonly all = async() => {
         const onlinePlayers = await this.map.onlinePlayerData()
         if (!onlinePlayers) return
 
@@ -41,22 +45,22 @@ class Players implements EntityApi<Player | NotFoundError> {
         return merged as Player[]
     }
     
-    readonly townless = async () => {
-        const mapData = await endpoint.mapData("aurora")
-        if (!mapData) throw new FetchError('Error fetching townless! Please try again.')
-    
+    readonly townless = async() => {
         const onlinePlayers = await this.online()
         if (!onlinePlayers) return null
 
-        const allResidents: string[] = [],
-              markerset = mapData.sets["townyPlugin.markerset"],
-              areas = Object.values(markerset.areas)
+        const mapData = await endpoint.mapData<MapResponse>("aurora")
+        if (!mapData) throw new FetchError('Error fetching townless! Please try again.')
+
+        const allResidents: string[] = []
+        const markerset = mapData.sets["townyPlugin.markerset"]
+        const areas = Object.values(markerset.areas)
         
         const len = areas.length
         for (let i = 0; i < len; i++) {
-            const town = areas[i],
-                  rawinfo = town.desc.split("<br />"),
-                  info = rawinfo.map(x => striptags(x))
+            const town = areas[i]
+            const rawinfo = town.desc.split("<br />")
+            const info = rawinfo.map(x => striptags(x))
 
             if (info[0].endsWith("(Shop)")) continue
 
@@ -75,7 +79,7 @@ class Players implements EntityApi<Player | NotFoundError> {
         })
     }
 
-    readonly online = async (includeResidentInfo = false) => {
+    readonly online = async(includeResidentInfo = false) => {
         const onlinePlayers = await this.map.onlinePlayerData()
         if (!onlinePlayers) return null
         if (!includeResidentInfo) return onlinePlayers
@@ -83,31 +87,21 @@ class Players implements EntityApi<Player | NotFoundError> {
         const residents = await this.map.Residents.all()
         if (!residents) return null
 
-        const merged = [], 
-              len = onlinePlayers.length
+        const merged: Player[] = []
+        const len = onlinePlayers.length
 
         for (let i = 0; i < len; i++) {
-            const curOp = onlinePlayers[i],
-                  foundRes = residents.find(res => res.name === curOp.name)
+            const curOp = onlinePlayers[i]
+            const foundRes = residents.find(res => res.name === curOp.name)
 
             merged.push({ ...curOp, ...foundRes })
         }
     
-        return merged as Player[]
+        return merged
     }
 
-    readonly nearby = async (xInput: number, zInput: number, xRadius: number, zRadius: number, players?: OnlinePlayer[]) => {
-        if (!players) {
-            players = await this.all()
-            if (!players) return null
-        }
-
-        return players.filter(p => {            
-            if (p.x == 0 && p.z == 0) return
-            return fn.hypot(fn.safeParseInt(p.x), [xInput, xRadius]) && 
-                   fn.hypot(fn.safeParseInt(p.z), [zInput, zRadius])
-        })
-    }
+    readonly nearby = async(location: StrictPoint2D, radius: StrictPoint2D, players?: OnlinePlayer[]) => 
+        getNearest<OnlinePlayer>(location, radius, players, this.all, true)
 }
 
 export {

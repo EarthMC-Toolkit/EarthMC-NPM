@@ -1,31 +1,32 @@
-import { editPlayerProps } from '../utils/functions.js'
-import * as endpoint from '../utils/endpoint.js'
+import * as endpoint from 'utils/endpoint.js'
 
 import { Mutex } from 'async-mutex'
-import { MapResponse, ValidMapName } from '../types.js'
+import type { AnyMap } from 'types'
 
 class DataHandler {
-    #isNode = true
+    #map: AnyMap
+    get map() { return this.#map }
+
     #cache: any
-
-    #map: ValidMapName
-
+    #cacheTTL: number
     #cacheLock: Mutex
 
-    constructor(mapName: ValidMapName) {
+    //#isNode = true
+
+    constructor(mapName: AnyMap, cacheTTL: number) {
         this.#map = mapName
-        this.#isNode = globalThis.process?.release?.name == 'node'
+        //this.#isNode = globalThis.process?.release?.name == 'node'
 
         this.#cacheLock = new Mutex()
+        this.#cacheTTL = cacheTTL < 5 ? 5 : cacheTTL
     }
 
-    private createCache = async (ttl = 120*1000) => {
+    private createCache = async() => {
         const release = await this.#cacheLock.acquire()
         let cacheInstance = null
 
         try {
-            //@ts-expect-error 
-            cacheInstance = import('timed-cache').then(tc => new tc.default({ defaultTtl: ttl }))
+            cacheInstance = import('timed-cache').then(tc => new tc.default({ ttl: this.#cacheTTL }))
         } catch (e) {
             console.error(e)
         } finally {
@@ -34,47 +35,32 @@ class DataHandler {
 
         return cacheInstance
     }
-    
-    readonly handle = (key: string) => this.#cache?.cache[`__cache__${key}`]?.handle
-    readonly mapData = async () => {
-        if (!this.#cache)
+
+    readonly getFromCache = (key: string) => this.#cache?.get(key)
+    readonly putInCache = (key: string, value: any) => this.#cache?.set(key, value)
+    readonly setKeyTTL = (key: string, ttl: number) => this.#cache?.setTTL(key, ttl)
+
+    readonly playerData = <T>() => endpoint.playerData<T>(this.map)
+    readonly configData = <T>() => endpoint.configData<T>(this.map)
+
+    readonly mapData = async<T>() => {
+        if (!this.#cache) {
             this.#cache = await this.createCache()
+        }
 
-        if (this.#isNode)
-            this.handle('mapData')?.ref()
-
-        let md: MapResponse | null = null
+        //this.refIfNode()
 
         const cached = this.getFromCache('mapData')
+        let md: T | null = null
+
         if (!cached) {
             md = await endpoint.mapData(this.#map)
 
             this.putInCache('mapData', md)
-            this.unrefIfNode()
+            //this.unrefIfNode()
         }
 
         return md
-    }
-
-    readonly getFromCache = (key: string) => this.#cache?.get(key)
-    readonly putInCache = (key: string, value: any) => this.#cache.put(key, value)
-
-    readonly unrefIfNode = () => {
-        if (this.#isNode)
-            this.handle('mapData')?.unref()
-    }
-
-    readonly playerData = () => endpoint.playerData(this.#map)
-    readonly configData = () => endpoint.configData(this.#map)
-
-    readonly onlinePlayerData = async () => {
-        const pData = await this.playerData()
-        return pData?.players ? editPlayerProps(pData.players) : null
-    }
-
-    readonly markerset = async () => {
-        const mapData = await this.mapData()
-        return mapData?.sets["townyPlugin.markerset"]
     }
 }
 

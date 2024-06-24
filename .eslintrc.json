@@ -1,7 +1,7 @@
 {
     "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
+    "plugins": ["@typescript-eslint", "named-import-spacing"],
     "root": true,
     "env": {
         "browser": true,
@@ -12,29 +12,40 @@
         "globalThis": "readonly"
     },
     "rules": {
+        "prefer-spread": "off",
         "no-console": "off",
         "no-useless-escape": "off",
-        "@typescript-eslint/no-unused-vars": "warn",
-        "no-unused-vars": "warn",
         "no-undef": "warn",
+        "no-unused-vars": "off",
+        "named-import-spacing/named-import-spacing": 2,
+        "@typescript-eslint/consistent-type-imports": "warn",
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": ["warn", {
+            "args": "all",
+            "argsIgnorePattern": "^_",
+            "caughtErrors": "all",
+            "caughtErrorsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "ignoreRestSiblings": true
+        }],
         "semi": ["error", "never"],
         "no-unreachable": ["error"],
         "no-unexpected-multiline": ["error"],
         "prefer-const": "warn",
         "no-self-compare": "error",
         "no-sparse-arrays": "error",
-        "spaced-comment": ["warn", "always", { 
-            "markers": [
-                "#region",
-                "#endregion",
-                "@ts-expect-error",
-                "@ts-ignore",
-                "import"
-            ] 
-        }],
+        // "spaced-comment": ["warn", "always", { 
+        //     "markers": [
+        //         "#region",
+        //         "#endregion",
+        //         "@ts-expect-error",
+        //         "@ts-ignore",
+        //         "import"
+        //     ]
+        // }],
         "comma-spacing": 2,
         "comma-style": 2,
         "comma-dangle": ["error", "never"],

@@ -1,13 +1,15 @@
 import * as endpoint from './utils/endpoint.js'
-
 import { FetchError } from "./utils/errors.js"
-import { Map } from './Map.js'
+
+import Dynmap from './api/dynmap/Dynmap.js'
+import Squaremap from './api/squaremap/Squaremap.js'
 
 import MCAPI from "mojang-lib"
 import { OAPIV2, OAPIV3 } from './OAPI.js'
+import type { PlayersResponse } from 'types'
 
-const Aurora = new Map('aurora')
-const Nova = new Map('nova')
+const Aurora = new Squaremap('aurora')
+const Nova = new Dynmap('nova')
 
 async function fetchServer(name = "play.earthmc.net") {
     const server = await MCAPI.servers.get(name)
@@ -22,8 +24,8 @@ async function fetchServer(name = "play.earthmc.net") {
 async function getServerInfo() {
     try {
         const serverData = await fetchServer()
-        const novaData = await endpoint.playerData("nova")
-        const auroraData = await endpoint.playerData("aurora")
+        const novaData = await endpoint.playerData<PlayersResponse>("nova")
+        const auroraData = await endpoint.playerData<PlayersResponse>("aurora")
 
         const online = serverData.online
         const novaCount = novaData.currentcount ?? 0
@@ -44,11 +46,6 @@ async function getServerInfo() {
     }
 }
 
-export { formatString } from './utils/functions.js'
-
-export * from "./types.js"
-export * from "./utils/errors.js"
-
 const OfficialAPI = {
     V2: OAPIV2,
     V3: OAPIV3
@@ -61,5 +58,9 @@ export {
     fetchServer,
     getServerInfo,
     Aurora, Nova,
-    Map
+    Dynmap, Squaremap
 }
+
+export * from "types"
+export * from "./utils/errors.js"
+export { formatString } from './utils/functions.js'

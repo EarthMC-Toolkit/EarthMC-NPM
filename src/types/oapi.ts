@@ -1,6 +1,10 @@
-import { Location } from '../types.js'
-import { NestedOmit, Prettify } from './util.js'
+import type { 
+    Location, 
+    NestedOmit,
+    Prettify 
+} from 'types'
 
+//#region V2
 //#region Parsed
 export type OAPITown = NestedOmit<RawTown, 
     "timestamps" |
@@ -53,12 +57,12 @@ export type OAPIResident = NestedOmit<RawResident,
 //#endregion
 
 //#region Raw, unparsed types
-export interface RawEntity {
+export type RawEntity = Prettify<{
     uuid: string
     status: RawEntityStatus
     stats: RawEntityStats
     ranks?: { [key: string]: string[] }
-}
+}>
 
 export type RawEntityStatus = Partial<{
     isPublic: boolean
@@ -71,27 +75,27 @@ export type RawEntityStatus = Partial<{
     isNPC: boolean
 }>
 
-export interface RawEntityStats {
+export type RawEntityStats = Prettify<{
     maxTownBlocks?: number
     numTownBlocks?: number
     numResidents?: number
     numTowns?: number
     balance: number
-}
+}>
 
-export interface RawResidentPerms {
+export type RawResidentPerms = Prettify<{
     friend: boolean
     town: boolean
     ally: boolean
     outsider: boolean
-}
+}>
 
-export interface RawTownPerms {
+export type RawTownPerms = Prettify<{
     resident: boolean
     nation: boolean
     ally: boolean
     outsider: boolean
-}
+}>
 
 export interface RawFlagPerms {
     pvp: boolean
@@ -116,14 +120,14 @@ export type RawEntitySpawn = Prettify<Location & {
     yaw?: number
 }>
 
-export interface RawTownCoordinates {
+export type RawTownCoordinates = Prettify<{
     spawn: RawEntitySpawn 
     home: number[]
     townBlocks: {
         x: number[]
         z: number[]
     }
-}
+}>
 
 export type RawTown = Prettify<RawEntity & {
     name: string
@@ -133,7 +137,7 @@ export type RawTown = Prettify<RawEntity & {
     mapColorHexCode: string
     nation?: string
     timestamps?: Timestamps
-    perms: RawEntityPerms<RawTownPerms>
+    perms: Prettify<RawEntityPerms<RawTownPerms>>
     coordinates: RawTownCoordinates
     residents: string[]
     trusted?: string[]
@@ -153,12 +157,12 @@ export type RawNation = Prettify<RawEntity & {
     enemies?: string[]
 }>
 
-export interface Timestamps {
+export type Timestamps = Prettify<{
     joinedNationAt?: number
     joinedTownAt?: number
     registered: number
     lastOnline?: number
-}
+}>
 
 export type RawResident = Prettify<RawEntity & {
     name: string
@@ -191,7 +195,10 @@ export interface RawServerInfoV2 {
         numTownBlocks: number
     }
 }
+//#endregion
+//#endregion
 
+//#region V3
 export interface RawServerInfoV3 {
     version: string
     moonPhase: string

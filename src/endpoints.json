@@ -11,6 +11,10 @@
       "nova": "https://earthmc.net/map/nova/standalone/MySQL_configuration.php",
       "aurora": "https://earthmc.net/map/aurora/standalone/MySQL_configuration.php"
     },
+    "squaremap": {
+      "map": "https://map.earthmc.net/tiles/minecraft_overworld/markers.json",
+      "players": "https://map.earthmc.net/tiles/players.json"
+    },
     "towny": {
       "v2/aurora": "https://api.earthmc.net/v2/aurora",
       "v3/aurora": "https://api.earthmc.net/v3/aurora"

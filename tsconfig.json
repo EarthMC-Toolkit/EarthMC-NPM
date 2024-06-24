@@ -4,10 +4,11 @@
         "moduleResolution": "NodeNext",
         "moduleDetection": "force",
         "target": "ES2017",
+        "lib": ["ES2023"],
         "outDir": "dist",
         "noImplicitAny": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
+        "noUnusedParameters": false,
         "removeComments": true,
         "skipLibCheck": true,
         "skipDefaultLibCheck": true,
@@ -18,9 +19,12 @@
         "types": ["node"],
         "baseUrl": ".",
         "paths": {
+            "types": ["src/types", "src/types/index", "./src/types", "./src/types/index.ts"],
+            "helpers/*": ["./src/helpers/*"],
+            "utils/*": ["src/utils/*"],
             "tslib": ["node_modules/tslib/tslib.d.ts"]
         }
     },
     "include": ["src"],
-    "exclude": ["node_modules", "docs", "tests", "dist"]
+    "exclude": ["node_modules", "docs", "tests", "dist"],
 }

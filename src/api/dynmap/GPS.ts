@@ -1,17 +1,12 @@
-import * as fn from '../utils/functions.js'
-import { Map } from '../Map.js'
+import type Dynmap from './Dynmap.js'
 
 import { 
-    Route, Routes,
-    Location,
-    Nation,
-    RouteInfo,
-    Player
-} from '../types.js'
+    type Route, Routes, type RouteInfo,
+    type Location, type Nation, type Player
+} from 'types'
 
-import Mitt from '../helpers/EventEmitter.js'
-
-const NativeMap = globalThis.Map
+import Mitt from '../../helpers/EventEmitter.js'
+import { manhattan, safeParseInt, strictFalsy } from 'utils/functions.js'
 
 class GPS extends Mitt {
     #map: Dynmap
@@ -35,14 +30,9 @@ class GPS extends Mitt {
 
     static readonly Routes = Routes
 
-    constructor(map: Map) {
+    constructor(map: Dynmap) {
         super()
         this.#map = map
-    }
-
-    #getPlayer = async (name: string) => {
-        const player = await this.map.Players.get(name)
-        return player
     }
 
     playerIsOnline = (player: Player) => {
@@ -58,10 +48,10 @@ class GPS extends Mitt {
 
     readonly track = async(playerName: string, interval = 3000, route = Routes.FASTEST) => {
         setInterval(async () => {
-            const player = await this.#getPlayer(playerName).catch(e => {
+            const player: Player = await this.map.Players.get(playerName).catch(e => {
                 this.emit('error', { err: "FETCH_ERROR", msg: e.message })
                 return null
-            }) as Player
+            })
 
             if (!player) return
             if (!this.playerIsOnline(player)) return
@@ -85,11 +75,11 @@ class GPS extends Mitt {
                         this.emit('error', { err: "INVALID_LAST_LOC", msg: e.message })
                     }
                 }
-            } 
+            }
             else {
                 this.lastLoc = { 
-                    x: fn.safeParseInt(player.x), 
-                    z: fn.safeParseInt(player.z) 
+                    x: safeParseInt(player.x), 
+                    z: safeParseInt(player.z) 
                 }
 
                 try {
@@ -111,8 +101,8 @@ class GPS extends Mitt {
     readonly safestRoute = (loc: Location) => this.findRoute(loc, Routes.SAFEST)
     readonly fastestRoute = (loc: Location) => this.findRoute(loc, Routes.FASTEST)
 
-    readonly findRoute = async (loc: Location, options: Route) => {
-        if (fn.strictFalsy(loc.x) || fn.strictFalsy(loc.z)) {
+    readonly findRoute = async(loc: Location, options: Route) => {
+        if (strictFalsy(loc.x) || strictFalsy(loc.z)) {
             const obj = JSON.stringify(loc)
             throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
         }
@@ -120,7 +110,7 @@ class GPS extends Mitt {
         // Scan all nations for closest match.
         // Computationally more expensive to include PVP disabled nations.
         const [towns, nations] = await Promise.all([this.map.Towns.all(), this.map.Nations.all()])
-        const townMap = new NativeMap(towns.map(town => [town.name, town]))
+        const townsMap = new Map(towns.map(t => [t.name, t]))
 
         const len = nations.length
         const filtered = []
@@ -129,7 +119,7 @@ class GPS extends Mitt {
             const nation = nations[i]
             const capitalName = nation.capital.name
 
-            const capital = townMap.get(capitalName)
+            const capital = townsMap.get(capitalName)
             if (!capital) continue
 
             // Filter out nations where either capital is not public 
@@ -144,9 +134,11 @@ class GPS extends Mitt {
         }
 
         // Use reduce to find the minimum distance and corresponding nation
-        const { distance, nation } = filtered.reduce((acc: any, nation: Nation) => {
-            const capital = nation.capital
-            const dist = fn.manhattan(capital.x, capital.z, fn.safeParseInt(loc.x), fn.safeParseInt(loc.z))
+        const { distance, nation } = filtered.reduce((acc: RouteInfo, nation: Nation) => {
+            const dist = manhattan(
+                safeParseInt(nation.capital.x), safeParseInt(nation.capital.z), 
+                safeParseInt(loc.x), safeParseInt(loc.z)
+            )
 
             // Update acc if this nation is closer
             const closer = !acc.distance || dist < acc.distance
@@ -154,7 +146,7 @@ class GPS extends Mitt {
                 distance: Math.round(dist), 
                 nation: {
                     name: nation.name,
-                    capital: capital
+                    capital: nation.capital
                 }
             }
         }, { distance: null, nation: null })
@@ -163,23 +155,25 @@ class GPS extends Mitt {
         return { nation, distance, direction } as RouteInfo
     }
 
+    /**
+     * Determines the direction to the destination from the origin.
+     * 
+     * Only one of the main four directions (N, S, W, E) can be returned, no intermediates.
+     * @param origin The location where something is currently at.
+     * @param destination The location we wish to arrive at.
+     */
     static cardinalDirection(origin: Location, destination: Location) {
         // Calculate the differences in x and z coordinates
-        const deltaX = fn.safeParseInt(origin.x) - fn.safeParseInt(destination.x)
-        const deltaZ = fn.safeParseInt(origin.z) - fn.safeParseInt(destination.z)
+        const deltaX = safeParseInt(origin.x) - safeParseInt(destination.x)
+        const deltaZ = safeParseInt(origin.z) - safeParseInt(destination.z)
 
         // Calculates radians with atan2, then converted to degrees.
         const angle = Math.atan2(deltaZ, deltaX) * 180 / Math.PI
  
         // Determine the cardinal direction
-        if (angle >= -45 && angle < 45) 
-            return "east"
-    
-        if (angle >= 45 && angle < 135) 
-            return "north"
-        
-        if (angle >= 135 || angle < -135) 
-            return "west"
+        if (angle >= -45 && angle < 45) return "east"
+        if (angle >= 45 && angle < 135) return "north"
+        if (angle >= 135 || angle < -135) return "west"
 
         return "south"
     }

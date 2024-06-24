@@ -24,6 +24,11 @@ export type Point2D = {
     z: number | string
 }
 
+export type StrictPoint2D = {
+    x: number
+    z: number
+}
+
 export type RouteInfo = {
     distance: number
     direction: "north" | "east" | "south" | "west"
