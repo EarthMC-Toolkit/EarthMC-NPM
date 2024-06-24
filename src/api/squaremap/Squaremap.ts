@@ -12,6 +12,7 @@ import Towns from './Towns.js'
 import Nations from './Nations.js'
 import Players from "./Players.js"
 import Residents from "./Residents.js"
+import GPS from "./GPS.js"
 
 import { parsePlayers } from "./parser.js"
 import { withinBounds, withinTown } from "../common.js"
@@ -22,7 +23,7 @@ class Squaremap extends DataHandler {
     readonly Nations: Nations
     readonly Residents: Residents
     readonly Players: Players
-    // readonly GPS: GPS
+    readonly GPS: GPS
     //#endregion
 
     //#region Map-specific properties
@@ -40,7 +41,7 @@ class Squaremap extends DataHandler {
         this.Residents = new Residents(this)
         this.Players = new Players(this)
 
-        // this.GPS = new GPS(this)
+        this.GPS = new GPS(this)
     }
     
     readonly withinTown = async (location: Point2D) => {
