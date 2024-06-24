@@ -14,10 +14,9 @@ describe('[Squaremap/Aurora] Nations', () => {
         const nation = await Aurora.Nations.get('madagascar')
 
         expect(nation).toBeDefined()
-        expectTypeOf(nation).not.toEqualTypeOf<Error>()
+        expectTypeOf(nation).not.toEqualTypeOf<Error>
         assertType<Nation | Nation[]>(nation)
 
         expect(nation.name).toBe('Madagascar')
-        //console.log(nation.residents.length)
     })
 })

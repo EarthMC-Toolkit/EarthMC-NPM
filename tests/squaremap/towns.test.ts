@@ -14,7 +14,7 @@ describe('[Squaremap/Aurora] Towns', () => {
     })
 
     it('can get single town', async () => {
-        const town = await Aurora.Towns.get('brisbane')
+        const town = await Aurora.Towns.get('Morven')
 
         expect(town).toBeTruthy()
         expect(town).toBeDefined()

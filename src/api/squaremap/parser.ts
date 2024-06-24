@@ -77,10 +77,11 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         }
 
         const townName = parsedTooltip[0]
+        const nationName = parsedTooltip[1] ? formatString(parsedTooltip[1], removeAccents) : "No Nation"
 
         const town: SquaremapTown = {
             name: formatString(townName, removeAccents),
-            nation: parsedTooltip[1] ? formatString(parsedTooltip[1], removeAccents) : "No Nation",
+            nation: nationName,
             mayor: parseInfoString(info[1]),
             assistants, 
             residents,
@@ -105,6 +106,14 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
                 outline: curMarker.opacity
             }
         }
+
+        //#region Parse wiki and add to town if it exists.
+        const match = info[0].match(/href="([^"]*)"/)
+        const wikiLink = match ? match[1] : null
+
+        if (wikiLink) 
+            town['wiki'] = wikiLink
+        //#endregion
 
         towns.push(town)
     }
@@ -148,7 +157,7 @@ export const parseNations = async(towns: SquaremapTown[]) => {
             raw[nationName].towns?.push(town.name)
 
         if (town.flags.capital) {
-            //if (town.wiki) raw[nationName].wiki = town.wiki
+            if (town.wiki) raw[nationName].wiki = town.wiki
 
             raw[nationName].king = town.mayor
             raw[nationName].capital = {
