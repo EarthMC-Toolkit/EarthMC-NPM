@@ -46,14 +46,13 @@ async function getServerInfo() {
     }
 }
 
-const OfficialAPI = {
-    V2: OAPIV2,
-    V3: OAPIV3
+export class OfficialAPI {
+    static V2 = OAPIV2
+    static V3 = OAPIV3
 }
 
 export {
     MCAPI as MojangLib,
-    OfficialAPI, 
     endpoint,
     fetchServer,
     getServerInfo,
