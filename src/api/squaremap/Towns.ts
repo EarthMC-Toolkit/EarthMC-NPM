@@ -6,10 +6,10 @@ import { parseTowns } from "./parser.js"
 
 import { 
     FetchError, InvalidError, 
-    type NotFoundError 
+    NotFoundError 
 } from "utils/errors.js"
 
-import { getExisting } from "utils/functions.js"
+import { getExisting, isInvitable } from "utils/functions.js"
 import { getNearest } from "../common.js"
 
 class Towns implements EntityApi<SquaremapTown | NotFoundError> {
@@ -54,6 +54,18 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
 
     readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, towns?: SquaremapTown[]) => 
         getNearest<SquaremapTown>(location, radius, towns, this.all)
+
+    // TODO: Maybe put this into common.ts ?
+    readonly invitable = async(nationName: string, includeBelonging = false) => {
+        const nation = await this.map.Nations.get(nationName)
+        if (nation instanceof NotFoundError) throw new Error("Error checking invitable: Nation does not exist!")
+        if (!nation) throw new Error("Error checking invitable: Could not fetch the nation!")
+        
+        const towns = await this.all()
+        if (!towns) throw new FetchError('An error occurred fetching towns!')
+
+        return towns.filter(t => isInvitable(t, nation as Nation, this.map.inviteRange, includeBelonging))
+    }
 }
 
 export {

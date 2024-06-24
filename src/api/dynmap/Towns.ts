@@ -11,7 +11,7 @@ import {
 import { 
     FetchError, 
     InvalidError, 
-    type NotFoundError 
+    NotFoundError 
 } from "utils/errors.js"
 
 import type { EntityApi } from 'helpers/EntityApi.js'
@@ -159,7 +159,8 @@ class Towns implements EntityApi<Town | NotFoundError> {
 
     readonly invitable = async(nationName: string, includeBelonging = false) => {
         const nation = await this.map.Nations.get(nationName) as Nation
-        if (!nation) throw new Error("Could not fetch the nation")
+        if (nation instanceof NotFoundError) throw new Error("Error checking invitable: Nation does not exist!")
+        if (!nation) throw new Error("Error checking invitable: Could not fetch the nation!")
 
         const towns = await this.all()
         if (!towns) throw new FetchError('An error occurred fetching towns!')

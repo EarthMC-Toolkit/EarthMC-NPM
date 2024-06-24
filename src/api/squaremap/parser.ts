@@ -6,11 +6,11 @@ import { asBool, calcArea, fastMergeUnique, formatString, range, roundToNearest1
 import type {
     Nation,
     Player,
-    Point2D,
     Resident,
     SquaremapMarkerset,
     SquaremapRawPlayer,
-    SquaremapTown
+    SquaremapTown,
+    StrictPoint2D
 } from 'types'
 
 /**
@@ -62,8 +62,8 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
 
         const parsedTooltip = parseTooltip(curMarker.tooltip)
 
-        const bounds: Point2D[] = curMarker.points.flat(2)
-        const { townX, townZ } = bounds.reduce((acc: TownCoords, p) => {
+        const points: StrictPoint2D[] = curMarker.points.flat(2)
+        const { townX, townZ } = points.reduce((acc: TownCoords, p) => {
             acc.townX.push(roundToNearest16(p.x as number))
             acc.townZ.push(roundToNearest16(p.z as number))
 
@@ -85,7 +85,11 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             assistants, 
             residents,
             area: calcArea(townX, townZ, townX.length),
-            bounds: bounds as any,
+            bounds: {
+                x: townX,
+                z: townZ
+            },
+            points,
             x: range(townX),
             z: range(townZ),
             flags: {

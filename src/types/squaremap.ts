@@ -2,7 +2,8 @@ import type {
     Point2D,
     HexString,
     Opacity,
-    Prettify
+    Prettify,
+    StrictPoint2D
 } from 'types'
 
 export interface SquaremapPlayersResponse {
@@ -67,7 +68,7 @@ type CommonFields = Prettify<
 >
     
 type SquaremapPoints = {
-    points?: Point2D[][][] | Point2D[]
+    points?: StrictPoint2D[][][] | StrictPoint2D[]
 }
 
 export type SquaremapArea = Prettify<SquaremapMarker & CommonFields & SquaremapPoints>

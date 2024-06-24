@@ -6,9 +6,9 @@ export interface BaseTown {
     mayor: string
     residents: string[]
     area: number
-    bounds: TownBounds
     x: number
     z: number
+    bounds: TownBounds
     colours: {
         fill: HexString
         outline: HexString
@@ -34,6 +34,10 @@ export type SquaremapTown = Prettify<BaseTown & {
         pvp: boolean
         capital: boolean
     }
+    points: {
+        x: number
+        z: number
+    }[]
 }>
 
 export type Town = Prettify<BaseTown & {

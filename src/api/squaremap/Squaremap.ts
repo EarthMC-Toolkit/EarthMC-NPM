@@ -2,7 +2,8 @@ import type {
     Point2D,
     SquaremapMap,
     SquaremapMapResponse, 
-    SquaremapPlayersResponse
+    SquaremapPlayersResponse,
+    TownBounds
 } from "types"
 
 import DataHandler from "helpers/DataHandler.js"
@@ -13,6 +14,7 @@ import Players from "./Players.js"
 import Residents from "./Residents.js"
 
 import { parsePlayers } from "./parser.js"
+import { withinBounds, withinTown } from "../common.js"
 
 class Squaremap extends DataHandler {
     //#region Data classes
@@ -40,6 +42,14 @@ class Squaremap extends DataHandler {
 
         // this.GPS = new GPS(this)
     }
+    
+    readonly withinTown = async (location: Point2D) => {
+        const towns = await this.Towns.all()
+        return withinTown(location, towns)
+    }
+
+    readonly isWilderness = async(location: Point2D) => !(await this.withinTown(location))
+    readonly withinBounds = (location: Point2D, bounds: TownBounds) => withinBounds(location, bounds)
 
     readonly onlinePlayerData = async() => {
         const res = await this.playerData<SquaremapPlayersResponse>()
