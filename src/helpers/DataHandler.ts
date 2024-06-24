@@ -26,7 +26,7 @@ class DataHandler {
         let cacheInstance = null
 
         try {
-            cacheInstance = import('timed-cache').then(tc => new tc.default({ ttl: this.#cacheTTL }))
+            cacheInstance = import('timed-cache').then(tc => new tc.default({ ttl: this.#cacheTTL * 1000 }))
         } catch (e) {
             console.error(e)
         } finally {
@@ -48,19 +48,15 @@ class DataHandler {
             this.#cache = await this.createCache()
         }
 
-        //this.refIfNode()
-
-        const cached = this.getFromCache('mapData')
-        let md: T | null = null
-
+        const cached: T = this.getFromCache('mapData')
         if (!cached) {
-            md = await endpoint.mapData(this.#map)
+            const data: T = await endpoint.mapData(this.#map)
 
-            this.putInCache('mapData', md)
-            //this.unrefIfNode()
+            this.putInCache('mapData', data)
+            return data
         }
 
-        return md
+        return cached
     }
 }
 

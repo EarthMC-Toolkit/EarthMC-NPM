@@ -7,7 +7,14 @@ export default defineConfig({
     testTimeout: 6000,
     globals: true,
     watch: false,
-    globalSetup: "./tests/setup.ts",
-    reporters: 'verbose'
+    reporters: 'verbose',
+    pool: 'vmForks',
+    poolOptions: {
+      vmForks: {
+        memoryLimit: 0.1, // 10% of sys mem
+        minForks: 2, // always use 2 threads
+        maxForks: 6 // 6 threads is enough
+      }
+    }
   }
 })

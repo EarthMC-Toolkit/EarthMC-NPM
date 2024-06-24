@@ -19,7 +19,7 @@ describe('[Squaremap/Aurora] Players', () => {
     })
 
     it('can get single online player', async () => {
-        const op = await Aurora.Players.get('Alan_yy')
+        const op = await Aurora.Players.get('Alan_yy') as Player
 
         expect(op).toBeTruthy()
         assertType<Player | Player[]>(op)
