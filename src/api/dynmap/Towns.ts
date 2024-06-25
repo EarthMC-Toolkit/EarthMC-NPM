@@ -15,7 +15,7 @@ import {
 } from "../../utils/errors.js"
 
 import type { EntityApi } from '../../helpers/EntityApi.js'
-import type { Nation, StrictPoint2D, Town } from '../../types'
+import type { Nation, StrictPoint2D, Town } from '../../types/index.js'
 import { getNearest } from '../common.js'
 
 class Towns implements EntityApi<Town | NotFoundError> {

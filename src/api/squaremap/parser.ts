@@ -11,7 +11,7 @@ import type {
     SquaremapRawPlayer,
     SquaremapTown,
     StrictPoint2D
-} from '../../types'
+} from '../../types/index.js'
 
 /**
  * Parses the tooltip on a marker - removing white space, new lines and HTML tags.

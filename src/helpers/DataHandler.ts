@@ -1,7 +1,7 @@
 import * as endpoint from '../utils/endpoint.js'
 
 import { Mutex } from 'async-mutex'
-import type { AnyMap } from '../types'
+import type { AnyMap } from '../types/index.js'
 
 class DataHandler {
     #map: AnyMap

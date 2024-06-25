@@ -5,7 +5,7 @@ import type {
     EntityApi
 } from "../../helpers/EntityApi.js"
 
-import type { OnlinePlayer, Player, StrictPoint2D } from "../../types"
+import type { OnlinePlayer, Player, StrictPoint2D } from "../../types/index.js"
 import { FetchError, type NotFoundError } from "../../utils/errors.js"
 import { getExisting } from "../../utils/functions.js"
 import { parseInfoString } from "./parser.js"

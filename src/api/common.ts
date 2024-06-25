@@ -1,4 +1,4 @@
-import type { StrictPoint2D, Point2D, TownBounds } from ".././types"
+import type { StrictPoint2D, Point2D, TownBounds } from ".././types/index.js"
 import { hypot, safeParseInt, strictFalsy } from ".././utils/functions.js"
 
 type LocOrNation = Partial<Point2D & {

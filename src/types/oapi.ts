@@ -2,7 +2,7 @@ import type {
     Location, 
     NestedOmit,
     Prettify 
-} from '../types'
+} from '../types/index.js'
 
 //#region V2
 //#region Parsed

@@ -6,7 +6,7 @@ import Squaremap from './api/squaremap/Squaremap.js'
 
 import MCAPI from "mojang-lib"
 import { OAPIV2, OAPIV3 } from './OAPI.js'
-import type { PlayersResponse } from './types'
+import type { PlayersResponse } from './types/index.js'
 
 const Aurora = new Squaremap('aurora')
 const Nova = new Dynmap('nova')

@@ -5,7 +5,7 @@ import type {
     MapResponse, 
     OnlinePlayer, Player, 
     StrictPoint2D
-} from '../../types'
+} from '../../types/index.js'
 
 import * as fn from '../../utils/functions.js'
 import * as endpoint from '../../utils/endpoint.js'

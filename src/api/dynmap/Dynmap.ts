@@ -2,7 +2,7 @@ import type {
     MapResponse, PlayersResponse, 
     Point2D, TownBounds,
     DynmapMap
-} from '../../types'
+} from '../../types/index.js'
 
 import DataHandler from '../../helpers/DataHandler.js'
 

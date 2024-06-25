@@ -1,6 +1,6 @@
 import type Squaremap from "./Squaremap.js"
 
-import type { Resident, SquaremapTown } from "../../types"
+import type { Resident, SquaremapTown } from "../../types/index.js"
 
 import type { EntityApi } from "../../helpers/EntityApi.js"
 import { InvalidError, type NotFoundError } from "../../utils/errors.js"

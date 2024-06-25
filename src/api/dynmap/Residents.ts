@@ -5,7 +5,7 @@ import type Dynmap from "./Dynmap.js"
 
 import type { 
     Resident, Town 
-} from '../../types'
+} from '../../types/index.js'
 
 import { 
     FetchError, 

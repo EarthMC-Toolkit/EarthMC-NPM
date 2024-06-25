@@ -7,7 +7,7 @@ import type {
     OAPINation,
     RawServerInfoV2,
     RawServerInfoV3
-} from './types'
+} from './types/index.js'
 
 import { townyData } from './utils/endpoint.js'
 import { FetchError } from './utils/errors.js'

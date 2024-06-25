@@ -1,4 +1,4 @@
-import type { Location, Resident } from '../types'
+import type { Location, Resident } from '../types/index.js'
 
 export type OnlinePlayer = Location & {
     name: string

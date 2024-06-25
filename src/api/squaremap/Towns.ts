@@ -1,5 +1,5 @@
 import type Squaremap from "./Squaremap.js"
-import type { Nation, SquaremapTown, StrictPoint2D } from "../../types"
+import type { Nation, SquaremapTown, StrictPoint2D } from "../../types/index.js"
 
 import type { EntityApi } from "../../helpers/EntityApi.js"
 import { parseTowns } from "./parser.js"

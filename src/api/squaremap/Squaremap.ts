@@ -4,7 +4,7 @@ import type {
     SquaremapMapResponse, 
     SquaremapPlayersResponse,
     TownBounds
-} from "../../types"
+} from "../../types/index.js"
 
 import DataHandler from "../../helpers/DataHandler.js"
 

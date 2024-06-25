@@ -1,6 +1,6 @@
 import type { 
     Nation, StrictPoint2D, Town 
-} from '../../types'
+} from '../../types/index.js'
 
 import type { Dynmap } from "./Dynmap.js"
 import type { EntityApi } from '../../helpers/EntityApi.js'

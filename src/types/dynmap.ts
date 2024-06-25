@@ -3,7 +3,7 @@ import type {
     StringContainedWithin,
     HexString, 
     Opacity
-} from '../types'
+} from '../types/index.js'
 
 export type MapResponse = {
     timestamp: number

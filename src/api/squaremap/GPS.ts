@@ -1,7 +1,7 @@
 import { 
     type Route, Routes, type RouteInfo,
     type Location, type Nation, type Player
-} from '../../types'
+} from '../../types/index.js'
 
 import Mitt from '../../helpers/EventEmitter.js'
 import { manhattan, safeParseInt, strictFalsy } from '../../utils/functions.js'

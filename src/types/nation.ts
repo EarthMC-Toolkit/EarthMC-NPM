@@ -3,7 +3,7 @@ import type {
     RawEntitySpawn, 
     RawEntityStats, 
     RawEntityStatus 
-} from "../types"
+} from "../types/index.js"
 
 import type { Prettify } from "./util.js"
 
