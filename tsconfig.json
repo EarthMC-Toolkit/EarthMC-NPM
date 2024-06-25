@@ -3,8 +3,8 @@
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
         "moduleDetection": "force",
-        "target": "ES2017",
         "lib": ["ES2023"],
+        "target": "ES2017",
         "outDir": "dist",
         "noImplicitAny": true,
         "noUnusedLocals": true,
@@ -23,5 +23,5 @@
         }
     },
     "include": ["src"],
-    "exclude": ["node_modules", "docs", "tests", "dist"],
+    "exclude": ["node_modules", "docs", "tests", "dist"]
 }
