@@ -22,27 +22,30 @@ const esm = {
     format: 'es'
 }
 
-const umd = {
+const cjs = {
     generatedCode,
     file: pkg.exports.require,
-    format: 'umd',
-    name: 'earthmc',
-    globals: {
-        'mojang-lib': 'mojanglib',
-        'timed-cache': 'timedcache'
-    }
+    format: 'cjs'
+    // name: 'earthmc',
+    // globals: {
+    //     'mojang-lib': 'mojanglib',
+    //     'timed-cache': 'timedcache'
+    // }
 }
 
 const source = {
 	input: 'src/main.ts',
 	external: [...Object.keys(pkg.dependencies)],
-    output: [esm, umd],
+    output: [esm, cjs],
     plugins: [
+        typescriptPaths({ preserveExtensions: true }),
         json(),
         nodePolyfills(),
-        typescriptPaths({ preserveExtensions: true }),
         resolve({ preferBuiltins: true }),
-        commonjs({ requireReturnsDefault: 'auto' }),
+        commonjs({ 
+            requireReturnsDefault: 'auto', 
+            transformMixedEsModules: true 
+        }),
         esbuild({ exclude: ["**/*.test.ts"] })
     ]
 }

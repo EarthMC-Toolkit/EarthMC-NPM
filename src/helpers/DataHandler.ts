@@ -26,7 +26,7 @@ class DataHandler {
         let cacheInstance = null
 
         try {
-            cacheInstance = import('timed-cache').then(tc => new tc.default({ ttl: this.#cacheTTL * 1000 }))
+            cacheInstance = import('@isaacs/ttlcache').then(tc => new tc.default({ ttl: this.#cacheTTL * 1000 }))
         } catch (e) {
             console.error(e)
         } finally {
