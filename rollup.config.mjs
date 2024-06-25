@@ -43,8 +43,7 @@ const source = {
         nodePolyfills(),
         resolve({ preferBuiltins: true }),
         commonjs({ 
-            requireReturnsDefault: 'auto', 
-            transformMixedEsModules: true 
+            requireReturnsDefault: 'auto'
         }),
         esbuild({ exclude: ["**/*.test.ts"] })
     ]
