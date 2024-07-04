@@ -62,7 +62,7 @@ class Squaremap extends DataHandler {
         return res.find(x => x.id == "towny")
     }
 
-    readonly buildMapLink = (zoom?: number, location?: Point2D): URL => {
+    readonly buildMapLink = (location?: Point2D, zoom?: number): URL => {
         const url = new URL(`https://map.earthmc.net/?mapname=flat`)
         if (zoom) url.searchParams.append("zoom", zoom.toString())
 

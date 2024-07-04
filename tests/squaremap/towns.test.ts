@@ -14,11 +14,13 @@ describe('[Squaremap/Aurora] Towns', () => {
     })
 
     it('can get single town', async () => {
-        const town = await Aurora.Towns.get('Morven')
+        const town = await Aurora.Towns.get('sakya') as SquaremapTown
 
         expect(town).toBeTruthy()
         expect(town).toBeDefined()
         assertType<SquaremapTown | SquaremapTown[]>(town)
+
+        // TODO: Verify there are no duplicates residents.
     })
 
     // it('can get towns invitable to specified nation', async () => {

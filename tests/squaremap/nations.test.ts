@@ -11,7 +11,7 @@ describe('[Squaremap/Aurora] Nations', () => {
     })
 
     it('can get single nation', async () => {
-        const nation = await Aurora.Nations.get('madagascar')
+        const nation = await Aurora.Nations.get('madagascar') as Nation
 
         expect(nation).toBeTruthy()
         expectTypeOf(nation).not.toEqualTypeOf<Error>

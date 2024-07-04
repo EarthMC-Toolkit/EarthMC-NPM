@@ -37,7 +37,7 @@ class DataHandler {
     }
 
     readonly getFromCache = (key: string) => this.#cache?.get(key)
-    readonly putInCache = (key: string, value: any) => this.#cache?.set(key, value)
+    readonly putInCache = <T>(key: string, value: T) => this.#cache?.set(key, value)
     readonly setKeyTTL = (key: string, ttl: number) => this.#cache?.setTTL(key, ttl)
 
     readonly playerData = <T>() => endpoint.playerData<T>(this.map)

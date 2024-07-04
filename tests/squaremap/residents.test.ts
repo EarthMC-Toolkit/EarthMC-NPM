@@ -14,7 +14,7 @@ describe('[Squaremap/Aurora] Residents', () => {
     })
 
     it('can get single resident', async () => {
-        const resident = await Aurora.Residents.get('3meraldk')
+        const resident = await Aurora.Residents.get('3meraldk') as Resident
 
         expect(resident).toBeTruthy()
         expect(resident).toBeDefined()
