@@ -7,27 +7,54 @@ import type {
     Nation,
     Player,
     Resident,
+    SquaremapMapResponse,
     SquaremapMarkerset,
     SquaremapRawPlayer,
     SquaremapTown,
     StrictPoint2D
 } from '../../types/index.js'
 
+import { endpoint } from 'src/main.js'
+
+interface ParsedTooltip { 
+    town: string
+    nation?: string
+    board?: string 
+}
+
 /**
  * Parses the tooltip on a marker - removing white space, new lines and HTML tags.
  * 
- * Returns an array of one or two string elements. 0 = town, 1 = nation
- * @param tooltip Input string
+ * Returns an object with the following string elements: 
+ * 
+ * - town
+ * 
+ * - nation (May not exist) 
+ * 
+ * - board (May not exist)
+ * @param tooltip The unparsed 'tooltip' value from a markerset.
  */
 export const parseTooltip = (tooltip: string) => {
-    const cleaned = striptags(tooltip.replaceAll('\n', '')).trim().split(" ")
+    const cleaned = striptags(tooltip.replaceAll('\n', '')).trim()
 
-    // If we have a nation, remove its brackets.
-    if (cleaned[1]) {
-        cleaned[1] = cleaned[1].replace(/[()]/g, "") 
+    const indexOpenBracket = cleaned.indexOf('(')
+    const town = indexOpenBracket !== -1 ? cleaned.slice(0, indexOpenBracket).trim() : cleaned.trim() // If no match, return the entire trimmed tooltip
+
+    const out: ParsedTooltip = {
+        town
     }
 
-    return cleaned
+    const nationMatch = cleaned.match(/\(.* of ([A-Za-z\u00C0-\u017F]+)\)/)
+    const nation = nationMatch ? nationMatch[1] : null
+    if (nation) out['nation'] = nation
+
+    const indexClosingBracket = cleaned.indexOf(')')
+    const board = indexClosingBracket !== -1 ? cleaned.slice(indexClosingBracket + 1).trim() : ''
+
+    if (board) out['board'] = board
+
+    console.log(out)
+    return out
 }
 
 export const parseInfoString = (str: string) => str.slice(str.indexOf(":") + 1).trim()
@@ -44,7 +71,7 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
     // Using a set is faster and does not allow duplicate keys.
     const capitals = res.markers.reduce((acc, x) => {
         if (x.type == "icon" && x.icon.includes("capital")) {
-            acc.add(parseTooltip(x.tooltip)[0])
+            acc.add(parseTooltip(x.tooltip).town)
         }
 
         return acc
@@ -61,6 +88,7 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         const info = striptags(rawInfo, ['a']).split("        ") // TODO: Probably not reliable, replace with trim ?
 
         const parsedTooltip = parseTooltip(curMarker.tooltip)
+        //console.log(parsedTooltip)
 
         const points: StrictPoint2D[] = curMarker.points.flat(2)
         const { townX, townZ } = points.reduce((acc: TownCoords, p) => {
@@ -76,8 +104,8 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             assistants.shift()
         }
 
-        const townName = parsedTooltip[0]
-        const nationName = parsedTooltip[1] ? formatString(parsedTooltip[1], removeAccents) : "No Nation"
+        const townName = parsedTooltip.town
+        const nationName = parsedTooltip.nation ? formatString(parsedTooltip.nation, removeAccents) : "No Nation"
 
         const town: SquaremapTown = {
             name: formatString(townName, removeAccents),
@@ -216,3 +244,12 @@ export const parsePlayers = (players: SquaremapRawPlayer[]) => {
 
     return players.length > 0 ? players.map(p => editPlayerProps(p)) : []
 }
+
+async function run() {
+    const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
+    const markerset = res.find(x => x.id == "towny")
+
+    await parseTowns(markerset)
+}
+
+run()
