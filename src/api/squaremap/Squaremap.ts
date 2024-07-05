@@ -24,6 +24,32 @@ class Squaremap extends DataHandler {
     readonly Residents: Residents
     readonly Players: Players
     readonly GPS: GPS
+
+    URLBuilder = class {
+        #url: URL = new URL(`https://map.earthmc.net/?mapname=flat`)
+    
+        constructor(location?: Point2D) {
+            if (location?.x) this.#setCoord("x", Number(location.x))
+            if (location?.z) this.#setCoord("z", Number(location.z))
+        }
+    
+        #setCoord = (str: 'x' | 'z', val: number) => this.#url.searchParams.set(str, val.toString())
+    
+        setX = (num: number) => this.#setCoord("x", num)
+        setZ = (num: number) => this.#setCoord("z", num)
+    
+        setZoom(zoom: number) {
+            this.#url.searchParams.set("zoom", zoom.toString())
+        }
+    
+        // Currently always overworld. This is here purely for future proofing.
+        setWorld = (name = 'minecraft_overworld') => {
+            this.#url.searchParams.set("world", name)
+        }
+    
+        get = () => this.#url
+        getAsString = () => this.#url.toString()
+    }
     //#endregion
 
     //#region Map-specific properties
@@ -60,17 +86,6 @@ class Squaremap extends DataHandler {
     readonly markerset = async() => {
         const res = await this.mapData<SquaremapMapResponse>()
         return res.find(x => x.id == "towny")
-    }
-
-    // TODO: Convert to builder
-    readonly buildMapLink = (location?: Point2D, zoom?: number): URL => {
-        const url = new URL(`https://map.earthmc.net/?mapname=flat`)
-        if (zoom) url.searchParams.append("zoom", zoom.toString())
-
-        if (location?.x) url.searchParams.append("x", location.x.toString())
-        if (location?.z) url.searchParams.append("z", location.z.toString())
-
-        return url
     }
 }
 
