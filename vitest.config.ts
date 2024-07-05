@@ -8,13 +8,16 @@ export default defineConfig({
     globals: true,
     watch: false,
     reporters: 'verbose',
-    pool: 'vmForks',
+    pool: 'forks',
     poolOptions: {
-      vmForks: {
-        memoryLimit: 0.15, // 15% of sys mem
+      forks: {
+        //memoryLimit: 0.15, // 15% of sys mem
         minForks: 2, // always use 2 threads
         maxForks: 6 // 6 threads is enough
       }
-    }
+    },
+    typecheck: {
+      include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)']
+    },
   }
 })
