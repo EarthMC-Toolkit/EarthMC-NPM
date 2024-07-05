@@ -120,8 +120,8 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
 
         const points: StrictPoint2D[] = curMarker.points.flat(2)
         const { townX, townZ } = points.reduce((acc: TownCoords, p) => {
-            acc.townX.push(roundToNearest16(p.x as number))
-            acc.townZ.push(roundToNearest16(p.z as number))
+            acc.townX.push(roundToNearest16(p.x))
+            acc.townZ.push(roundToNearest16(p.z))
 
             return acc
         }, { townX: [], townZ: [] })
