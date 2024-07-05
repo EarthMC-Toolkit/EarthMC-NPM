@@ -1,25 +1,30 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import striptags from 'striptags'
-import { asBool, calcArea, fastMergeUnique, formatString, range, roundToNearest16 } from '../../utils/functions.js'
+import { calcArea, fastMergeUnique, formatString, range, roundToNearest16 } from '../../utils/functions.js'
 
 import type {
     Nation,
     Player,
     Resident,
-    SquaremapMapResponse,
     SquaremapMarkerset,
     SquaremapRawPlayer,
     SquaremapTown,
     StrictPoint2D
 } from '../../types/index.js'
 
-import { endpoint } from 'src/main.js'
-
 interface ParsedTooltip { 
     town: string
     nation?: string
     board?: string 
+}
+
+interface ParsedPopup {
+    wiki?: string
+    mayor?: string
+    councillors: string[]
+    wealth: string
+    residents: string[]
 }
 
 /**
@@ -40,8 +45,6 @@ export const parseTooltip = (tooltip: string) => {
     const indexOpenBracket = cleaned.indexOf('(')
     const town = indexOpenBracket !== -1 ? cleaned.slice(0, indexOpenBracket).trim() : cleaned.trim()
 
-    if (!town) return null
-
     const out: ParsedTooltip = { town }
 
     const nationMatch = cleaned.match(/\(.* of ([A-Za-z\u00C0-\u017F]+)\)/)
@@ -54,6 +57,37 @@ export const parseTooltip = (tooltip: string) => {
     if (board) out['board'] = board
 
     return out
+}
+
+export const parsePopup = (popup: string): ParsedPopup => {
+    const cleaned = striptags(popup.replaceAll('\n', ''), ['a']).trim()
+    const info = cleaned.split(/\s{2,}/)
+
+    const wikiMatch = info[0].match(/href="([^"]*)"/)
+    const wiki = wikiMatch ? wikiMatch[1] : null
+
+    // Town includes a board.
+    if (info.length == 7) {
+        const councillorsStr = parseInfoString(info[3])
+
+        return {
+            wiki,
+            mayor: parseInfoString(info[2]),
+            councillors: councillorsStr == "None" ? [] : councillorsStr.split(", "),
+            wealth: parseInfoString(info[4]),
+            residents: info[6].split(", ")
+        }
+    }
+
+    const councillorsStr = parseInfoString(info[2])
+
+    return {
+        wiki,
+        mayor: parseInfoString(info[1]),
+        councillors: councillorsStr == "None" ? [] : councillorsStr.split(", "),
+        wealth: parseInfoString(info[3]),
+        residents: info[5].split(", ")
+    }
 }
 
 export const parseInfoString = (str: string) => str.slice(str.indexOf(":") + 1).trim()
@@ -83,12 +117,6 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         const curMarker = res.markers[i]
         if (curMarker.type == "icon") continue
 
-        const rawInfo = curMarker.popup.replaceAll('\n', '')
-        const info = striptags(rawInfo, ['a']).split("        ") // TODO: Probably not reliable, replace with trim ?
-
-        const parsedTooltip = parseTooltip(curMarker.tooltip)
-        //console.log(parsedTooltip)
-
         const points: StrictPoint2D[] = curMarker.points.flat(2)
         const { townX, townZ } = points.reduce((acc: TownCoords, p) => {
             acc.townX.push(roundToNearest16(p.x as number))
@@ -97,21 +125,18 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             return acc
         }, { townX: [], townZ: [] })
 
-        const residents = parseInfoString(info[4]).split(", ")
-        const assistants = parseInfoString(info[2]).split(", ")
-        if (assistants[0].toLowerCase() == 'none') {
-            assistants.shift()
-        }
+        const parsedPopup = parsePopup(curMarker.popup)
+        const parsedTooltip = parseTooltip(curMarker.tooltip)
 
-        const townName = parsedTooltip.town
+        const townName = parsedTooltip.town || ''
         const nationName = parsedTooltip.nation ? formatString(parsedTooltip.nation, removeAccents) : "No Nation"
 
         const town: SquaremapTown = {
             name: formatString(townName, removeAccents),
             nation: nationName,
-            mayor: parseInfoString(info[1]),
-            assistants, 
-            residents,
+            mayor: parsedPopup.mayor,
+            councillors: parsedPopup.councillors, 
+            residents: parsedPopup.residents,
             area: calcArea(townX, townZ, townX.length),
             bounds: {
                 x: townX,
@@ -121,26 +146,23 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             x: range(townX),
             z: range(townZ),
             flags: {
-                pvp: asBool(parseInfoString(info[3])),
+                // Flags no longer shown
+                //pvp: asBool(parseInfoString(info[3])),
                 capital: capitals.has(townName)
             } as any,
             colours: {
-                fill: curMarker.fillColor,
+                fill: curMarker.fillColor || curMarker.color,
                 outline: curMarker.color
             },
             opacities: {
-                fill: curMarker.fillOpacity,
+                fill: curMarker.fillOpacity || curMarker.opacity,
                 outline: curMarker.opacity
             }
         }
 
-        //#region Parse wiki and add to town if it exists.
-        const match = info[0].match(/href="([^"]*)"/)
-        const wikiLink = match ? match[1] : null
-
-        if (wikiLink) 
-            town['wiki'] = wikiLink
-        //#endregion
+        if (parsedPopup.wiki) {
+            town.wiki = parsedPopup.wiki
+        }
 
         towns.push(town)
     }
@@ -244,11 +266,11 @@ export const parsePlayers = (players: SquaremapRawPlayer[]) => {
     return players.length > 0 ? players.map(p => editPlayerProps(p)) : []
 }
 
-async function run() {
-    const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
-    const markerset = res.find(x => x.id == "towny")
+// async function test() {
+//     const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
+//     const markerset = res.find(x => x.id == "towny")
 
-    await parseTowns(markerset)
-}
+//     await parseTowns(markerset)
+// }
 
-run()
+// test()
