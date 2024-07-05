@@ -134,6 +134,7 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         const town: SquaremapTown = {
             name: formatString(townName, removeAccents),
             nation: nationName,
+            board: parsedTooltip.board,
             mayor: parsedPopup.mayor,
             councillors: parsedPopup.councillors, 
             residents: parsedPopup.residents,
