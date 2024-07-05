@@ -47,8 +47,9 @@ export const parseTooltip = (tooltip: string) => {
 
     const out: ParsedTooltip = { town }
 
-    const nationMatch = cleaned.match(/\(.* of ([A-Za-z\u00C0-\u017F]+)\)/)
+    const nationMatch = cleaned.match(/\((?:.* of )?([A-Za-z\u00C0-\u017F_]+)\)/)
     const nation = nationMatch ? nationMatch[1] : null
+
     if (nation) out['nation'] = nation
 
     const indexClosingBracket = cleaned.indexOf(')')
