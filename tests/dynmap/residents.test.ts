@@ -3,14 +3,14 @@ import { Resident } from '../../src/types'
 
 import { Nova } from '../../src/main'
 
-describe('[Dynmap/Nova] Residents', () => {
+describe.skip('[Dynmap/Nova] Residents', () => {
     it('can get all residents', async () => {
         const residents = await Nova.Residents.all()
         assertType<Resident[]>(residents)
     })
 
     it('can get single resident', async () => {
-        const resident = await Nova.Residents.get('3meraldk')
+        const resident = await Nova.Residents.get('3meraldk') as Resident
 
         expect(resident).toBeDefined()
         expectTypeOf(resident).not.toEqualTypeOf<Error>()

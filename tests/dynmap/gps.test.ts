@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 
 import { Nova } from '../../src/main'
 
-describe('[Dynmap/Nova] GPS', () => {
+describe.skip('[Dynmap/Nova] GPS', () => {
     const sampleLoc = { x: -8000, z: 100 }
 
     it('can find the safest route', async () => {

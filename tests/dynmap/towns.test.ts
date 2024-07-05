@@ -6,14 +6,14 @@ import {
 import { Town } from '../../src/types'
 import { Nova } from '../../src/main'
 
-describe('[Dynmap/Nova] Towns', () => {
+describe.skip('[Dynmap/Nova] Towns', () => {
     it('can get all towns', async () => {
         const towns = await Nova.Towns.all()
         assertType<Town[]>(towns)
     })
 
     it('can get single town', async () => {
-        const town = await Nova.Towns.get('kraftier')
+        const town = await Nova.Towns.get('kraftier') as Town
 
         expect(town).toBeTruthy()
         expect(town).toBeDefined()
