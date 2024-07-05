@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import striptags from 'striptags'
-import { calcArea, fastMergeUnique, formatString, range, roundToNearest16 } from '../../utils/functions.js'
+import { calcArea, fastMergeUnique, formatString, range, roundToNearest16, safeParseInt } from '../../utils/functions.js'
 
 import type {
     Nation,
     Player,
     Resident,
     SquaremapMarkerset,
+    SquaremapNation,
     SquaremapRawPlayer,
     SquaremapTown,
     StrictPoint2D
@@ -136,8 +137,9 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             name: formatString(townName, removeAccents),
             nation: nationName,
             board: parsedTooltip.board,
+            wealth: safeParseInt(parsedPopup.wealth.slice(0, -1)),
             mayor: parsedPopup.mayor,
-            councillors: parsedPopup.councillors, 
+            councillors: parsedPopup.councillors,
             residents: parsedPopup.residents,
             area: calcArea(townX, townZ, townX.length),
             bounds: {
@@ -173,7 +175,7 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
 }
 
 export const parseNations = async(towns: SquaremapTown[]) => {
-    const raw: Record<string, Nation> = {}
+    const raw: Record<string, SquaremapNation> = {}
     const nations: Nation[] = []
     const len = towns.length
 
@@ -187,9 +189,11 @@ export const parseNations = async(towns: SquaremapTown[]) => {
         if (!raw[nationName]) {          
             raw[nationName] = { 
                 name: nationName,
-                residents: town.residents,
+                residents: [],
+                councillors: [],
                 towns: [],
                 area: 0,
+                wealth: 0,
                 king: undefined,
                 capital: undefined
             }
@@ -200,8 +204,11 @@ export const parseNations = async(towns: SquaremapTown[]) => {
         //#region Add extra stuff
         const resNames = raw[nationName].residents
 
-        raw[nationName].residents = fastMergeUnique(resNames, town.residents) 
+        raw[nationName].residents = fastMergeUnique(resNames, town.residents)
+        raw[nationName].councillors = fastMergeUnique(raw[nationName].councillors, town.councillors)
+
         raw[nationName].area += town.area
+        raw[nationName].wealth += town.wealth
 
         // Current town is in existing nation
         if (raw[nationName].name == nationName) 

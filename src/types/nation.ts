@@ -16,9 +16,14 @@ export type BaseNation = {
     capital: NationCapital
 }
 
-export type Nation = Prettify<BaseNation & Partial<{
+export type Nation = Prettify<BaseNation & Partial<APINationInfo>>
+export type SquaremapNation = Prettify<Nation & {
+    wealth: number
+    councillors: string[]
+}>
+
+export type APINationInfo = {
     uuid: string
-    board: string
     wiki: string
     status: RawEntityStatus
     stats: RawEntityStats
@@ -27,7 +32,7 @@ export type Nation = Prettify<BaseNation & Partial<{
     allies: string[]
     enemies: string[]
     mapColorHexCode: string
-}>>
+}
 
 export type NationCapital = Prettify<Point2D & {
     name: string
