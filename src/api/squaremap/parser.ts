@@ -38,11 +38,11 @@ export const parseTooltip = (tooltip: string) => {
     const cleaned = striptags(tooltip.replaceAll('\n', '')).trim()
 
     const indexOpenBracket = cleaned.indexOf('(')
-    const town = indexOpenBracket !== -1 ? cleaned.slice(0, indexOpenBracket).trim() : cleaned.trim() // If no match, return the entire trimmed tooltip
+    const town = indexOpenBracket !== -1 ? cleaned.slice(0, indexOpenBracket).trim() : cleaned.trim()
 
-    const out: ParsedTooltip = {
-        town
-    }
+    if (!town) return null
+
+    const out: ParsedTooltip = { town }
 
     const nationMatch = cleaned.match(/\(.* of ([A-Za-z\u00C0-\u017F]+)\)/)
     const nation = nationMatch ? nationMatch[1] : null
@@ -53,7 +53,6 @@ export const parseTooltip = (tooltip: string) => {
 
     if (board) out['board'] = board
 
-    console.log(out)
     return out
 }
 
