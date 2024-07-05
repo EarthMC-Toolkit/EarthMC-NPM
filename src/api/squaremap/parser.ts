@@ -149,8 +149,8 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             flags: {
                 // Flags no longer shown
                 //pvp: asBool(parseInfoString(info[3])),
-                capital: capitals.has(townName)
-            } as any,
+                capital: capitals.has(townName) || curMarker.tooltip.includes('Capital of')
+            },
             colours: {
                 fill: curMarker.fillColor || curMarker.color,
                 outline: curMarker.color

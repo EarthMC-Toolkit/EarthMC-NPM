@@ -32,7 +32,7 @@ export type SquaremapTown = Prettify<BaseTown & {
     board: string
     councillors: string[]
     flags: {
-        pvp: boolean
+        //pvp: boolean
         capital: boolean
     }
     points: {
