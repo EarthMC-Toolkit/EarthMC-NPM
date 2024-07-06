@@ -5,7 +5,6 @@ import { calcArea, fastMergeUnique, formatString, range, roundToNearest16, safeP
 
 import type {
     Nation,
-    Player,
     Resident,
     SquaremapMarkerset,
     SquaremapNation,

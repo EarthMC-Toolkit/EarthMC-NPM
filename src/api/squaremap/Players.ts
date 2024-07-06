@@ -1,4 +1,3 @@
-import striptags from "striptags"
 import type Squaremap from "./Squaremap.js"
 
 import type {
@@ -8,7 +7,7 @@ import type {
 import type { OnlinePlayer, Player, StrictPoint2D } from "../../types/index.js"
 import { FetchError, type NotFoundError } from "../../utils/errors.js"
 import { getExisting } from "../../utils/functions.js"
-import { parseInfoString } from "./parser.js"
+import { parsePopup } from "./parser.js"
 import { getNearest } from "../common.js"
 
 class Players implements EntityApi<Player | NotFoundError> {
@@ -78,11 +77,10 @@ class Players implements EntityApi<Player | NotFoundError> {
             const curMarker = markerset.markers[i]
             if (curMarker.type == "icon") continue
     
-            const rawInfo = curMarker.popup.replaceAll('\n', '')
-            const info = striptags(rawInfo, ['a']).split("        ") // TODO: Probably not reliable, replace with trim ?
-    
-            const residents = parseInfoString(info[4]).split(", ")
-            allResidents.push(...residents)
+            const parsedPopup = parsePopup(curMarker.popup)
+
+            // TODO: Replace with flat or concat instead?
+            allResidents.push(...parsedPopup.residents)
         }
 
         // Filter out residents & sort alphabetically

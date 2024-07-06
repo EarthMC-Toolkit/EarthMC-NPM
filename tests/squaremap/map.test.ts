@@ -8,7 +8,5 @@ describe('[Squaremap/Aurora] Map', () => {
 
         expect(wealth).toBeTruthy()
         assertType<number>(wealth)
-
-        console.log(wealth)
     })
 })
