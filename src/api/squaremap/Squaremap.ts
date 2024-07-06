@@ -75,6 +75,12 @@ class Squaremap extends DataHandler {
         return withinTown(location, towns)
     }
 
+    readonly globalWealth = async() => {
+        // Could do this with nations instead, but towns is likely to be more reliable.
+        const towns = await this.Towns.all()
+        return towns.reduce((acc, cur) => acc + cur.wealth, 0) 
+    }
+
     readonly isWilderness = async(location: Point2D) => !(await this.withinTown(location))
     readonly withinBounds = (location: Point2D, bounds: TownBounds) => withinBounds(location, bounds)
 

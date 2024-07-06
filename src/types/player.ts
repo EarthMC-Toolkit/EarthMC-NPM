@@ -1,6 +1,6 @@
-import type { Location, Resident } from '../types/index.js'
+import type { Location, Resident, SquaremapLocation } from '../types/index.js'
 
-export type OnlinePlayer = Location & {
+export type ParsedPlayer = {
     name: string
     nickname?: string
     underground?: boolean
@@ -8,4 +8,8 @@ export type OnlinePlayer = Location & {
     online: boolean
 }
 
+export type OnlinePlayer = ParsedPlayer & Location
 export type Player = (Resident & OnlinePlayer) | OnlinePlayer
+
+export type SquaremapOnlinePlayer = ParsedPlayer & SquaremapLocation
+export type SquaremapPlayer = (Resident & SquaremapOnlinePlayer) | SquaremapOnlinePlayer

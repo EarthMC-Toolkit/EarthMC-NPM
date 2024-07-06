@@ -19,6 +19,10 @@ export type Location = Point2D & {
     y?: number | string
 }
 
+export type SquaremapLocation = Point2D & {
+    yaw?: number | string
+}
+
 export type Point2D = {
     x: number | string
     z: number | string
