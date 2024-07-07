@@ -31,6 +31,6 @@ describe('[Squaremap/Aurora] Players', () => {
         expect(townless).toBeTruthy()
         assertType<Player[]>(townless)
 
-        console.log(townless)
+        //console.log(townless)
     })
 })

@@ -5,7 +5,6 @@ import { asBool, calcArea, fastMergeUnique, formatString, range, roundToNearest1
 
 import type {
     Resident,
-    SquaremapMapResponse,
     SquaremapMarkerset,
     SquaremapNation,
     SquaremapPlayer,
@@ -14,7 +13,7 @@ import type {
     StrictPoint2D
 } from '../../types/index.js'
 
-import { endpoint } from 'src/main.js'
+//import { endpoint } from 'src/main.js'
 
 interface ParsedTooltip { 
     town: string
@@ -293,11 +292,11 @@ export const parsePlayers = (players: SquaremapRawPlayer[]) => {
     return players.length > 0 ? players.map(p => editPlayerProps(p)) : []
 }
 
-async function test() {
-    const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
-    const markerset = res.find(x => x.id == "towny")
+// async function test() {
+//     const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
+//     const markerset = res.find(x => x.id == "towny")
 
-    await parseTowns(markerset)
-}
+//     await parseTowns(markerset)
+// }
 
-test()
+// test()
