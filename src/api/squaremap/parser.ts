@@ -115,15 +115,6 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
     if (res.id == "chunky") throw new Error("Error parsing towns: Chunky markerset detected, pass a towny markerset instead.")
     if (!res?.markers) throw new ReferenceError('Error parsing towns: Missing or invalid markers!')
 
-    // // Using a set is faster and does not allow duplicate keys.
-    // const capitals = res.markers.reduce((acc, x) => {
-    //     if (x.type == "icon" && x.icon.includes("capital")) {
-    //         acc.add(parseTooltip(x.tooltip).town)
-    //     }
-
-    //     return acc
-    // }, new Set<string>())
-
     const len = res.markers.length
     const towns: SquaremapTown[] = []
 
@@ -199,7 +190,6 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         towns.push(town)
     }
 
-    console.log(towns)
     return towns
 }
 
