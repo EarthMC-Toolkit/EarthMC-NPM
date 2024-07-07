@@ -32,7 +32,7 @@ class Dynmap extends DataHandler {
     readonly inviteRange: number
     //#endregion
 
-    constructor(mapName: DynmapMap, cacheTTL = 120) {
+    constructor(mapName: DynmapMap, cacheTTL: number) {
         super(mapName, cacheTTL)
 
         this.name = mapName

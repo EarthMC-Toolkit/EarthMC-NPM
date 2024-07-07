@@ -6,11 +6,9 @@ import Squaremap from './api/squaremap/Squaremap.js'
 
 import MCAPI from "mojang-lib"
 import { OAPIV2, OAPIV3 } from './OAPI.js'
-import type { PlayersResponse } from './types/index.js'
+import type { PlayersResponse, SquaremapPlayersResponse } from './types/index.js'
 
-const Aurora = new Squaremap('aurora', 5)
-
-async function fetchServer(name = "play.earthmc.net") {
+export async function fetchServer(name = "play.earthmc.net") {
     const server = await MCAPI.servers.get(name)
 
     return {
@@ -20,15 +18,15 @@ async function fetchServer(name = "play.earthmc.net") {
     }
 }
 
-async function getServerInfo() {
+export async function getServerInfo() {
     try {
         const serverData = await fetchServer()
         const novaData = await endpoint.playerData<PlayersResponse>("nova")
-        const auroraData = await endpoint.playerData<PlayersResponse>("aurora")
+        const auroraData = await endpoint.playerData<SquaremapPlayersResponse>("aurora")
 
         const online = serverData.online
         const novaCount = novaData.currentcount ?? 0
-        const auroraCount = auroraData.currentcount ?? 0
+        const auroraCount = auroraData.players.length ?? 0
 
         const serverInfo = { 
             ...serverData, 
@@ -50,15 +48,14 @@ export class OfficialAPI {
     static V3 = OAPIV3
 }
 
-export {
-    MCAPI as MojangLib,
-    endpoint,
-    fetchServer,
-    getServerInfo,
-    Aurora
-}
+export const Aurora = new Squaremap('aurora', 5)
+export const Nova = new Dynmap('nova', 120)
 
-export { Dynmap, Squaremap }
+export {
+    Dynmap, Squaremap,
+    MCAPI as MojangLib,
+    endpoint
+}
 
 export * from "./types/index.js"
 export * from "./utils/errors.js"
