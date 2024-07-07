@@ -17,7 +17,6 @@ export interface BaseTown {
         fill: Opacity
         outline: Opacity
     },
-    wiki?: string
     balance?: number
     timestamps?: {
         joinedNation?: number
@@ -29,11 +28,17 @@ export interface BaseTown {
 }
 
 export type SquaremapTown = Prettify<BaseTown & {
-    board: string
+    board?: string
+    foundedTimestamp: number,
     wealth: number
     councillors: string[]
+    wikis?: {
+        town?: string
+        nation?: string
+    },
     flags: {
-        //pvp: boolean
+        pvp: boolean
+        public: boolean
         capital: boolean
     }
     points: {
@@ -43,6 +48,7 @@ export type SquaremapTown = Prettify<BaseTown & {
 }>
 
 export type Town = Prettify<BaseTown & {
+    wiki?: string,
     flags: TownFlags
 }>
 
