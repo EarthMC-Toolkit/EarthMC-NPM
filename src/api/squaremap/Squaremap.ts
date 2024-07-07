@@ -57,8 +57,8 @@ class Squaremap extends DataHandler {
     readonly inviteRange: number = 3500
     //#endregion
 
-    constructor(mapName: SquaremapMap, cacheTTL = 5) {
-        super(mapName, cacheTTL)
+    constructor(mapName: SquaremapMap, cacheTimeoutMs = 5000) {
+        super(mapName, cacheTimeoutMs)
         
         this.name = mapName
 

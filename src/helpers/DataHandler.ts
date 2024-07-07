@@ -18,7 +18,7 @@ class DataHandler {
         //this.#isNode = globalThis.process?.release?.name == 'node'
 
         this.#cacheLock = new Mutex()
-        this.#cacheTTL = cacheTTL < 1 ? 1 : cacheTTL
+        this.#cacheTTL = cacheTTL < 1000 ? 1000 : cacheTTL
     }
 
     private createCache = async() => {
@@ -26,7 +26,7 @@ class DataHandler {
         let cacheInstance = null
 
         try {
-            cacheInstance = import('@isaacs/ttlcache').then(tc => new tc.default({ ttl: this.#cacheTTL * 1000 }))
+            cacheInstance = import('@isaacs/ttlcache').then(tc => new tc.default({ ttl: this.#cacheTTL }))
         } catch (e) {
             console.error(e)
         } finally {

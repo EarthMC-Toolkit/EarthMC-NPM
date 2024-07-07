@@ -13,8 +13,6 @@ import type {
     StrictPoint2D
 } from '../../types/index.js'
 
-//import { endpoint } from 'src/main.js'
-
 interface ParsedTooltip { 
     town: string
     nation?: string
@@ -75,7 +73,7 @@ export const parsePopup = (popup: string): ParsedPopup => {
     const info = cleaned.split(/\s{2,}/) // TODO: Future proof by regex matching instead of converting to array
 
     // Remove board since we get that from the tooltip
-    if (info.length == 10) 
+    if (info.length >= 9)
         info.splice(1, 1)
 
     const title = info[0]
@@ -98,7 +96,7 @@ export const parsePopup = (popup: string): ParsedPopup => {
         councillors: councillorsStr == "None" ? [] : councillorsStr.split(", "),
         founded: parseInfoString(info[3]),
         wealth: parseInfoString(info[4]),
-        residents: info[8]?.split(", ")
+        residents: info[7]?.split(", ")
     }
 }
 

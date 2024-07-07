@@ -48,8 +48,8 @@ export class OfficialAPI {
     static V3 = OAPIV3
 }
 
-export const Aurora = new Squaremap('aurora', 5)
-export const Nova = new Dynmap('nova', 120)
+export const Aurora = new Squaremap('aurora')
+export const Nova = new Dynmap('nova')
 
 export {
     Dynmap, Squaremap,
