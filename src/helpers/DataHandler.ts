@@ -18,7 +18,7 @@ class DataHandler {
         //this.#isNode = globalThis.process?.release?.name == 'node'
 
         this.#cacheLock = new Mutex()
-        this.#cacheTTL = cacheTTL < 5 ? 5 : cacheTTL
+        this.#cacheTTL = cacheTTL < 1 ? 1 : cacheTTL
     }
 
     private createCache = async() => {

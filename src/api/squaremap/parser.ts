@@ -4,7 +4,6 @@ import striptags from 'striptags'
 import { asBool, calcArea, fastMergeUnique, formatString, range, roundToNearest16, safeParseInt } from '../../utils/functions.js'
 
 import type {
-    Nation,
     Resident,
     SquaremapMapResponse,
     SquaremapMarkerset,
@@ -195,7 +194,7 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
 
 export const parseNations = async(towns: SquaremapTown[]) => {
     const raw: Record<string, SquaremapNation> = {}
-    const nations: Nation[] = []
+    const nations: SquaremapNation[] = []
     const len = towns.length
 
     for (let i = 0; i < len; i++) {

@@ -8,8 +8,7 @@ import MCAPI from "mojang-lib"
 import { OAPIV2, OAPIV3 } from './OAPI.js'
 import type { PlayersResponse } from './types/index.js'
 
-const Aurora = new Squaremap('aurora')
-const Nova = new Dynmap('nova')
+const Aurora = new Squaremap('aurora', 5)
 
 async function fetchServer(name = "play.earthmc.net") {
     const server = await MCAPI.servers.get(name)
@@ -56,9 +55,10 @@ export {
     endpoint,
     fetchServer,
     getServerInfo,
-    Aurora, Nova,
-    Dynmap, Squaremap
+    Aurora
 }
+
+export { Dynmap, Squaremap }
 
 export * from "./types/index.js"
 export * from "./utils/errors.js"

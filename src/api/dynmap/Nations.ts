@@ -46,7 +46,7 @@ class Nations implements EntityApi<Nation | NotFoundError> {
     readonly all = async(towns?: Town[]) => {
         if (!towns) {
             towns = await this.map.Towns.all()
-            if (!towns) throw new Error() // TODO: Implement appropriate error.
+            if (!towns) throw new Error('Error getting nations: Could not fetch towns.')
         }
 
         const raw: Record<string, Nation> = {}

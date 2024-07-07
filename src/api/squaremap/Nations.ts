@@ -2,14 +2,14 @@ import type Squaremap from "./Squaremap.js"
 
 import { FetchError, type NotFoundError } from "../../utils/errors.js"
 import type { EntityApi } from "../../helpers/EntityApi.js"
-import type { Nation, SquaremapTown, StrictPoint2D } from "../../types/index.js"
+import type { SquaremapNation, SquaremapTown, StrictPoint2D } from "../../types/index.js"
 
 import { getExisting, sqr } from "../../utils/functions.js"
 
 import { getNearest } from "../common.js"
 import { parseNations } from "./parser.js"
 
-class Nations implements EntityApi<Nation | NotFoundError> {
+class Nations implements EntityApi<SquaremapNation | NotFoundError> {
     #map: Squaremap
     get map() { return this.#map }
 
@@ -28,14 +28,14 @@ class Nations implements EntityApi<Nation | NotFoundError> {
     readonly all = async(towns?: SquaremapTown[]) => {
         if (!towns) {
             towns = await this.map.Towns.all()
-            if (!towns) throw new Error() // TODO: Implement appropriate error.
+            if (!towns) throw new Error('Error getting nations: Could not fetch towns.')
         }
 
         return parseNations(towns)
     }
 
-    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, nations?: Nation[]) => 
-        getNearest<Nation>(location, radius, nations, this.all)
+    readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, nations?: SquaremapNation[]) => 
+        getNearest<SquaremapNation>(location, radius, nations, this.all)
 
     readonly joinable = async (townName: string, nationless = true) => {
         let town: SquaremapTown = null
@@ -51,7 +51,7 @@ class Nations implements EntityApi<Nation | NotFoundError> {
         return nations.filter(n => {
             const joinable = sqr(n.capital, town, this.map.inviteRange)
             return nationless ? joinable && town.nation == "No Nation" : joinable
-        }) as Nation[]
+        }) as SquaremapNation[]
     }
 }
 

@@ -57,7 +57,7 @@ class Squaremap extends DataHandler {
     readonly inviteRange: number = 3500
     //#endregion
 
-    constructor(mapName: SquaremapMap, cacheTTL = 30) {
+    constructor(mapName: SquaremapMap, cacheTTL = 5) {
         super(mapName, cacheTTL)
         
         this.name = mapName
@@ -73,12 +73,6 @@ class Squaremap extends DataHandler {
     readonly withinTown = async (location: Point2D) => {
         const towns = await this.Towns.all()
         return withinTown(location, towns)
-    }
-
-    readonly globalWealth = async() => {
-        // Could do this with nations instead, but towns is likely to be more reliable.
-        const towns = await this.Towns.all()
-        return towns.reduce((acc, cur) => acc + cur.wealth, 0) 
     }
 
     readonly isWilderness = async(location: Point2D) => !(await this.withinTown(location))

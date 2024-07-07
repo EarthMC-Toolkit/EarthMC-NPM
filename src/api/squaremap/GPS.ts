@@ -101,7 +101,7 @@ class GPS extends Mitt {
     readonly safestRoute = (loc: Location) => this.findRoute(loc, Routes.SAFEST)
     readonly fastestRoute = (loc: Location) => this.findRoute(loc, Routes.FASTEST)
 
-    readonly findRoute = async(loc: Location, options: Route = Routes.FASTEST) => {
+    readonly findRoute = async(loc: Location, options: Route = Routes.SAFEST) => {
         if (strictFalsy(loc.x) || strictFalsy(loc.z)) {
             const obj = JSON.stringify(loc)
             throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
@@ -124,11 +124,11 @@ class GPS extends Mitt {
 
             // Filter out nations where either capital is not public 
             // or both avoidPvp and flags.pvp are true
-            // const flags = capital.flags
+            const flags = capital.flags
 
-            // const PVP = options.avoidPvp && flags.pvp
-            // //const PUBLIC = options.avoidPublic && !flags.public
-            // if (PVP) continue
+            const PVP = options.avoidPvp && flags.pvp
+            const PUBLIC = options.avoidPublic && !flags.public
+            if (PVP || PUBLIC) continue
 
             filtered.push(nation)
         }

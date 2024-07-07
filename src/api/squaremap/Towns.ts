@@ -66,6 +66,12 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
 
         return towns.filter(t => isInvitable(t, nation as Nation, this.map.inviteRange, includeBelonging))
     }
+
+    readonly totalWealth = async() => {
+        // Could do this with nations instead, but towns is likely to be more reliable.
+        const towns = await this.all()
+        return towns.reduce((acc, cur) => acc + cur.wealth, 0) 
+    }
 }
 
 export {
