@@ -71,20 +71,20 @@ class Players implements EntityApi<Player | NotFoundError> {
         if (!markerset) throw new FetchError('Error fetching townless! Please try again.')
 
         const allResidents: string[] = []
-
         const len = markerset.markers.length
+        
         for (let i = 0; i < len; i++) {
             const curMarker = markerset.markers[i]
             if (curMarker.type == "icon") continue
     
             const parsedPopup = parsePopup(curMarker.popup)
-
-            // TODO: Replace with flat or concat instead?
-            allResidents.push(...parsedPopup.residents)
+            allResidents.push.apply(allResidents, parsedPopup.residents)
         }
 
-        // Filter out residents & sort alphabetically
+        // Remove duplicates
         const residentSet = new Set(allResidents)
+
+        // Filter out residents & sort alphabetically
         return onlinePlayers.filter(op => !residentSet.has(op.name)).sort((a, b) => {
             const [aName, bName] = [a.name.toLowerCase(), b.name.toLowerCase()]
             return bName < aName ? 1 : bName > aName ? -1 : 0
