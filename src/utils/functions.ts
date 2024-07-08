@@ -4,7 +4,8 @@ import { removeDiacritics } from "modern-diacritics"
 import type { 
     Point2D,
     RawPlayer, Player, Town,
-    BaseTown, BaseNation
+    BaseTown, BaseNation,
+    StrictPoint2D
 } from '../types/index.js'
 
 import { NotFound } from './errors.js'
@@ -58,6 +59,20 @@ export function calcArea(X: number[], Z: number[], numPoints: number, divisor = 
     }
 
     return Math.abs(area / 2) / divisor
+}
+
+export function calcAreaPoints(points: StrictPoint2D[]) {
+    let area = 0
+
+    for (let i = 0, NUM_POINTS = points.length; i < NUM_POINTS; i++) {
+        const cur = points[i]
+        const next = points[(i + 1) % NUM_POINTS]
+
+        area += cur.x * next.z
+        area -= cur.z * next.x
+    }
+
+    return Math.abs(area / 2) / 256
 }
 
 export function averageNationPos(name: string, towns: Town[]) {

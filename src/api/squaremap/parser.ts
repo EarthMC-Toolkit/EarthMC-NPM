@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import striptags from 'striptags'
-import { asBool, calcArea, fastMergeUnique, formatString, range, roundToNearest16, safeParseInt } from '../../utils/functions.js'
+import { asBool, calcAreaPoints, fastMergeUnique, formatString, range, roundToNearest16, safeParseInt } from '../../utils/functions.js'
 
 import type {
     Resident,
@@ -141,18 +141,17 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             name: formatString(townName, removeAccents),
             nation: nationName,
             foundedTimestamp: Math.floor(new Date(parsedPopup.founded).getTime() / 1000),
-            wealth: safeParseInt(parsedPopup.wealth.slice(0, -1)),
             mayor: parsedPopup.mayor,
             councillors: parsedPopup.councillors,
             residents: parsedPopup.residents,
-            area: calcArea(townX, townZ, townX.length),
+            x: range(townX),
+            z: range(townZ),
+            area: calcAreaPoints(points),
+            points,
             bounds: {
                 x: townX,
                 z: townZ
             },
-            points,
-            x: range(townX),
-            z: range(townZ),
             flags: {
                 // Flags no longer shown
                 pvp: asBool(parsedPopup.flags.pvp),
@@ -187,6 +186,10 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             town.wikis.nation = parsedPopup.wikis.nation
         }
         //#endregion
+
+        if (parsedPopup.wealth) {
+            town.wealth = safeParseInt(parsedPopup.wealth.slice(0, -1))
+        }
 
         towns.push(town)
     }

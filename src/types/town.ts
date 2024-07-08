@@ -30,7 +30,7 @@ export interface BaseTown {
 export type SquaremapTown = Prettify<BaseTown & {
     board?: string
     foundedTimestamp: number,
-    wealth: number
+    wealth?: number
     councillors: string[]
     wikis?: {
         town?: string
