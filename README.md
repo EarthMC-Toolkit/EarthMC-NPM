@@ -22,10 +22,10 @@ const { Aurora } = require('earthmc') // CJS
 
 However, you may want to create your own map instance to customize the expiry time of the cache.
 ```ts
-import { Squaremap, Dynmap } from 'earthmc'
+import { Squaremap } from 'earthmc'
 
-const Aurora = new Squaremap('aurora', 10) // Default Squaremap TTL is 30s.
-const Nova = new Dynmap('nova', 90) // Default Dynmap TTL is 120s.
+const Aurora = new Squaremap('aurora') // Defaults to `5000` (or 5s).
+const Aurora = new Squaremap('aurora', 30 * 1000) // Keep cached for half a minute.
 ```
 
 ## Basic Usage
