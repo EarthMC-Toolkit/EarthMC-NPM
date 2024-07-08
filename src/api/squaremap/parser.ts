@@ -68,36 +68,73 @@ export const parseTooltip = (tooltip: string) => {
     return out
 }
 
+// export const parsePopup = (popup: string): ParsedPopup => {
+//     const cleaned = striptags(popup.replaceAll('\n', ''), ['a']).trim()
+//     const info = cleaned.split(/\s{2,}/) // TODO: Future proof by regex matching instead of converting to array
+
+//     // Remove board since we get that from the tooltip
+//     if (info.length >= 9)
+//         info.splice(1, 1)
+
+//     const title = info[0]
+
+//     const townWiki = title.match(/<a href="(.*)">(.*)<\/a> /)
+//     const nationWiki = title.match(/\(<a href="(.*)">(.*)<\/a>\)/)
+
+//     const councillorsStr = parseInfoString(info[2])
+
+//     return {
+//         flags: {
+//             pvp: parseInfoString(info[5]),
+//             public: parseInfoString(info[6])
+//         },
+//         wikis: {
+//             town: townWiki ? townWiki[1] : null,
+//             nation: nationWiki ? nationWiki[1] : null
+//         },
+//         mayor: parseInfoString(info[1]),
+//         councillors: councillorsStr == "None" ? [] : councillorsStr.split(", "),
+//         founded: parseInfoString(info[3]),
+//         wealth: parseInfoString(info[4]),
+//         residents: info[7]?.split(", ")
+//     }
+// }
+
 export const parsePopup = (popup: string): ParsedPopup => {
     const cleaned = striptags(popup.replaceAll('\n', ''), ['a']).trim()
     const info = cleaned.split(/\s{2,}/) // TODO: Future proof by regex matching instead of converting to array
-
-    // Remove board since we get that from the tooltip
-    if (info.length >= 9)
-        info.splice(1, 1)
 
     const title = info[0]
 
     const townWiki = title.match(/<a href="(.*)">(.*)<\/a> /)
     const nationWiki = title.match(/\(<a href="(.*)">(.*)<\/a>\)/)
 
-    const councillorsStr = parseInfoString(info[2])
+    const sectioned = cleaned.replace(/\s{2,}/g, ' // ')
+    const councillorsStr = extractSection(sectioned, 'Councillors')
+
+    const residentsMatch = sectioned.match(/Residents: .*?\/\/(.*?)(?=\/\/|$)/)
+    const residentsDetails = residentsMatch ? residentsMatch[1].trim() : null
 
     return {
-        flags: {
-            pvp: parseInfoString(info[5]),
-            public: parseInfoString(info[6])
-        },
         wikis: {
             town: townWiki ? townWiki[1] : null,
             nation: nationWiki ? nationWiki[1] : null
         },
-        mayor: parseInfoString(info[1]),
+        mayor: extractSection(sectioned, 'Mayor'),
         councillors: councillorsStr == "None" ? [] : councillorsStr.split(", "),
-        founded: parseInfoString(info[3]),
-        wealth: parseInfoString(info[4]),
-        residents: info[7]?.split(", ")
+        founded: extractSection(sectioned, 'Founded'),
+        wealth: extractSection(sectioned, 'Wealth'),
+        residents: residentsDetails.split(", "),
+        flags: {
+            pvp: extractSection(sectioned, 'PVP'),
+            public: extractSection(sectioned, 'Public')
+        }
     }
+}
+
+const extractSection = (input: string, section: string) => {
+    const match = input.match(new RegExp(`${section}:\\s*([^\\/]*)(?:\\s*\\/\\/)?`))
+    return match ? match[1].trim() : null
 }
 
 export const parseInfoString = (str: string) => str.slice(str.indexOf(":") + 1).trim()
@@ -183,6 +220,7 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         }
         //#endregion
 
+        console.log(town)
         towns.push(town)
     }
 
@@ -290,11 +328,15 @@ export const parsePlayers = (players: SquaremapRawPlayer[]) => {
     return players.length > 0 ? players.map(p => editPlayerProps(p)) : []
 }
 
-// async function test() {
-//     const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
-//     const markerset = res.find(x => x.id == "towny")
+//#region TESTING
+import { endpoint, type SquaremapMapResponse } from 'src/main.js'
 
-//     await parseTowns(markerset)
-// }
+async function test() {
+    const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
+    const markerset = res.find(x => x.id == "towny")
 
-// test()
+    await parseTowns(markerset)
+}
+
+test()
+//#endregion
