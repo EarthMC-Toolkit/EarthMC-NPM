@@ -68,38 +68,6 @@ export const parseTooltip = (tooltip: string) => {
     return out
 }
 
-// export const parsePopup = (popup: string): ParsedPopup => {
-//     const cleaned = striptags(popup.replaceAll('\n', ''), ['a']).trim()
-//     const info = cleaned.split(/\s{2,}/) // TODO: Future proof by regex matching instead of converting to array
-
-//     // Remove board since we get that from the tooltip
-//     if (info.length >= 9)
-//         info.splice(1, 1)
-
-//     const title = info[0]
-
-//     const townWiki = title.match(/<a href="(.*)">(.*)<\/a> /)
-//     const nationWiki = title.match(/\(<a href="(.*)">(.*)<\/a>\)/)
-
-//     const councillorsStr = parseInfoString(info[2])
-
-//     return {
-//         flags: {
-//             pvp: parseInfoString(info[5]),
-//             public: parseInfoString(info[6])
-//         },
-//         wikis: {
-//             town: townWiki ? townWiki[1] : null,
-//             nation: nationWiki ? nationWiki[1] : null
-//         },
-//         mayor: parseInfoString(info[1]),
-//         councillors: councillorsStr == "None" ? [] : councillorsStr.split(", "),
-//         founded: parseInfoString(info[3]),
-//         wealth: parseInfoString(info[4]),
-//         residents: info[7]?.split(", ")
-//     }
-// }
-
 export const parsePopup = (popup: string): ParsedPopup => {
     const cleaned = striptags(popup.replaceAll('\n', ''), ['a']).trim()
     const info = cleaned.split(/\s{2,}/) // TODO: Future proof by regex matching instead of converting to array
@@ -173,7 +141,7 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             name: formatString(townName, removeAccents),
             nation: nationName,
             foundedTimestamp: Math.floor(new Date(parsedPopup.founded).getTime() / 1000),
-            wealth: safeParseInt(parsedPopup.wealth?.slice(0, -1) || 0),
+            wealth: safeParseInt(parsedPopup.wealth.slice(0, -1)),
             mayor: parsedPopup.mayor,
             councillors: parsedPopup.councillors,
             residents: parsedPopup.residents,
@@ -220,7 +188,6 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         }
         //#endregion
 
-        console.log(town)
         towns.push(town)
     }
 
@@ -283,21 +250,6 @@ export const parseNations = async(towns: SquaremapTown[]) => {
     return nations
 }
 
-// ~ 70-80ms
-// export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => [
-//     ...acc,
-//     ...town.residents.map(res => {
-//         const r: Resident = {
-//             name: res,
-//             town: town.name,
-//             nation: town.nation,
-//             rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
-//         }
-
-//         return r
-//     })
-// ], [])
-
 // ~ 1-2ms
 export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => {
     acc.push.apply(acc, town.residents.map(res => ({
@@ -339,4 +291,53 @@ async function test() {
 }
 
 test()
+//#endregion
+
+//#region OLD STUFF
+// export const parsePopup = (popup: string): ParsedPopup => {
+//     const cleaned = striptags(popup.replaceAll('\n', ''), ['a']).trim()
+//     const info = cleaned.split(/\s{2,}/) // TODO: Future proof by regex matching instead of converting to array
+
+//     // Remove board since we get that from the tooltip
+//     if (info.length >= 9)
+//         info.splice(1, 1)
+
+//     const title = info[0]
+
+//     const townWiki = title.match(/<a href="(.*)">(.*)<\/a> /)
+//     const nationWiki = title.match(/\(<a href="(.*)">(.*)<\/a>\)/)
+
+//     const councillorsStr = parseInfoString(info[2])
+
+//     return {
+//         flags: {
+//             pvp: parseInfoString(info[5]),
+//             public: parseInfoString(info[6])
+//         },
+//         wikis: {
+//             town: townWiki ? townWiki[1] : null,
+//             nation: nationWiki ? nationWiki[1] : null
+//         },
+//         mayor: parseInfoString(info[1]),
+//         councillors: councillorsStr == "None" ? [] : councillorsStr.split(", "),
+//         founded: parseInfoString(info[3]),
+//         wealth: parseInfoString(info[4]),
+//         residents: info[7]?.split(", ")
+//     }
+// }
+
+// ~ 70-80ms
+// export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Resident[], town: SquaremapTown) => [
+//     ...acc,
+//     ...town.residents.map(res => {
+//         const r: Resident = {
+//             name: res,
+//             town: town.name,
+//             nation: town.nation,
+//             rank: town.mayor == res ? (town.flags.capital ? "Nation Leader" : "Mayor") : "Resident"
+//         }
+
+//         return r
+//     })
+// ], [])
 //#endregion
