@@ -284,16 +284,16 @@ export const parsePlayers = (players: SquaremapRawPlayer[]) => {
 }
 
 //#region TESTING
-import { endpoint, type SquaremapMapResponse } from 'src/main.js'
+// import { endpoint, type SquaremapMapResponse } from 'src/main.js'
 
-async function test() {
-    const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
-    const markerset = res.find(x => x.id == "towny")
+// async function test() {
+//     const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
+//     const markerset = res.find(x => x.id == "towny")
 
-    await parseTowns(markerset)
-}
+//     await parseTowns(markerset)
+// }
 
-test()
+// test()
 //#endregion
 
 //#region OLD STUFF
