@@ -224,7 +224,7 @@ export interface RawServerInfoV3 {
         numQuarters: number
     }
     voteParty: {
-        target: number,
+        target: number
         numRemaining: number
     }
 }

@@ -13,7 +13,7 @@ import { townyData } from './utils/endpoint.js'
 import { FetchError } from './utils/errors.js'
 
 const parseResident = (res: RawResident) => {
-    const obj: any = {}
+    const obj = {} as OAPIResident
     
     if (res.status)
         obj.status = res.status
@@ -51,12 +51,11 @@ const parseResident = (res: RawResident) => {
     if (res.friends) 
         obj.friends = res.friends
 
-    return obj as OAPIResident
+    return obj
 }
 
 const parseTown = (town: RawTown) => {
     const rnao = town.perms.rnaoPerms
-    const flags = town.perms.flagPerms
 
     const obj: any = {
         ...town,
@@ -67,7 +66,7 @@ const parseTown = (town: RawTown) => {
             destroy: rnao.destroyPerms,
             switch: rnao.switchPerms,
             itemUse: rnao.itemUsePerms,
-            flags
+            flags: town.perms.flagPerms
         }
     }
 
@@ -93,7 +92,11 @@ const parseNation = (nation: RawNation) => {
 const ParamErr = () => new SyntaxError(`Parameter 'name' is invalid. Must be of type string!`)
 const FetchErr = (type: string, name: string) => new FetchError(`Could not fetch ${type} '${name}'. Invalid response received!`)
 
-class OAPIV2 {
+export class OAPIV3 {
+    static serverInfo = async() => (await townyData('', 'v3')) as RawServerInfoV3
+}
+
+export class OAPIV2 {
     static serverInfo = async (): Promise<RawServerInfoV2> => {
         return townyData('', 'v2')
     }
@@ -126,13 +129,6 @@ class OAPIV2 {
     }
 }
 
-class OAPIV3 {
-    static serverInfo = async (): Promise<RawServerInfoV3> => {
-        return townyData('', 'v3')
-    }
-}
-
 export {
-    OAPIV3 as default,
-    OAPIV3, OAPIV2
+    OAPIV3 as default
 }
