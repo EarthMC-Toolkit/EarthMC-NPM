@@ -15,12 +15,14 @@ describe('[Squaremap/Aurora] Towns', () => {
 
     // TODO: Verify there are no duplicates residents.
     it('can get single town', async () => {
-        const town = await Aurora.Towns.get('fanagoria')
+        const town = await Aurora.Towns.get('Hengyang')
         expect(town).toBeTruthy()
         expect(town).toBeDefined()
 
         //@ts-expect-error
         assertType<SquaremapTown | SquaremapTown[]>(town)
+
+        expect((town as SquaremapTown).nation).not.toBe("No Nation")
     })
 
     // it('can get towns invitable to specified nation', async () => {
