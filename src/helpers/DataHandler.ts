@@ -3,11 +3,13 @@ import * as endpoint from '../utils/endpoint.js'
 import { Mutex } from 'async-mutex'
 import type { AnyMap } from '../types/index.js'
 
+import TTLCache from '@isaacs/ttlcache'
+
 class DataHandler {
     #map: AnyMap
     get map() { return this.#map }
 
-    #cache: any
+    #cache: TTLCache<string, any>
     #cacheTTL: number
     #cacheLock: Mutex
 
@@ -26,7 +28,7 @@ class DataHandler {
         let cacheInstance = null
 
         try {
-            cacheInstance = import('@isaacs/ttlcache').then(tc => new tc.default({ ttl: this.#cacheTTL }))
+            cacheInstance = new TTLCache<string, any>({ ttl: this.#cacheTTL })
         } catch (e) {
             console.error(e)
         } finally {

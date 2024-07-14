@@ -42,7 +42,7 @@ class Nations implements EntityApi<SquaremapNation | NotFoundError> {
         try {
             town = await this.map.Towns.get(townName) as SquaremapTown
         } catch (_) {
-            throw new FetchError(`Specified town '${townName}' does not exist!`)
+            throw new FetchError(`Specified town \`${townName}\` does not exist!`)
         }
 
         const nations = await this.all(this.map.getFromCache('towns'))
