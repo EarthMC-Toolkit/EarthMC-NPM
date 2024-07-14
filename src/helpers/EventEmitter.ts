@@ -15,7 +15,8 @@ export default class Emitter<Events extends Record<EventType, unknown>> {
     protected emit
 
     constructor() {
-        const emitter = mitt.default<Events>()
+        //@ts-expect-error
+        const emitter = mitt<Events>()
         
         this._on = emitter.on
         this._off = emitter.off
