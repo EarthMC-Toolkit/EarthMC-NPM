@@ -3,9 +3,10 @@ import { removeDiacritics } from "modern-diacritics"
 
 import type { 
     Point2D,
-    RawPlayer, Player, Town,
+    RawPlayer, Town,
     BaseTown, BaseNation,
-    StrictPoint2D
+    StrictPoint2D,
+    OnlinePlayer
 } from '../types/index.js'
 
 import { NotFound } from './errors.js'
@@ -39,13 +40,14 @@ export function editPlayerProps(props: RawPlayer[]) {
     throw new TypeError("Can't edit player props! Type isn't of object or array.")
 }
 
-export const editPlayerProp = (player: RawPlayer): Player => ({
+export const editPlayerProp = (player: RawPlayer): OnlinePlayer => ({
     name: player.account,
     nickname: striptags(player.name),
-    x: player.x, y: player.y, z: player.z,
+    x: player.x,
+    y: player.y,
+    z: player.z,
     underground: player.world != 'earth',
-    world: player.world,
-    online: true
+    world: player.world
 })
 
 export const roundToNearest16 = (num: number) => Math.round(num / 16) * 16

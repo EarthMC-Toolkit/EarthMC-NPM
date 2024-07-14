@@ -7,7 +7,7 @@ import type {
     Resident,
     SquaremapMarkerset,
     SquaremapNation,
-    SquaremapPlayer,
+    SquaremapOnlinePlayer,
     SquaremapRawPlayer,
     SquaremapTown,
     StrictPoint2D
@@ -261,15 +261,14 @@ export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Res
     return acc
 }, [])
 
-const editPlayerProps = (player: SquaremapRawPlayer): SquaremapPlayer => ({
+const editPlayerProps = (player: SquaremapRawPlayer): SquaremapOnlinePlayer => ({
     name: player.name,
     nickname: striptags(formatString(player.display_name)),
     x: player.x,
     z: player.z,
     yaw: player.yaw,
     underground: player.world != 'earth',
-    world: player.world,
-    online: true
+    world: player.world
 })
 
 export const parsePlayers = (players: SquaremapRawPlayer[]) => {

@@ -4,13 +4,17 @@ import type {
     EntityApi
 } from "../../helpers/EntityApi.js"
 
-import type { OnlinePlayer, Player, StrictPoint2D } from "../../types/index.js"
+import type { 
+    SquaremapOnlinePlayer, SquaremapPlayer, 
+    StrictPoint2D 
+} from "../../types/index.js"
+
 import { FetchError, type NotFoundError } from "../../utils/errors.js"
 import { getExisting } from "../../utils/functions.js"
 import { parsePopup } from "./parser.js"
 import { getNearest } from "../common.js"
 
-class Players implements EntityApi<Player | NotFoundError> {
+class Players implements EntityApi<SquaremapPlayer | NotFoundError> {
     #map: Squaremap
     get map() { return this.#map }
     
@@ -34,9 +38,9 @@ class Players implements EntityApi<Player | NotFoundError> {
         if (!residents) throw new Error('Error getting all players: Something went wrong getting residents?')
     
         // Loop over residents and merge data for any online players
-        const merged = residents.map(res => {
+        const merged: SquaremapPlayer[] = residents.map(res => {
             const op = onlinePlayers.find(op => op.name === res.name)
-            return (!op ? { ...res, online: false } : { ...res, ...op, online: true }) as Player
+            return (!op ? { ...res, online: false } : { ...res, ...op, online: true })
         })
 
         return merged
@@ -44,20 +48,20 @@ class Players implements EntityApi<Player | NotFoundError> {
 
     readonly online = async(includeResidentInfo = false) => {
         const onlinePlayers = await this.map.onlinePlayerData()
-        if (!onlinePlayers) return null
+        if (!onlinePlayers) return null // TODO: Should probably throw a proper err
         if (!includeResidentInfo) return onlinePlayers
 
         const residents = await this.map.Residents.all()
-        if (!residents) return null
+        if (!residents) return onlinePlayers
 
-        const merged: Player[] = []
-        const len = onlinePlayers.length
+        const merged: SquaremapPlayer[] = []
+        const opsLen = onlinePlayers.length
 
-        for (let i = 0; i < len; i++) {
+        for (let i = 0; i < opsLen; i++) {
             const curOp = onlinePlayers[i]
             const foundRes = residents.find(res => res.name === curOp.name)
 
-            merged.push({ ...curOp, ...foundRes })
+            merged.push({ online: true, ...curOp, ...foundRes })
         }
     
         return merged
@@ -91,8 +95,8 @@ class Players implements EntityApi<Player | NotFoundError> {
         })
     }
 
-    readonly nearby = async(location: StrictPoint2D, radius: StrictPoint2D, players?: OnlinePlayer[]) => 
-        getNearest<OnlinePlayer>(location, radius, players, this.all, true)
+    readonly nearby = async(location: StrictPoint2D, radius: StrictPoint2D, players?: SquaremapOnlinePlayer[]) => 
+        getNearest<Partial<SquaremapPlayer>>(location, radius, players, this.online, true)
 }
 
 export {

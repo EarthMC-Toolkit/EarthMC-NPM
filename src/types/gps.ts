@@ -1,3 +1,5 @@
+import type { Prettify } from "./util.js"
+
 const createRoute = (
     avoidPvp: boolean, 
     avoidPublic: boolean
@@ -15,13 +17,13 @@ export type RouteKey = keyof RouteType
 
 export type Route = RouteType[RouteKey]
 
-export type Location = Point2D & {
+export type Location = Prettify<Point2D & {
     y?: number | string
-}
+}>
 
-export type SquaremapLocation = Point2D & {
+export type SquaremapLocation = Prettify<Point2D & {
     yaw?: number | string
-}
+}>
 
 export type Point2D = {
     x: number | string

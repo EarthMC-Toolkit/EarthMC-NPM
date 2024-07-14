@@ -3,7 +3,8 @@ import type Dynmap from './Dynmap.js'
 
 import type { 
     MapResponse, 
-    OnlinePlayer, Player, 
+    OnlinePlayer, 
+    Player, 
     StrictPoint2D
 } from '../../types/index.js'
 
@@ -37,12 +38,12 @@ class Players implements EntityApi<Player | NotFoundError> {
         if (!residents) return
     
         // Loop over residents and merge data for any online players
-        const merged = residents.map(res => {
+        const merged: Player[] = residents.map(res => {
             const op = onlinePlayers.find(op => op.name === res.name)
             return !op ? { ...res, online: false } : { ...res, ...op, online: true }
         })
 
-        return merged as Player[]
+        return merged
     }
     
     readonly townless = async() => {
@@ -94,14 +95,14 @@ class Players implements EntityApi<Player | NotFoundError> {
             const curOp = onlinePlayers[i]
             const foundRes = residents.find(res => res.name === curOp.name)
 
-            merged.push({ ...curOp, ...foundRes })
+            merged.push({ online: true, ...curOp, ...foundRes })
         }
     
         return merged
     }
 
     readonly nearby = async(location: StrictPoint2D, radius: StrictPoint2D, players?: OnlinePlayer[]) => 
-        getNearest<OnlinePlayer>(location, radius, players, this.all, true)
+        getNearest<Partial<Player>>(location, radius, players, this.online, true)
 }
 
 export {

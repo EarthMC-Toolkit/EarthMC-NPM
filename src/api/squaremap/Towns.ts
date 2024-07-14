@@ -1,5 +1,8 @@
 import type Squaremap from "./Squaremap.js"
-import type { Nation, SquaremapTown, StrictPoint2D } from "../../types/index.js"
+import type { 
+    SquaremapNation, SquaremapTown, 
+    StrictPoint2D 
+} from "../../types/index.js"
 
 import type { EntityApi } from "../../helpers/EntityApi.js"
 import { parseTowns } from "./parser.js"
@@ -23,7 +26,7 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
     readonly fromNation = async(nationName: string) => {
         if (!nationName) throw new InvalidError(`Parameter 'nation' is ${nationName}`)
 
-        const nation = await this.map.Nations.get(nationName) as Nation
+        const nation = await this.map.Nations.get(nationName) as SquaremapNation
         if (nation instanceof Error) throw nation
 
         return await this.get(...nation.towns)
@@ -57,14 +60,14 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
 
     // TODO: Maybe put this into common.ts ?
     readonly invitable = async(nationName: string, includeBelonging = false) => {
-        const nation = await this.map.Nations.get(nationName)
+        const nation = await this.map.Nations.get(nationName) as SquaremapNation
         if (nation instanceof NotFoundError) throw new Error("Error checking invitable: Nation does not exist!")
         if (!nation) throw new Error("Error checking invitable: Could not fetch the nation!")
         
         const towns = await this.all()
         if (!towns) throw new FetchError('An error occurred fetching towns!')
 
-        return towns.filter(t => isInvitable(t, nation as Nation, this.map.inviteRange, includeBelonging))
+        return towns.filter(t => isInvitable(t, nation, this.map.inviteRange, includeBelonging))
     }
 
     readonly totalWealth = async() => {
