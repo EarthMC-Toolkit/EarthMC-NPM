@@ -1,14 +1,28 @@
-import { 
-    type Route, Routes, type RouteInfo,
-    type Location, type Nation, type Player
+import { Routes } from '../../types/index.js'
+import type { 
+    Route, RouteInfo,
+    Point2D, SquaremapNation, SquaremapPlayer,
+    StrictPoint2D
 } from '../../types/index.js'
 
-import Mitt from '../../helpers/EventEmitter.js'
+import Emitter from '../../helpers/EventEmitter.js'
 import { manhattan, safeParseInt, strictFalsy } from '../../utils/functions.js'
 
 import type Squaremap from './Squaremap.js'
 
-class GPS extends Mitt {
+type GPSEvents = {
+    error: {
+        err: string
+        msg: string
+    }
+    underground: string | {
+        lastLocation: StrictPoint2D, 
+        routeInfo: RouteInfo
+    }
+    locationUpdate: RouteInfo
+}
+
+class GPS extends Emitter<GPSEvents> {
     #map: Squaremap
     #emittedUnderground = false
     #lastLoc: undefined | {
@@ -35,20 +49,18 @@ class GPS extends Mitt {
         this.#map = map
     }
 
-    playerIsOnline = (player: Player) => {
-        if (!player.online) {
-            this.emit('error', { 
-                err: "INVALID_PLAYER", 
-                msg: "Player is offline or does not exist!" 
-            })
-        }
+    playerIsOnline = (player: SquaremapPlayer) => {
+        if (!player.online) this.emit('error', { 
+            err: "INVALID_PLAYER", 
+            msg: "Player is offline or does not exist!" 
+        })
 
         return player.online
     }
 
     readonly track = async(playerName: string, interval = 3000, route = Routes.FASTEST) => {
         setInterval(async () => {
-            const player: Player = await this.map.Players.get(playerName).catch(e => {
+            const player: SquaremapPlayer = await this.map.Players.get(playerName).catch(e => {
                 this.emit('error', { err: "FETCH_ERROR", msg: e.message })
                 return null
             })
@@ -98,10 +110,10 @@ class GPS extends Mitt {
         return this
     }
 
-    readonly safestRoute = (loc: Location) => this.findRoute(loc, Routes.SAFEST)
-    readonly fastestRoute = (loc: Location) => this.findRoute(loc, Routes.FASTEST)
+    readonly safestRoute = (loc: Point2D) => this.findRoute(loc, Routes.SAFEST)
+    readonly fastestRoute = (loc: Point2D) => this.findRoute(loc, Routes.FASTEST)
 
-    readonly findRoute = async(loc: Location, options: Route = Routes.SAFEST) => {
+    readonly findRoute = async(loc: Point2D, options: Route = Routes.SAFEST) => {
         if (strictFalsy(loc.x) || strictFalsy(loc.z)) {
             const obj = JSON.stringify(loc)
             throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
@@ -134,7 +146,7 @@ class GPS extends Mitt {
         }
 
         // Use reduce to find the minimum distance and corresponding nation
-        const { distance, nation } = filtered.reduce((acc: RouteInfo, nation: Nation) => {
+        const { distance, nation } = filtered.reduce((acc: RouteInfo, nation: SquaremapNation) => {
             const dist = manhattan(
                 safeParseInt(nation.capital.x), safeParseInt(nation.capital.z), 
                 safeParseInt(loc.x), safeParseInt(loc.z)
@@ -162,7 +174,7 @@ class GPS extends Mitt {
      * @param origin The location where something is currently at.
      * @param destination The location we wish to arrive at.
      */
-    static cardinalDirection(origin: Location, destination: Location) {
+    static cardinalDirection(origin: Point2D, destination: Point2D) {
         // Calculate the differences in x and z coordinates
         const deltaX = safeParseInt(origin.x) - safeParseInt(destination.x)
         const deltaZ = safeParseInt(origin.z) - safeParseInt(destination.z)

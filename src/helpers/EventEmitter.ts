@@ -1,27 +1,24 @@
 import mitt from 'mitt'
+import type { EventType } from 'mitt'
 
-export default class Mitt {
-    _on: any
+export default class Emitter<Events extends Record<EventType, unknown>> {
+    private _on
     get on() {
         return this._on
     }
 
-    _off: any
-
+    private _off
     get off() {
         return this._off
     }
 
-    protected emit: any
+    protected emit
 
     constructor() {
-        //@ts-ignore
-        const emitter = mitt()
-  
-        Object.keys(emitter).forEach(() => {
-            this._on = emitter['on']
-            this._off = emitter['off']
-            this.emit = emitter['emit']
-        })
+        const emitter = mitt.default<Events>()
+        
+        this._on = emitter.on
+        this._off = emitter.off
+        this.emit = emitter.emit
     }
 }

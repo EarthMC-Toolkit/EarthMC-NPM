@@ -1,14 +1,28 @@
-import type Dynmap from './Dynmap.js'
-
-import { 
-    type Route, Routes, type RouteInfo,
-    type Location, type Nation, type Player
+import { Routes } from '../../types/index.js'
+import type { 
+    Route, RouteInfo,
+    Location, Nation, Player,
+    StrictPoint2D
 } from '../../types/index.js'
 
-import Mitt from '../../helpers/EventEmitter.js'
+import Emitter from '../../helpers/EventEmitter.js'
 import { manhattan, safeParseInt, strictFalsy } from '../../utils/functions.js'
 
-class GPS extends Mitt {
+import type Dynmap from './Dynmap.js'
+
+type GPSEvents = {
+    error: {
+        err: string
+        msg: string
+    }
+    underground: string | {
+        lastLocation: StrictPoint2D, 
+        routeInfo: RouteInfo
+    }
+    locationUpdate: RouteInfo
+}
+
+class GPS extends Emitter<GPSEvents> {
     #map: Dynmap
     #emittedUnderground = false
     #lastLoc: undefined | {
