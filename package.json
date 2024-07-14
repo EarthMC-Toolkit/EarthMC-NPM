@@ -1,6 +1,6 @@
 {
   "name": "earthmc",
-  "version": "9.7.1",
+  "version": "9.7.2",
   "description": "An unofficial EarthMC library providing handy methods and extensive info.",
   "type": "module",
   "types": "./dist/main.d.ts",
