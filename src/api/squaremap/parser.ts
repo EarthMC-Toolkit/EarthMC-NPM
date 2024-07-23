@@ -13,13 +13,10 @@ import type {
     StrictPoint2D
 } from '../../types/index.js'
 
-interface ParsedTooltip { 
-    town: string
-    nation?: string
-    board?: string 
-}
-
 interface ParsedPopup {
+    town: string
+    nation: string
+    board?: string
     flags: {
         pvp: string
         public: string
@@ -29,9 +26,9 @@ interface ParsedPopup {
         nation?: string
     }
     mayor?: string
-    founded: string
+    founded?: string
     councillors: string[]
-    wealth: string
+    wealth?: string
     residents: string[]
 }
 
@@ -47,31 +44,40 @@ interface ParsedPopup {
  * - board (May not exist)
  * @param tooltip The unparsed 'tooltip' value from a markerset.
  */
-export const parseTooltip = (tooltip: string) => {
-    const cleaned = striptags(tooltip.replaceAll('\n', '')).trim()
+// export const parseTooltip = (tooltip: string) => {
+//     const cleaned = striptags(tooltip.replaceAll('\n', '')).trim()
 
-    const indexOpenBracket = cleaned.indexOf('(')
-    const town = indexOpenBracket !== -1 ? cleaned.slice(0, indexOpenBracket).trim() : cleaned.trim()
+//     const indexOpenBracket = cleaned.indexOf('(')
+//     const town = indexOpenBracket !== -1 ? cleaned.slice(0, indexOpenBracket).trim() : cleaned.trim()
 
-    const out: ParsedTooltip = { town }
+//     const out: ParsedTooltip = { town }
 
-    const nationMatch = cleaned.match(/\((?:.* of )?([A-Za-z\u00C0-\u017F-_.]+)\)/)
-    out.nation = nationMatch ? nationMatch[1] : null
+//     const nationMatch = cleaned.match(/\((?:.* of )?([A-Za-z\u00C0-\u017F-_.]+)\)/)
+//     out.nation = nationMatch ? nationMatch[1] : null
 
-    const indexClosingBracket = cleaned.indexOf(')')
-    out.board = indexClosingBracket !== -1 ? cleaned.slice(indexClosingBracket + 1).trim() : ''
+//     const indexClosingBracket = cleaned.indexOf(')')
+//     out.board = indexClosingBracket !== -1 ? cleaned.slice(indexClosingBracket + 1).trim() : ''
 
-    return out
+//     return out
+// }
+
+// Extract text from <a> tag or fallback to input
+const extractText = (text: string) => {
+    const anchorMatch = text.match(/<a[^>]*>([^<]+)<\/a>/)
+    return anchorMatch ? anchorMatch[1] : text
 }
 
 export const parsePopup = (popup: string): ParsedPopup => {
-    const cleaned = striptags(popup.replaceAll('\n', ''), ['a']).trim()
-    const info = cleaned.split(/\s{2,}/) // TODO: Future proof by regex matching instead of converting to array
+    // Extract the content inside the span tag (the town and nation)
+    const spanMatch = popup.match(/<span[^>]*>(.*?)<\/span>/)
+    const spanContent = spanMatch ? spanMatch[1] : null
 
-    const title = info[0]
+    const updatedPopup = popup.replace(/<span[^>]*>.*?<\/span>/, '<b>')
+    const cleaned = striptags(updatedPopup.replaceAll('\n', ''), ['a']).trim()
+    //const info = cleaned.split(/\s{2,}/)
 
-    const townWiki = title.match(/<a href="(.*)">(.*)<\/a> /)
-    const nationWiki = title.match(/\(<a href="(.*)">(.*)<\/a>\)/)
+    const townWiki = spanContent.match(/<a href="(.*)">(.*)<\/a> /)
+    const nationWiki = spanContent.match(/\(<a href="(.*)">(.*)<\/a>\)/)
 
     const sectioned = cleaned.replace(/\s{2,}/g, ' // ')
     const councillorsStr = extractSection(sectioned, 'Councillors')
@@ -79,25 +85,41 @@ export const parsePopup = (popup: string): ParsedPopup => {
     const residentsMatch = sectioned.match(/Residents: .*?\/\/(.*?)(?=\/\/|$)/)
     const residentsDetails = residentsMatch ? residentsMatch[1].trim() : null
 
+    const bracketMatch = spanContent.match(/^(.*?)\s*\((.*?)\)$/)
+
+    //#region Extract town and nation
+    const townStr = bracketMatch ? bracketMatch[1].trim() : spanContent.trim()
+    const nationStr = bracketMatch ? bracketMatch[2].trim() : null
+    
+    const town = extractText(townStr)
+    const nation = nationStr ? extractText(nationStr) : null
+    //#endregion
+
+    const indexClosingBracket = cleaned.indexOf(')')
+    const board = indexClosingBracket !== -1 ? cleaned.slice(indexClosingBracket + 1).trim() : ''
+
     return {
-        wikis: {
-            town: townWiki ? townWiki[1] : null,
-            nation: nationWiki ? nationWiki[1] : null
-        },
+        town,
+        nation,
+        board,
         mayor: extractSection(sectioned, 'Mayor'),
-        councillors: councillorsStr == "None" ? [] : councillorsStr.split(", "),
+        councillors: !councillorsStr || councillorsStr == "None" ? [] : councillorsStr.split(", "),
         founded: extractSection(sectioned, 'Founded'),
         wealth: extractSection(sectioned, 'Wealth'),
-        residents: residentsDetails.split(", "),
+        residents: residentsDetails?.split(", ") ?? [],
         flags: {
             pvp: extractSection(sectioned, 'PVP'),
             public: extractSection(sectioned, 'Public')
+        },
+        wikis: {
+            town: townWiki ? townWiki[1] : null,
+            nation: nationWiki ? nationWiki[1] : null
         }
     }
 }
 
-const extractSection = (input: string, section: string) => {
-    const match = input.match(new RegExp(`${section}:\\s*([^\\/]*)(?:\\s*\\/\\/)?`))
+const extractSection = (input: string, section: string) =>  {
+    const match = input.match(`${section}:\\s*([^\\/]*)(?:\\s*\\/\\/)?`)
     return match ? match[1].trim() : null
 }
 
@@ -128,15 +150,14 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         }, { townX: [], townZ: [] })
 
         const parsedPopup = parsePopup(curMarker.popup)
-        const parsedTooltip = parseTooltip(curMarker.tooltip)
 
-        const townName = parsedTooltip.town || ''
-        const nationName = parsedTooltip.nation ? formatString(parsedTooltip.nation, removeAccents) : "No Nation"
+        const townName = parsedPopup.town || ''
+        const nationName = parsedPopup.nation ? formatString(parsedPopup.nation, removeAccents) : "No Nation"
 
         const town: SquaremapTown = {
             name: formatString(townName, removeAccents),
             nation: nationName,
-            foundedTimestamp: Math.floor(new Date(parsedPopup.founded).getTime() / 1000),
+            foundedTimestamp: parsedPopup.founded ? Math.floor(new Date(parsedPopup.founded).getTime() / 1000) : null,
             mayor: parsedPopup.mayor,
             councillors: parsedPopup.councillors,
             residents: parsedPopup.residents,
@@ -165,8 +186,8 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         }
 
         // Dont include board if it's default or empty.
-        if (parsedTooltip.board != "/town set board [msg]" && parsedTooltip.board != "") {
-            town.board = parsedTooltip.board
+        if (parsedPopup.board != "/town set board [msg]" && parsedPopup.board != "") {
+            town.board = parsedPopup.board
         }
 
         //#region Add wikis if they exist
