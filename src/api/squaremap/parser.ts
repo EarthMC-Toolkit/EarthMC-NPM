@@ -242,9 +242,7 @@ export const parseNations = async(towns: SquaremapTown[]) => {
         }
 
         //#region Add extra stuff
-        const resNames = raw[nationName].residents
-
-        raw[nationName].residents = fastMergeUnique(resNames, town.residents)
+        raw[nationName].residents = fastMergeUnique(raw[nationName].residents, town.residents)
         raw[nationName].councillors = fastMergeUnique(raw[nationName].councillors, town.councillors)
 
         raw[nationName].area += town.area
