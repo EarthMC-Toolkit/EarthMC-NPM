@@ -24,6 +24,22 @@ describe('[v3] OfficialAPI', async () => {
         expect(info.stats.numTowns).toBeGreaterThanOrEqual(1000)
         expect(info.stats.numNations).toBeGreaterThanOrEqual(100)
     }, 10000)
+
+    it('can get player list', async () => {
+        const playerList = await OfficialAPI.V3.playerList()
+        
+        expect(playerList).toBeDefined()
+        assertType<{ name: string, uuid: string }[]>(playerList)
+    }, 10000)
+
+    it('can get valid player info', async () => {
+        const players = await OfficialAPI.V3.players("af77d9b5-ab5d-4714-b92e-3b191c895ee7")
+        
+        console.log(players)
+
+        expect(players).toBeDefined()
+        assertType<OAPIResident[]>(players)
+    }, 10000)
 })
 
 describe('[v2] OfficialAPI', async () => {

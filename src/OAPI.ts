@@ -108,7 +108,10 @@ export class OAPIV3 {
     static discord = async (...objs: DiscordReqObject[]): Promise<DiscordResObject[]> => 
         await townyData('/discord', 'v3', { query: objs })
 
-    static players = async (...ids: string[]): Promise<OAPIResident> => 
+    static playerList = async (): Promise<{ name: string, uuid: string }[]> => 
+        await townyData('/players', 'v3')
+
+    static players = async (...ids: string[]): Promise<OAPIResident[]> => 
         await townyData('/players', 'v3', { query: ids })
 }
 
