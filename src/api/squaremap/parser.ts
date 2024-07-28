@@ -5,6 +5,7 @@ import { asBool, calcAreaPoints, fastMergeUnique, formatString, range, roundToNe
 
 import type {
     Resident,
+    SquaremapArea,
     SquaremapMarkerset,
     SquaremapNation,
     SquaremapOnlinePlayer,
@@ -130,6 +131,14 @@ interface TownCoords {
     townZ: number[]
 }
 
+const isCapital = (marker: SquaremapArea) => {
+    const desc = striptags(marker.tooltip.replaceAll('\n', '')).trim()
+    const bracketMatch = desc.match(/\((.*)\)/)
+
+    const tooltipBracketContent = bracketMatch ? bracketMatch[1].trim() : null
+    return tooltipBracketContent?.startsWith("Capital of") ?? false
+}
+
 export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
     if (res.id == "chunky") throw new Error("Error parsing towns: Chunky markerset detected, pass a towny markerset instead.")
     if (!res?.markers) throw new ReferenceError('Error parsing towns: Missing or invalid markers!')
@@ -170,10 +179,9 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
                 z: townZ
             },
             flags: {
-                // Flags no longer shown
                 pvp: asBool(parsedPopup.flags.pvp),
                 public: asBool(parsedPopup.flags.public),
-                capital: curMarker.tooltip.includes('Capital of')
+                capital: nationName == "No Nation" ? false : isCapital(curMarker)
             },
             colours: {
                 fill: curMarker.fillColor || curMarker.color,
