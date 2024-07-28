@@ -5,8 +5,8 @@ import type { AnyMap } from "../types/index.js"
 
 import { genRandomString } from './functions.js'
 
-export type V3RequestBody = {
-    query: string
+export type V3RequestBody<T> = {
+    query: T
     [key: string]: any
 }
 
@@ -68,7 +68,7 @@ const mapData = async <T>(mapName: AnyMap): Promise<T> => {
  * By "towny" we are referring to the data that we receive (balance, registration date etc).
  * @param endpoint The endpoint not including the domain, e.g: "lists/nations"
  */
-const townyData = async (endpoint = '', version: EndpointVersion = 'v3', body?: V3RequestBody) => {
+const townyData = async <T>(endpoint = '', version: EndpointVersion = 'v3', body?: V3RequestBody<T>) => {
     if (endpoint.startsWith("/")) {
         endpoint.replace("/", "")
     }
@@ -77,7 +77,7 @@ const townyData = async (endpoint = '', version: EndpointVersion = 'v3', body?: 
         const url = get("towny", "v3/aurora")
 
         return body ? asJSON(`${url}${endpoint}`, {
-            method: "GET",
+            method: "POST",
             body: JSON.stringify(body)
         }) : asJSON(`${url}${endpoint}`)
     }

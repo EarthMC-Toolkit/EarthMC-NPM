@@ -92,8 +92,24 @@ const parseNation = (nation: RawNation) => {
 const ParamErr = () => new SyntaxError(`Parameter 'name' is invalid. Must be of type string!`)
 const FetchErr = (type: string, name: string) => new FetchError(`Could not fetch ${type} '${name}'. Invalid response received!`)
 
+type DiscordReqObject = {
+    type: 'minecraft' | 'discord'
+    target: string
+}
+
+type DiscordResObject = {
+    ID: string
+    UUID: string
+}
+
 export class OAPIV3 {
-    static serverInfo = async() => (await townyData('', 'v3')) as RawServerInfoV3
+    static serverInfo = async(): Promise<RawServerInfoV3> => await townyData('', 'v3')
+
+    static discord = async (...objs: DiscordReqObject[]): Promise<DiscordResObject[]> => 
+        await townyData('/discord', 'v3', { query: objs })
+
+    static players = async (...ids: string[]): Promise<OAPIResident> => 
+        await townyData('/players', 'v3', { query: ids })
 }
 
 export class OAPIV2 {

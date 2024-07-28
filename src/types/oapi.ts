@@ -47,11 +47,11 @@ export type OAPIResident = NestedOmit<RawResident,
     townRanks?: string[]
     nationRanks?: string[]
     perms?: {
-        build: RawResidentPerms
-        destroy: RawResidentPerms
-        switch: RawResidentPerms
-        itemUse: RawResidentPerms
-        flags: RawFlagPerms
+        build: boolean[] //RawResidentPerms
+        destroy: boolean[] //RawResidentPerms
+        switch: boolean[] //RawResidentPerms
+        itemUse: boolean[] //RawResidentPerms
+        flags: RawFlagPerms //RawResidentPerms
     }
 }
 //#endregion
@@ -83,12 +83,12 @@ export type RawEntityStats = Prettify<{
     balance: number
 }>
 
-export type RawResidentPerms = Prettify<{
-    friend: boolean
-    town: boolean
-    ally: boolean
-    outsider: boolean
-}>
+// export type RawResidentPerms = Prettify<{
+//     friend: boolean
+//     town: boolean
+//     ally: boolean
+//     outsider: boolean
+// }>
 
 export type RawTownPerms = Prettify<{
     resident: boolean
@@ -171,7 +171,7 @@ export type RawResident = Prettify<RawEntity & {
     town?: string
     nation?: string
     timestamps?: Timestamps
-    perms: RawEntityPerms<RawResidentPerms>
+    perms: RawEntityPerms<boolean[]>
     friends?: string[]
 }>
 
