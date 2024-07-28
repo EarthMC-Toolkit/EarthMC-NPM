@@ -6,38 +6,28 @@ import Squaremap from './api/squaremap/Squaremap.js'
 
 import MCAPI from "mojang-lib"
 import { OAPIV2, OAPIV3 } from './OAPI.js'
-import type { PlayersResponse, SquaremapPlayersResponse } from './types/index.js'
 
 export async function fetchServer(name = "play.earthmc.net") {
     const server = await MCAPI.servers.get(name)
 
     return {
-        max: server?.players?.max ?? 0,
-        online: server?.players?.online ?? 0,
-        serverOnline: !!server
+        isOnline: !!server,
+        players: {
+            max: server?.players?.max ?? 0,
+            online: server?.players?.online ?? 0
+        }
     }
 }
 
-export async function getServerInfo() {
+export async function getServerInfo(aurora: { numOnline: number }) {
     try {
         const serverData = await fetchServer()
-        const novaData = await endpoint.playerData<PlayersResponse>("nova")
-        const auroraData = await endpoint.playerData<SquaremapPlayersResponse>("aurora")
+        const online = serverData.players.online
 
-        const online = serverData.online
-        const novaCount = novaData.currentcount ?? 0
-        const auroraCount = auroraData.players.length ?? 0
+        const auroraCount = aurora.numOnline < 1 ? 0 : aurora.numOnline 
+        const queue = online < 1 ? 0 : online - auroraCount
 
-        const serverInfo = { 
-            ...serverData, 
-            nova: novaCount, 
-            aurora: auroraCount 
-        }
-
-        return { 
-            queue: online < 1 ? 0 : online - auroraCount - novaCount,
-            ...serverInfo 
-        }
+        return { queue, ...serverData }
     } catch (err: unknown) {
         throw new FetchError(`Error fetching server info!\n${err}`)
     }
@@ -49,7 +39,6 @@ export class OfficialAPI {
 }
 
 export const Aurora = new Squaremap('aurora')
-export const Nova = new Dynmap('nova')
 
 export {
     Dynmap, Squaremap,
