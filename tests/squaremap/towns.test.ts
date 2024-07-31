@@ -8,9 +8,15 @@ import { SquaremapTown } from '../../src/types'
 import { Aurora } from '../../src/main'
 
 describe('[Squaremap/Aurora] Towns', () => {
+    let towns: SquaremapTown[] = null
+
     it('can get all towns', async () => {
-        const towns = await Aurora.Towns.all()
+        towns = await Aurora.Towns.all()
         assertType<SquaremapTown[]>(towns)
+    })
+
+    it('has no town with html tag in name', () => {
+        expect(towns.some(t => t.name.includes("</a>") || t.name.includes("<a>"))).toBe(false)
     })
 
     // TODO: Verify there are no duplicates residents.

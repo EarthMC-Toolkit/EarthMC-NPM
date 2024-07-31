@@ -34,8 +34,6 @@ describe('[v3] OfficialAPI', async () => {
 
     it('can get valid player info', async () => {
         const players = await OfficialAPI.V3.players("af77d9b5-ab5d-4714-b92e-3b191c895ee7")
-        
-        console.log(players)
 
         expect(players).toBeDefined()
         assertType<OAPIResident[]>(players)

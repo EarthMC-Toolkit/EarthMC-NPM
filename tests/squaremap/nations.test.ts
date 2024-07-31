@@ -1,13 +1,19 @@
 import { describe, it, expect, expectTypeOf, assertType } from 'vitest'
 
-import type { Nation } from '../../src/types'
+import type { SquaremapNation } from '../../src/types'
 
 import { Aurora } from '../../src/main'
 
 describe('[Squaremap/Aurora] Nations', () => {
+    let nations: SquaremapNation[] = null
+
     it('can get all nations', async () => {
-        const nations = await Aurora.Nations.all()
-        assertType<Nation[]>(nations)
+        nations = await Aurora.Nations.all()
+        assertType<SquaremapNation[]>(nations)
+    })
+
+    it('has no nation with html tag in name', () => {
+        expect(nations.some(n => n.name.includes("</a>") || n.name.includes("<a>"))).toBe(false)
     })
 
     it('can get single nation', async () => {
@@ -17,7 +23,7 @@ describe('[Squaremap/Aurora] Nations', () => {
         expectTypeOf(nation).not.toEqualTypeOf<Error>
 
         //@ts-expect-error
-        assertType<Nation | Nation[]>(nation)
+        assertType<SquaremapNation | SquaremapNation[]>(nation)
 
         //@ts-ignore
         expect(nation.name).toBe('R.O.C')

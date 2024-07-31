@@ -75,6 +75,8 @@ export const parsePopup = (popup: string): ParsedPopup => {
 
     const updatedPopup = popup.replace(/<span[^>]*>.*?<\/span>/, '<b>')
     const cleaned = striptags(updatedPopup.replaceAll('\n', ''), ['a']).trim()
+
+    // Keeping here in-case we should revert from regex.
     //const info = cleaned.split(/\s{2,}/)
 
     const townWiki = spanContent.match(/<a href="(.*)">(.*)<\/a> /)
@@ -85,8 +87,9 @@ export const parsePopup = (popup: string): ParsedPopup => {
 
     const residentsMatch = sectioned.match(/Residents: .*?\/\/(.*?)(?=\/\/|$)/)
     const residentsDetails = residentsMatch ? residentsMatch[1].trim() : null
-
-    const bracketMatch = spanContent.match(/^(.*?)\s*\((.*?)\)$/)
+    
+    // Matches everything before last set of brackets, and everything inside last set of brackets.
+    const bracketMatch = spanContent.match(/^(.*)\s\(([^)]+)\)$/)
 
     //#region Extract town and nation
     const townStr = bracketMatch ? bracketMatch[1].trim() : spanContent.trim()
