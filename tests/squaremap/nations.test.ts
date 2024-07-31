@@ -28,4 +28,13 @@ describe('[Squaremap/Aurora] Nations', () => {
         //@ts-ignore
         expect(nation.name).toBe('R.O.C')
     })
+
+    it('can get multiple nation', async () => {
+        const nations = await Aurora.Nations.get('SiBeRia', 'veNICE', 'verMOnt', 'vAult_citY') as SquaremapNation[]
+
+        expect(nations).toBeTruthy()
+        expect(nations.length).toBe(3)
+
+        assertType<SquaremapNation[]>(nations)
+    })
 })
