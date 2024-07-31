@@ -1,12 +1,10 @@
 import type {
-    RawTown,
-    RawNation, 
-    RawResident,
-    OAPITown,
-    OAPIResident,
-    OAPINation,
-    RawServerInfoV2,
-    RawServerInfoV3
+    RawTown, RawNation, RawResident,
+    OAPITown, OAPIResident, OAPINation,
+    RawServerInfoV2, RawServerInfoV3,
+    RawQuarterResponseV3, RawEntityV3,
+    DiscordReqObject, DiscordResObject,
+    RawLocationResponseV3
 } from './types/index.js'
 
 import { townyData } from './utils/endpoint.js'
@@ -92,33 +90,24 @@ const parseNation = (nation: RawNation) => {
 const ParamErr = () => new SyntaxError(`Parameter 'name' is invalid. Must be of type string!`)
 const FetchErr = (type: string, name: string) => new FetchError(`Could not fetch ${type} '${name}'. Invalid response received!`)
 
-interface DiscordReqObject {
-    type: 'minecraft' | 'discord'
-    target: string
-}
-
-interface DiscordResObject {
-    ID: string
-    UUID: string
-}
-
 export class OAPIV3 {
-    static serverInfo = async (): Promise<RawServerInfoV3> => await townyData('', 'v3')
+    static serverInfo = (): Promise<RawServerInfoV3> => townyData('', 'v3')
 
-    static discord = async (...objs: DiscordReqObject[]): Promise<DiscordResObject[]> => 
-        await townyData('/discord', 'v3', { query: objs })
+    static location = (...objs: [number, number][]): Promise<RawLocationResponseV3> => 
+        townyData('location', 'v3', { query: objs })
 
-    static playerList = async (): Promise<{ name: string, uuid: string }[]> => 
-        await townyData('/players', 'v3')
+    static discord = (...objs: DiscordReqObject[]): Promise<DiscordResObject[]> => 
+        townyData('/discord', 'v3', { query: objs })
 
-    static players = async (...ids: string[]): Promise<OAPIResident[]> => 
-        await townyData('/players', 'v3', { query: ids })
+    static quarters = (...ids: string[]): Promise<RawQuarterResponseV3> => townyData('/quarters', 'v3', { query: ids })
+    static quarterList = (): Promise<RawEntityV3[]> => townyData('/quarters', 'v3')
+
+    static players = (...ids: string[]): Promise<OAPIResident[]> => townyData('/players', 'v3', { query: ids })
+    static playerList = (): Promise<RawEntityV3[]> => townyData('/players', 'v3')
 }
 
 export class OAPIV2 {
-    static serverInfo = async (): Promise<RawServerInfoV2> => {
-        return townyData('', 'v2')
-    }
+    static serverInfo = (): Promise<RawServerInfoV2> => townyData('', 'v2')
 
     static resident = async (name: string) => {
         if (!name) throw ParamErr()

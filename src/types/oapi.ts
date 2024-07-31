@@ -1,7 +1,8 @@
 import type { 
     Location, 
     NestedOmit,
-    Prettify 
+    Prettify, 
+    StrictPoint2D
 } from '../types/index.js'
 
 //#region V2
@@ -36,8 +37,6 @@ export type OAPIResident = NestedOmit<RawResident,
     "perms" |
     "stats"
 > & {
-    name: string
-    uuid: string
     title?: string
     surname?: string
     town?: string
@@ -199,6 +198,11 @@ export interface RawServerInfoV2 {
 //#endregion
 
 //#region V3
+export interface RawEntityV3 {
+    name: string
+    uuid: string
+}
+
 export interface RawServerInfoV3 {
     version: string
     moonPhase: string
@@ -227,5 +231,46 @@ export interface RawServerInfoV3 {
         target: number
         numRemaining: number
     }
+}
+
+export interface RawQuarterResponseV3 {
+    uuid: string
+    type: "APARTMENT" | "COMMONS" | "PUBLIC" | "SHOP" | "STATION" | "WORKSITE"
+    owner: Partial<RawEntityV3>
+    town: RawEntityV3
+    timestamps: {
+        registered: number
+        claimedAt?: number
+    }
+    status: {
+        isEmbassy: boolean
+    }
+    stats: {
+        price?: number
+        volume: number
+        numCuboids: number
+    }
+    color: [number, number, number]
+    trusted: RawEntityV3[]
+    cuboids: {
+        [key: string]: [number, number, number]
+    }[]
+}
+
+export interface DiscordReqObject {
+    type: 'minecraft' | 'discord'
+    target: string
+}
+
+export interface DiscordResObject {
+    ID: string
+    UUID: string
+}
+
+export interface RawLocationResponseV3 {
+    isWilderness: boolean
+    location: Partial<StrictPoint2D>
+    town?: RawEntityV3
+    nation?: RawEntityV3
 }
 //#endregion
