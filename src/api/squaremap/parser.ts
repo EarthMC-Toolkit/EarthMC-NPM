@@ -244,7 +244,6 @@ export const parseNations = async(towns: SquaremapTown[]) => {
                 councillors: [],
                 towns: [],
                 area: 0,
-                wealth: 0,
                 king: undefined,
                 capital: undefined
             }
@@ -257,7 +256,9 @@ export const parseNations = async(towns: SquaremapTown[]) => {
         raw[nationName].councillors = fastMergeUnique(raw[nationName].councillors, town.councillors)
 
         raw[nationName].area += town.area
-        raw[nationName].wealth += town.wealth
+
+        if (town.wealth)
+            raw[nationName].wealth += town.wealth
 
         // Current town is in existing nation
         if (raw[nationName].name == nationName) 

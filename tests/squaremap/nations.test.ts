@@ -2,7 +2,7 @@ import { describe, it, expect, expectTypeOf, assertType } from 'vitest'
 
 import type { SquaremapNation } from '../../src/types'
 
-import { Aurora } from '../../src/main'
+import { Aurora, NotFoundError } from '../../src/main'
 
 describe('[Squaremap/Aurora] Nations', () => {
     let nations: SquaremapNation[] = null
@@ -29,11 +29,14 @@ describe('[Squaremap/Aurora] Nations', () => {
         expect(nation.name).toBe('R.O.C')
     })
 
-    it('can get multiple nation', async () => {
-        const nations = await Aurora.Nations.get('SiBeRia', 'veNICE', 'verMOnt', 'vAult_citY') as SquaremapNation[]
+    it('can get multiple nations', async () => {
+        const nations = await Aurora.Nations.get('SiBeRia', 'veNICE', 'verMOnt', 'fAroe_ISlanDs') as SquaremapNation[]
+
+        console.log(nations)
 
         expect(nations).toBeTruthy()
-        expect(nations.length).toBe(3)
+        expect(nations.length).toBe(4)
+        expect(nations.some(n => n instanceof NotFoundError)).toBe(false)
 
         assertType<SquaremapNation[]>(nations)
     })

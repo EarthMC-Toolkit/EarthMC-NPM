@@ -18,7 +18,7 @@ export type BaseNation = {
 
 export type Nation = Prettify<BaseNation & Partial<APINationInfo>>
 export type SquaremapNation = Prettify<Nation & {
-    wealth: number
+    wealth?: number
     councillors: string[]
 }>
 
