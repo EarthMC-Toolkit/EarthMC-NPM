@@ -89,7 +89,7 @@ export const parsePopup = (popup: string): ParsedPopup => {
     const residentsDetails = residentsMatch ? residentsMatch[1].trim() : null
     
     // Matches everything before last set of brackets, and everything inside last set of brackets.
-    const bracketMatch = spanContent.match(/^(.*)\s\(([^)]+)\)$/)
+    const bracketMatch = spanContent.match(/^(.*)\s\((.*)\)\s*$/)
 
     //#region Extract town and nation
     const townStr = bracketMatch ? bracketMatch[1].trim() : spanContent.trim()

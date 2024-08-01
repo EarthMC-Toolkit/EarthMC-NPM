@@ -5,7 +5,7 @@ import {
 } from 'vitest'
 
 import { SquaremapTown } from '../../src/types'
-import { Aurora } from '../../src/main'
+import { Aurora, NotFoundError } from '../../src/main'
 
 describe('[Squaremap/Aurora] Towns', () => {
     let towns: SquaremapTown[] = null
@@ -23,12 +23,23 @@ describe('[Squaremap/Aurora] Towns', () => {
     it('can get single town', async () => {
         const town = await Aurora.Towns.get('Hengyang')
         expect(town).toBeTruthy()
-        expect(town).toBeDefined()
 
         //@ts-expect-error
         assertType<SquaremapTown | SquaremapTown[]>(town)
 
         expect((town as SquaremapTown).nation).not.toBe("No Nation")
+    })
+
+    it('can get multiple towns', async () => {
+        const towns = await Aurora.Towns.get('veNICE', 'troSt_(KhaRkiv)', 'HuaNGyan_IsLANd') as SquaremapTown[]
+        expect(towns).toBeTruthy()
+
+        expect(towns.some(n => n instanceof NotFoundError)).toBe(false)
+        expect(towns.length).toBe(3)
+
+        //console.log(towns)
+
+        assertType<SquaremapTown[]>(towns)
     })
 
     // it('can get towns invitable to specified nation', async () => {
