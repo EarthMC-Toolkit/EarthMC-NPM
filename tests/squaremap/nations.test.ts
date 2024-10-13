@@ -33,7 +33,7 @@ describe('[Squaremap/Aurora] Nations', () => {
         const nations = await Aurora.Nations.get('SiBeRia', 'veNICE', 'verMOnt') as SquaremapNation[]
 
         expect(nations).toBeTruthy()
-        expect(nations.length).toBe(4)
+        expect(nations.length).toBe(3)
         expect(nations.some(n => n instanceof NotFoundError)).toBe(false)
 
         assertType<SquaremapNation[]>(nations)
