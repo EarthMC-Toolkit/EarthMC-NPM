@@ -273,4 +273,47 @@ export interface RawLocationResponseV3 {
     town?: RawEntityV3
     nation?: RawEntityV3
 }
+
+export interface RawPlayerV3 extends RawEntityV3 {
+    title?: string
+    surname?: string
+    formattedName: string
+    about: string
+    town?: RawEntityV3
+    nation?: RawEntityV3
+    timestamps: {
+        registered: number
+        joinedTownAt?: number
+        lastOnline?: number
+    }
+    status: {
+        isOnline: boolean,
+        isNPC: boolean
+        isMayor: boolean
+        isKing: boolean
+        hasTown: boolean
+        hasNation: boolean
+    }
+    stats: {
+        balance: number
+        numFriends: number
+    }
+    perms: {
+        build: [boolean, boolean, boolean, boolean]
+        destroy: [boolean, boolean, boolean, boolean]
+        switch: [boolean, boolean, boolean, boolean]
+        itemUse: [boolean, boolean, boolean, boolean]
+        flags: {
+            pvp: boolean
+            explosion: boolean
+            fire: boolean
+            mobs: boolean
+        }
+    }
+    ranks?: {
+        townRanks: string[]
+        nationRanks: string[]
+    }
+    friends: RawEntityV3[]
+}
 //#endregion

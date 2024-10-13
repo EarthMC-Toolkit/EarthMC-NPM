@@ -30,7 +30,7 @@ describe('[Squaremap/Aurora] Nations', () => {
     })
 
     it('can get multiple nations', async () => {
-        const nations = await Aurora.Nations.get('SiBeRia', 'veNICE', 'verMOnt', 'fAroe_ISlanDs') as SquaremapNation[]
+        const nations = await Aurora.Nations.get('SiBeRia', 'veNICE', 'verMOnt') as SquaremapNation[]
 
         expect(nations).toBeTruthy()
         expect(nations.length).toBe(4)

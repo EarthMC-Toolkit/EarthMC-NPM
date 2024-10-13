@@ -4,7 +4,8 @@ import type {
     RawServerInfoV2, RawServerInfoV3,
     RawQuarterResponseV3, RawEntityV3,
     DiscordReqObject, DiscordResObject,
-    RawLocationResponseV3
+    RawLocationResponseV3,
+    RawPlayerV3
 } from './types/index.js'
 
 import { townyData } from './utils/endpoint.js'
@@ -102,7 +103,7 @@ export class OAPIV3 {
     static quarters = (...ids: string[]): Promise<RawQuarterResponseV3> => townyData('/quarters', 'v3', { query: ids })
     static quarterList = (): Promise<RawEntityV3[]> => townyData('/quarters', 'v3')
 
-    static players = (...ids: string[]): Promise<OAPIResident[]> => townyData('/players', 'v3', { query: ids })
+    static players = (...ids: string[]): Promise<RawPlayerV3[]> => townyData('/players', 'v3', { query: ids })
     static playerList = (): Promise<RawEntityV3[]> => townyData('/players', 'v3')
 }
 

@@ -6,7 +6,7 @@ import {
 import { OfficialAPI } from '../src/main'
 import { 
     OAPINation, OAPIResident, OAPITown, 
-    RawServerInfoV2, RawServerInfoV3 
+    RawPlayerV3, RawServerInfoV2, RawServerInfoV3 
 } from '../src/types'
 
 describe('[v3] OfficialAPI', async () => {
@@ -36,7 +36,7 @@ describe('[v3] OfficialAPI', async () => {
         const players = await OfficialAPI.V3.players("af77d9b5-ab5d-4714-b92e-3b191c895ee7")
 
         expect(players).toBeDefined()
-        assertType<OAPIResident[]>(players)
+        assertType<RawPlayerV3>(players[0])
     }, 10000)
 })
 
