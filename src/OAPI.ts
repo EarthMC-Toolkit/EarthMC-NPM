@@ -95,10 +95,32 @@ export class OAPIV3 {
     static serverInfo = (): Promise<RawServerInfoV3> => townyData('', 'v3')
 
     static location = (...objs: [number, number][]): Promise<RawLocationResponseV3> => 
-        townyData('location', 'v3', { query: objs })
+        townyData('/location', 'v3', { query: objs })
 
-    static discord = (...objs: DiscordReqObject[]): Promise<DiscordResObject[]> => 
+    static discord = (...objs: DiscordReqObject[]): Promise<DiscordResObject[]> =>
         townyData('/discord', 'v3', { query: objs })
+
+    /**
+     * Same as .discord() but passes only `discord` type for all, returning Minecraft UUIDs.
+     * @param ids Discord ID string(s).
+     */
+    static uuidFromDiscord = async (...ids: string[]) => {
+        const objs = ids.map(id => ({ type: 'discord', target: id }) as DiscordReqObject)
+        const res = await OAPIV3.discord(...objs)
+
+        return res.map(r => r.uuid)
+    }
+
+    /**
+     * Same as .discord() but passes only `minecraft` type for all, returning Discord IDs.
+     * @param ids Minecraft UUID string(s).
+     */
+    static discordFromUUID = async (...uuids: string[]) => {
+        const objs = uuids.map(uuid => ({ type: 'minecraft', target: uuid }) as DiscordReqObject)
+        const res = await OAPIV3.discord(...objs)
+        
+        return res.map(r => r.id)
+    }
 
     static quarters = (...ids: string[]): Promise<RawQuarterResponseV3> => townyData('/quarters', 'v3', { query: ids })
     static quarterList = (): Promise<RawEntityV3[]> => townyData('/quarters', 'v3')

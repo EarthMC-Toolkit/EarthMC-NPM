@@ -69,21 +69,20 @@ const mapData = async <T>(mapName: AnyMap): Promise<T> => {
  * @param endpoint The endpoint not including the domain, e.g: "lists/nations"
  */
 const townyData = async <T>(endpoint = '', version: EndpointVersion = 'v3', body?: V3RequestBody<T>) => {
-    if (endpoint.startsWith("/")) {
-        endpoint.replace("/", "")
+    // if (endpoint.startsWith("/")) {
+    //     endpoint.replace("/", "")
+    // }
+
+    if (version == "v2") {
+        const url = get("towny", "v2/aurora")
+        return asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown
     }
 
-    if (version == "v3") {
-        const url = get("towny", "v3/aurora")
-
-        return body ? asJSON(`${url}${endpoint}`, {
-            method: "POST",
-            body: JSON.stringify(body)
-        }) : asJSON(`${url}${endpoint}`)
-    }
-
-    const url = get("towny", "v2/aurora")
-    return asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown     
+    const url = get("towny", "v3/aurora")
+    return body ? asJSON(`${url}${endpoint}`, {
+        method: "POST",
+        body: JSON.stringify(body)
+    }) : asJSON(`${url}${endpoint}`)
 }
 
 export {

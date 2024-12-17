@@ -9,10 +9,10 @@ export type ParsedPlayer = {
 
 export type OnlinePlayer = Prettify<ParsedPlayer & Location>
 export type Player = Prettify<Resident & Partial<OnlinePlayer> & {
-    online: boolean 
+    online: boolean
 }>
 
 export type SquaremapOnlinePlayer = Prettify<ParsedPlayer & SquaremapLocation>
 export type SquaremapPlayer = Prettify<Resident & Partial<SquaremapOnlinePlayer> & {
-   online: boolean 
+    online: boolean
 }>
