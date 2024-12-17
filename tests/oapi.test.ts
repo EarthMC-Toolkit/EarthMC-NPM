@@ -25,6 +25,21 @@ describe('[v3] OfficialAPI', async () => {
         expect(info.stats.numNations).toBeGreaterThanOrEqual(100)
     }, 10000)
 
+    it('can get UUID from Discord ID', async () => {
+        const res = await OfficialAPI.V3.discord({
+            type: "minecraft",
+            target: "263377802647175170" // My discord ID
+        })
+
+        console.log(res)
+
+        expect(res).toBeDefined()
+        assertType<{ id: string, uuid: string }[]>(res)
+
+        expect(res.length).toBe(1)
+        expect(res[0].uuid).toBe("d0a2565a-ad93-48d2-8310-81d06e198e53")
+    })
+
     it('can get player list', async () => {
         const playerList = await OfficialAPI.V3.playerList()
         

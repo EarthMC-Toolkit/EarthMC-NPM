@@ -263,8 +263,8 @@ export interface DiscordReqObject {
 }
 
 export interface DiscordResObject {
-    ID: string
-    UUID: string
+    id: string
+    uuid: string
 }
 
 export interface RawLocationResponseV3 {

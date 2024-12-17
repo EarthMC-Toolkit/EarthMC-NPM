@@ -16,6 +16,7 @@ export default defineConfig({
         maxForks: 6 // 6 threads is enough
       }
     },
+    include: ['tests/squaremap/**/*', 'tests/*'],
     typecheck: {
       include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)']
     },

@@ -136,9 +136,14 @@ interface TownCoords {
 
 const isCapital = (marker: SquaremapArea) => {
     const desc = striptags(marker.tooltip.replaceAll('\n', '')).trim()
-    const bracketMatch = desc.match(/\((.*)\)/)
 
+    // Remove everything up to first space, then get everything inside first set of brackets.
+    const bracketMatch = desc.replace(/^[^\s]*\s*/, '').match(/\(([^()]+)\)/)
+
+    // Given this example: ((Africa)) (Capital of Cuba) Some description (test)
+    // The following should become "Capital of Cuba"
     const tooltipBracketContent = bracketMatch ? bracketMatch[1].trim() : null
+
     return tooltipBracketContent?.startsWith("Capital of") ?? false
 }
 
