@@ -7,7 +7,7 @@ import { Aurora, NotFoundError } from '../../src/main'
 describe('[Squaremap/Aurora] Nations', () => {
     let nations: SquaremapNation[] = null
 
-    it('can get all nations', async () => {
+    it('can get all nations', async() => {
         nations = await Aurora.Nations.all()
         assertType<SquaremapNation[]>(nations)
     })
@@ -16,7 +16,7 @@ describe('[Squaremap/Aurora] Nations', () => {
         expect(nations.some(n => n.name.includes("</a>") || n.name.includes("<a>"))).toBe(false)
     })
 
-    it('can get single nation', async () => {
+    it('can get single nation', async() => {
         const nation = await Aurora.Nations.get('r.o.c')
 
         expect(nation).toBeTruthy()
@@ -29,7 +29,7 @@ describe('[Squaremap/Aurora] Nations', () => {
         expect(nation.name).toBe('R.O.C')
     })
 
-    it('can get multiple nations', async () => {
+    it('can get multiple nations', async() => {
         const nations = await Aurora.Nations.get('veNICE', 'vERMont') as SquaremapNation[]
 
         expect(nations).toBeTruthy()

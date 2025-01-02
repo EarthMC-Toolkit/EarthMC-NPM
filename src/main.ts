@@ -5,7 +5,7 @@ import Dynmap from './api/dynmap/Dynmap.js'
 import Squaremap from './api/squaremap/Squaremap.js'
 
 import MCAPI from "mojang-lib"
-import { OAPIV2, OAPIV3 } from './OAPI.js'
+import { OAPIV3 } from './OAPI.js'
 
 export async function fetchServer(name = "play.earthmc.net") {
     const server = await MCAPI.servers.get(name)
@@ -34,7 +34,6 @@ export async function getServerInfo(aurora: { numOnline: number }) {
 }
 
 export class OfficialAPI {
-    static V2 = OAPIV2
     static V3 = OAPIV3
 }
 

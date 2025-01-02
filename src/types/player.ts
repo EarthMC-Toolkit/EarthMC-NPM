@@ -1,4 +1,7 @@
-import type { Location, Prettify, Resident, SquaremapLocation } from '../types/index.js'
+import type { 
+    Prettify, Resident,
+    Location, SquaremapLocation
+} from '../types/index.js'
 
 export type ParsedPlayer = {
     name: string

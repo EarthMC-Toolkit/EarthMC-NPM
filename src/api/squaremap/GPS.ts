@@ -129,7 +129,12 @@ class GPS extends Emitter<GPSEvents> {
 
         for (let i = 0; i < len; i++) {
             const nation = nations[i]
-            const capitalName = nation.capital.name
+            const capitalName = nation.capital?.name
+
+            if (!capitalName) {
+                console.warn(`[GPS.findRoute] Could not scan nation '${nation.name}'. Capital is null/undefined!`)
+                continue
+            }
 
             const capital = townsMap.get(capitalName)
             if (!capital) continue

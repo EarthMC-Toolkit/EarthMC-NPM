@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import striptags from 'striptags'
-import { asBool, calcAreaPoints, fastMergeUnique, formatString, range, roundToNearest16, safeParseInt } from '../../utils/functions.js'
+import { 
+    asBool, calcAreaPoints, fastMergeUnique,
+    formatString, range, roundToNearest16
+} from '../../utils/functions.js'
 
 import type {
     Resident,
@@ -29,7 +32,7 @@ interface ParsedPopup {
     mayor?: string
     founded?: string
     councillors: string[]
-    wealth?: string
+    //wealth?: string
     residents: string[]
 }
 
@@ -109,7 +112,7 @@ export const parsePopup = (popup: string): ParsedPopup => {
         mayor: extractSection(sectioned, 'Mayor'),
         councillors: !councillorsStr || councillorsStr == "None" ? [] : councillorsStr.split(", "),
         founded: extractSection(sectioned, 'Founded'),
-        wealth: extractSection(sectioned, 'Wealth'),
+        //wealth: extractSection(sectioned, 'Wealth'),
         residents: residentsDetails?.split(", ") ?? [],
         flags: {
             pvp: extractSection(sectioned, 'PVP'),
@@ -220,9 +223,10 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
         }
         //#endregion
 
-        if (parsedPopup.wealth) {
-            town.wealth = safeParseInt(parsedPopup.wealth.slice(0, -1))
-        }
+        // Uncomment when `wealth` is added back to the popup.
+        // if (parsedPopup.wealth) {
+        //     town.wealth = safeParseInt(parsedPopup.wealth.slice(0, -1))
+        // }
 
         towns.push(town)
     }
@@ -262,8 +266,8 @@ export const parseNations = async(towns: SquaremapTown[]) => {
 
         raw[nationName].area += town.area
 
-        if (town.wealth)
-            raw[nationName].wealth += town.wealth
+        // if (town.wealth)
+        //     raw[nationName].wealth += town.wealth
 
         // Current town is in existing nation
         if (raw[nationName].name == nationName) 

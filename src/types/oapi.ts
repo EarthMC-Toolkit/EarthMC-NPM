@@ -1,61 +1,74 @@
 import type { 
-    Location, 
-    NestedOmit,
-    Prettify, 
-    StrictPoint2D
+    Location,
+    Prettify,
+    StrictPoint2D,
+    ArrNums,
+    ArrBools,
+    HexString
 } from '../types/index.js'
 
-//#region V2
-//#region Parsed
-export type OAPITown = NestedOmit<RawTown, 
-    "timestamps" |
-    "perms.rnaoPerms" |
-    "perms.flagPerms"
-> & {
-    name: string
-    nation: string
-    founder: string
-    created: number
-    joinedNation: number
-    perms: {
-        build: RawTownPerms
-        destroy: RawTownPerms
-        switch: RawTownPerms
-        itemUse: RawTownPerms
-        flags: RawFlagPerms
-    }
-}
-
-export type OAPINation = NestedOmit<RawNation,
-    "timestamps"
-> & {
-    created: number
-}
-
-export type OAPIResident = NestedOmit<RawResident, 
-    "ranks" |
-    "perms" |
-    "stats"
-> & {
-    title?: string
-    surname?: string
-    town?: string
-    nation?: string
-    balance: number
-    timestamps: Timestamps
-    townRanks?: string[]
-    nationRanks?: string[]
-    perms?: {
-        build: boolean[] //RawResidentPerms
-        destroy: boolean[] //RawResidentPerms
-        switch: boolean[] //RawResidentPerms
-        itemUse: boolean[] //RawResidentPerms
-        flags: RawFlagPerms //RawResidentPerms
-    }
-}
+//#region Base/shared types used by all versions.
+export type BaseEntityStatus = Prettify<{
+    isPublic: boolean
+    isOpen: boolean
+    isNeutral: boolean
+}>
 //#endregion
 
-//#region Raw, unparsed types
+//#region V2
+
+//#region Parsed
+// export type OAPITown = NestedOmit<RawTown, 
+//     "timestamps" |
+//     "perms.rnaoPerms" |
+//     "perms.flagPerms"
+// > & {
+//     name: string
+//     nation: string
+//     founder: string
+//     created: number
+//     joinedNation: number
+//     perms: {
+//         build: RawTownPerms
+//         destroy: RawTownPerms
+//         switch: RawTownPerms
+//         itemUse: RawTownPerms
+//         flags: RawFlagPerms
+//     }
+// }
+
+// export type OAPINation = NestedOmit<RawNation,
+//     "timestamps"
+// > & {
+//     created: number
+// }
+
+// export type OAPIResident = NestedOmit<RawResident, 
+//     "ranks" |
+//     "perms" |
+//     "stats"
+// > & {
+//     title?: string
+//     surname?: string
+//     town?: string
+//     nation?: string
+//     balance: number
+//     timestamps: Timestamps
+//     townRanks?: string[]
+//     nationRanks?: string[]
+//     perms?: {
+//         build: boolean[] //RawResidentPerms
+//         destroy: boolean[] //RawResidentPerms
+//         switch: boolean[] //RawResidentPerms
+//         itemUse: boolean[] //RawResidentPerms
+//         flags: RawFlagPerms //RawResidentPerms
+//     }
+// }
+//#endregion
+
+//#region Raw/Unparsed
+// TODO: See which can be shared with V3 and postfix V2 only ones.
+
 export type RawEntity = Prettify<{
     uuid: string
     status: RawEntityStatus
@@ -63,10 +76,7 @@ export type RawEntity = Prettify<{
     ranks?: { [key: string]: string[] }
 }>
 
-export type RawEntityStatus = Partial<{
-    isPublic: boolean
-    isOpen: boolean
-    isNeutral: boolean
+export type RawEntityStatus = Partial<BaseEntityStatus & {
     isCapital: boolean
     isOverClaimed: boolean
     isRuined: boolean
@@ -78,7 +88,6 @@ export type RawEntityStats = Prettify<{
     maxTownBlocks?: number
     numTownBlocks?: number
     numResidents?: number
-    numTowns?: number
     balance: number
 }>
 
@@ -96,12 +105,12 @@ export type RawTownPerms = Prettify<{
     outsider: boolean
 }>
 
-export interface RawFlagPerms {
+export type RawFlagPerms = Prettify<{
     pvp: boolean
     explosion: boolean
     fire: boolean
     mobs: boolean
-}
+}>
 
 export interface RawEntityPerms<PermsType> {
     flagPerms: RawFlagPerms
@@ -195,17 +204,26 @@ export interface RawServerInfoV2 {
     }
 }
 //#endregion
+
 //#endregion
 
 //#region V3
+export type RequestBodyV3<T> = {
+    query: T
+    template?: any
+    [key: string]: any
+}
+
 export interface RawEntityV3 {
     name: string
     uuid: string
 }
 
+export type MoonPhaseV3 = 'FIRST_QUARTER' | 'FULL_MOON' | 'LAST_QUARTER' | 'NEW_MOON' | 'WANING_CRESCENT' | 'WANING_GIBBOUS' | 'WAXING_CRESCENT' | 'WAXING_GIBBOUS'
+
 export interface RawServerInfoV3 {
     version: string
-    moonPhase: string
+    moonPhase: MoonPhaseV3
     timestamps: {
         newDayTime: number
         serverTimeOfDay: number
@@ -219,13 +237,14 @@ export interface RawServerInfoV3 {
         fullTime: number
         maxPlayers: number
         numOnlinePlayers: number
+        numOnlineNomads: number
         numResidents: number
         numNomads: number
         numTowns: number
-        numNations: number
         numTownBlocks: number
-        numCuboids: number
+        numNations: number
         numQuarters: number
+        numCuboids: number
     }
     voteParty: {
         target: number
@@ -235,8 +254,8 @@ export interface RawServerInfoV3 {
 
 export interface RawQuarterResponseV3 {
     uuid: string
-    type: "APARTMENT" | "COMMONS" | "PUBLIC" | "SHOP" | "STATION" | "WORKSITE"
-    owner: Partial<RawEntityV3>
+    type: "APARTMENT" | "INN" | "STATION"
+    owner?: Partial<RawEntityV3>
     town: RawEntityV3
     timestamps: {
         registered: number
@@ -250,19 +269,17 @@ export interface RawQuarterResponseV3 {
         volume: number
         numCuboids: number
     }
-    color: [number, number, number]
+    color: ArrNums<3>
     trusted: RawEntityV3[]
-    cuboids: {
-        [key: string]: [number, number, number]
-    }[]
+    cuboids: { [key: string]: ArrNums<3> }[]
 }
 
-export interface DiscordReqObject {
+export interface DiscordReqObjectV3 {
     type: 'minecraft' | 'discord'
     target: string
 }
 
-export interface DiscordResObject {
+export interface DiscordResObjectV3 {
     id: string
     uuid: string
 }
@@ -278,16 +295,16 @@ export interface RawPlayerV3 extends RawEntityV3 {
     title?: string
     surname?: string
     formattedName: string
-    about: string
-    town?: RawEntityV3
-    nation?: RawEntityV3
+    about?: string
+    town?: Partial<RawEntityV3>
+    nation?: Partial<RawEntityV3>
     timestamps: {
         registered: number
         joinedTownAt?: number
         lastOnline?: number
     }
     status: {
-        isOnline: boolean,
+        isOnline: boolean
         isNPC: boolean
         isMayor: boolean
         isKing: boolean
@@ -299,10 +316,10 @@ export interface RawPlayerV3 extends RawEntityV3 {
         numFriends: number
     }
     perms: {
-        build: [boolean, boolean, boolean, boolean]
-        destroy: [boolean, boolean, boolean, boolean]
-        switch: [boolean, boolean, boolean, boolean]
-        itemUse: [boolean, boolean, boolean, boolean]
+        build: ArrBools<4>
+        destroy: ArrBools<4>
+        switch: ArrBools<4>
+        itemUse: ArrBools<4>
         flags: {
             pvp: boolean
             explosion: boolean
@@ -315,5 +332,97 @@ export interface RawPlayerV3 extends RawEntityV3 {
         nationRanks: string[]
     }
     friends: RawEntityV3[]
+}
+
+export interface RawTownV3 extends RawEntityV3 {
+    board: string
+    wiki?: string // The URL to this town's wiki page.
+    founder: string
+    mayor: RawEntityV3
+    nation?: Partial<RawEntityV3>
+    timestamps: {
+        registered: number
+        joinedNationAt?: number
+        ruinedAt?: number
+    }
+    status: BaseEntityStatus & {
+        isCapital: boolean
+        isOverClaimed: boolean
+        isRuined: boolean
+        isForSale: boolean
+        hasNation: boolean
+        hasOverclaimShield: boolean
+        canOutsidersSpawn: boolean
+    }
+    stats: {
+        numTownBlocks: number
+        maxTownBlocks: number
+        bonusBlocks: number
+        numResidents: number
+        numTrusted: number
+        numOutlaws: number
+        balance: number
+        forSalePrice?: number
+    }
+    perms: {
+        build: RawTownPerms
+        destroy: RawTownPerms
+        switch: RawTownPerms
+        itemUse: RawTownPerms
+        flags: RawFlagPerms
+    }
+    coordinates: {
+        spawn: RawEntitySpawn
+        homeBlock: ArrNums<2> // First num is X, second is Z.
+        townBlocks: ArrNums<2>[] // Array of blocks. Multiply by 16 to get actual coordinate.
+    }
+    quarters: string[] // Includes UUID of every quarter in the town.
+    residents: RawEntityV3[]
+    trusted: RawEntityV3[]
+    outlaws: RawEntityV3[]
+    ranks: {
+        Councillor: string[]
+        Builder: string[]
+        Recruiter: string[]
+        Police: string[]
+        'Tax-exempt': string[]
+        Treasurer: string[]
+        Realtor: string[]
+        Settler: string[]
+    }
+}
+
+export interface RawNationV3 extends RawEntityV3 {
+    board?: string
+    dynmapColor: HexString
+    dynmapOutline: HexString
+    wiki?: string
+    king: RawEntityV3
+    capital: RawEntityV3
+    timestamps: {
+        registered: number
+    }
+    status: BaseEntityStatus
+    stats: {
+        numTownBlocks: number
+        numResidents: number
+        numTowns: number
+        numAllies: number
+        numEnemies: number
+        balance: number
+    }
+    coordinates: {
+        spawn: RawEntitySpawn
+    }
+    residents: RawEntityV3[]
+    towns: RawEntityV3[]
+    allies: RawEntityV3[]
+    enemies: RawEntityV3[]
+    sanctioned: RawEntityV3[]
+    ranks: {
+        Chancellor: string[]
+        Colonist: string[]
+        Diplomat: string[]
+    }
 }
 //#endregion

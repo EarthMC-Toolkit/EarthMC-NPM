@@ -20,3 +20,12 @@ export type StringContainedWithin<TStart extends string, TEnd extends string> = 
 export type HexString = `#${string}`
 
 export type Opacity = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1
+
+export type ArrNums<N extends number, R extends number[] = []> = 
+  R['length'] extends N ? R : ArrNums<N, [...R, number]>
+
+export type ArrBools<N extends number, R extends boolean[] = []> = 
+  R['length'] extends N ? R : ArrBools<N, [...R, boolean]>
+
+export type ArrStrings<N extends number, R extends string[] = []> = 
+  R['length'] extends N ? R : ArrStrings<N, [...R, string]>

@@ -1,14 +1,9 @@
 import endpoints from '../endpoints.json'
 
 import { request, type Dispatcher } from "undici"
-import type { AnyMap } from "../types/index.js"
+import type { AnyMap, RequestBodyV3 } from "../types/index.js"
 
 import { genRandomString } from './functions.js'
-
-export type V3RequestBody<T> = {
-    query: T
-    [key: string]: any
-}
 
 export type EndpointVersion = 'v2' | 'v3'
 export type ReqOptions = { dispatcher?: Dispatcher } 
@@ -68,7 +63,7 @@ const mapData = async <T>(mapName: AnyMap): Promise<T> => {
  * By "towny" we are referring to the data that we receive (balance, registration date etc).
  * @param endpoint The endpoint not including the domain, e.g: "lists/nations"
  */
-const townyData = async <T>(endpoint = '', version: EndpointVersion = 'v3', body?: V3RequestBody<T>) => {
+const townyData = async <T>(endpoint = '', version: EndpointVersion = 'v3', body?: RequestBodyV3<T>) => {
     // if (endpoint.startsWith("/")) {
     //     endpoint.replace("/", "")
     // }

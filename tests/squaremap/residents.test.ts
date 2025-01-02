@@ -6,14 +6,14 @@ import { Aurora } from '../../src/main'
 describe('[Squaremap/Aurora] Residents', () => {
     let res: Resident = null
 
-    it('can get all residents', async () => {
+    it('can get all residents', async() => {
         const residents = await Aurora.Residents.all()
 
         expect(residents).toBeTruthy()
         assertType<Resident[]>(residents)
     })
 
-    it('can get single resident', async () => {
+    it('can get single resident', async() => {
         const resident = await Aurora.Residents.get('3meraldk') as Resident
 
         expect(resident).toBeTruthy()
