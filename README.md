@@ -49,7 +49,7 @@ const route = await Aurora.GPS.fastestRoute({ x: town.x, z: town.z })
 const desc = `Type **/n spawn ${route.nation.name}** and head **${route.direction}** for **${route.distance}** blocks.`
 ```
 
-To continously track a player, you can use the `track` method.
+To continuously track a player, you can use the `track` method.
   - First parameter (player name) is **required**, but case insensitive.
   - Second parameter (interval) is optional. Defaults to `3000` milliseconds.
   - Third parameter (route) is optional. Defaults to `FASTEST`.
