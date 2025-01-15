@@ -3,7 +3,7 @@ import type Dynmap from "./Dynmap.js"
 
 import {
     formatString, asBool, 
-    calcArea, range,
+    calcArea, midrange,
     getExisting,
     isInvitable
 } from '../../utils/functions.js'
@@ -98,8 +98,8 @@ class Towns implements EntityApi<Town | NotFoundError> {
                 name: formatString(town.label, removeAccents),
                 nation: nationName == "" ? "No Nation" : formatString(nationName.trim(), removeAccents),
                 mayor, area,
-                x: home?.x ?? range(townX),
-                z: home?.z ?? range(townZ),
+                x: home?.x ?? midrange(townX),
+                z: home?.z ?? midrange(townZ),
                 bounds: {
                     x: townX.map(num => Math.round(num)),
                     z: townZ.map(num => Math.round(num))

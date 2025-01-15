@@ -3,7 +3,7 @@
 import striptags from 'striptags'
 import { 
     asBool, calcAreaPoints, fastMergeUnique,
-    formatString, range, roundToNearest16
+    formatString, midrange, roundToNearest16
 } from '../../utils/functions.js'
 
 import type {
@@ -78,7 +78,7 @@ export const parsePopup = (popup: string): ParsedPopup => {
 
     const updatedPopup = popup.replace(/<span[^>]*>.*?<\/span>/, '<b>')
     const cleaned = striptags(updatedPopup.replaceAll('\n', ''), ['a']).trim()
-
+    
     // Keeping here in-case we should revert from regex.
     //const info = cleaned.split(/\s{2,}/)
 
@@ -181,8 +181,8 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             mayor: parsedPopup.mayor,
             councillors: parsedPopup.councillors,
             residents: parsedPopup.residents,
-            x: range(townX),
-            z: range(townZ),
+            x: midrange(townX),
+            z: midrange(townZ),
             area: calcAreaPoints(points),
             points,
             bounds: {

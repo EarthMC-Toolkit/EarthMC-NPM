@@ -63,10 +63,11 @@ export function calcArea(X: number[], Z: number[], numPoints: number, divisor = 
     return Math.abs(area / 2) / divisor
 }
 
-export function calcAreaPoints(points: StrictPoint2D[]) {
+export function calcAreaPoints(points: StrictPoint2D[], divisor = 256) {
     let area = 0
 
-    for (let i = 0, NUM_POINTS = points.length; i < NUM_POINTS; i++) {
+    const NUM_POINTS = points.length
+    for (let i = 0; i < NUM_POINTS; i++) {
         const cur = points[i]
         const next = points[(i + 1) % NUM_POINTS]
 
@@ -74,7 +75,7 @@ export function calcAreaPoints(points: StrictPoint2D[]) {
         area -= cur.z * next.x
     }
 
-    return Math.abs(area / 2) / 256
+    return Math.abs(area / 2) / divisor
 }
 
 export function averageNationPos(name: string, towns: Town[]) {
@@ -93,7 +94,7 @@ export function getAveragePos(arr: Point2D[]) {
 
 export const safeParseInt = (num: number | string) => typeof num === "number" ? num : parseInt(num)
 export const asBool = (str: string) => str == "true"
-export const range = (args: number[]) => Math.round((Math.max(...args) + Math.min(...args)) / 2)
+export const midrange = (args: number[]) => Math.round((Math.max(...args) + Math.min(...args)) / 2)
 
 export const sqr = (a: Point2D, b: Point2D, range: number) => Math.hypot(
     safeParseInt(a.x) - safeParseInt(b.x), 
