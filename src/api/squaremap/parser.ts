@@ -36,18 +36,18 @@ interface ParsedPopup {
     residents: string[]
 }
 
-/**
- * Parses the tooltip on a marker - removing white space, new lines and HTML tags.
- * 
- * Returns an object with the following string elements: 
- * 
- * - town
- * 
- * - nation (May not exist) 
- * 
- * - board (May not exist)
- * @param tooltip The unparsed 'tooltip' value from a markerset.
- */
+// /**
+//  * Parses the tooltip on a marker - removing white space, new lines and HTML tags.
+//  * 
+//  * Returns an object with the following string elements: 
+//  * 
+//  * - town
+//  * 
+//  * - nation (May not exist) 
+//  * 
+//  * - board (May not exist)
+//  * @param tooltip The unparsed 'tooltip' value from a markerset.
+//  */
 // export const parseTooltip = (tooltip: string) => {
 //     const cleaned = striptags(tooltip.replaceAll('\n', '')).trim()
 
@@ -102,8 +102,8 @@ export const parsePopup = (popup: string): ParsedPopup => {
     const nation = nationStr ? extractText(nationStr) : null
     //#endregion
 
-    const indexClosingBracket = cleaned.indexOf(')')
-    const board = indexClosingBracket !== -1 ? cleaned.slice(indexClosingBracket + 1).trim() : ''
+    // Match all <i> tags (italics) and get first occurence.
+    const board = updatedPopup.match(/<i\b[^>]*>(.*?)<\/i>/)?.[1] || null
 
     return {
         town,
@@ -204,8 +204,8 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
             }
         }
 
-        // Dont include board if it's default or empty.
-        if (parsedPopup.board != "/town set board [msg]" && parsedPopup.board != "") {
+        // Dont include board if it's empty/null or its default text.
+        if (parsedPopup.board && parsedPopup.board != "/town set board [msg]") {
             town.board = parsedPopup.board
         }
 
