@@ -102,7 +102,7 @@ export const parsePopup = (popup: string): ParsedPopup => {
     const nation = nationStr ? extractText(nationStr) : null
     //#endregion
 
-    // Match all <i> tags (italics) and get first occurence.
+    // Match all <i> tags (italics) and get first occurrence.
     const board = updatedPopup.match(/<i\b[^>]*>(.*?)<\/i>/)?.[1] || null
 
     return {
