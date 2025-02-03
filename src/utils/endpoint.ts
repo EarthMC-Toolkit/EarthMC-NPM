@@ -40,8 +40,10 @@ const retry = (val: any, url: string, amt: number): any => amt === 1 ? val : asJ
 let archiveTs = 0
 const useArchive = (ts: number) => archiveTs = ts
 const getArchive = async (url: string, unixTs = Date.now()) => {
-    const date = new Date(unixTs * 1000)
-    const formattedTs = date.toISOString().replace(/[^0-9]/g, '').slice(0, -3)
+    const formattedTs = new Date(unixTs * 1000)
+        .toISOString()
+        .replace(/[^0-9]/g, '')
+        .slice(0, -3)
 
     return await asJSON(`https://web.archive.org/web/${formattedTs}id_/${decodeURIComponent(url)}`)
 }

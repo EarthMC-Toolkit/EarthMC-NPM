@@ -26,7 +26,7 @@ export const getNearest = async<T extends LocOrNation>(
     )
 }
 
-export const withinBounds = (location: Point2D, bounds: TownBounds) => {
+export const checkWithinBounds = (location: Point2D, bounds: TownBounds) => {
     if (strictFalsy(location.x) || strictFalsy(location.z)) {
         const obj = JSON.stringify(location)
         throw new ReferenceError(`(withinBounds) - Invalid location:\n${obj}`)
@@ -42,14 +42,14 @@ export const withinBounds = (location: Point2D, bounds: TownBounds) => {
     return withinX && withinZ
 }
 
-export const withinTown = async<T extends { bounds: TownBounds }>(location: Point2D, towns: T[]) => {
+export const checkWithinTown = async<T extends { bounds: TownBounds }>(location: Point2D, towns: T[]) => {
     const len = towns.length
     
     let inBounds = false
     for (let i = 0; i < len; i++) {
         const cur = towns[i]
 
-        if (withinBounds(location, cur.bounds)) {
+        if (checkWithinBounds(location, cur.bounds)) {
             inBounds = true
             break
         }

@@ -15,7 +15,7 @@ import Residents from "./Residents.js"
 import GPS from "./GPS.js"
 
 import { parsePlayers } from "./parser.js"
-import { withinBounds, withinTown } from "../common.js"
+import { checkWithinBounds, checkWithinTown } from "../common.js"
 
 class Squaremap extends DataHandler {
     //#region Data classes
@@ -72,11 +72,11 @@ class Squaremap extends DataHandler {
     
     readonly withinTown = async (location: Point2D) => {
         const towns = await this.Towns.all()
-        return withinTown(location, towns)
+        return checkWithinTown(location, towns)
     }
 
     readonly isWilderness = async(location: Point2D) => !(await this.withinTown(location))
-    readonly withinBounds = (location: Point2D, bounds: TownBounds) => withinBounds(location, bounds)
+    readonly withinBounds = (location: Point2D, bounds: TownBounds) => checkWithinBounds(location, bounds)
 
     readonly onlinePlayerData = async() => {
         const res = await this.playerData<SquaremapPlayersResponse>()
