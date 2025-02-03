@@ -20,7 +20,12 @@ import type {
 interface ParsedPopup {
     town: string
     nation: string
+    mayor?: string
     board?: string
+    founded?: string
+    //wealth?: string
+    councillors: string[]
+    residents: string[]
     flags: {
         pvp: string
         public: string
@@ -29,11 +34,6 @@ interface ParsedPopup {
         town?: string
         nation?: string
     }
-    mayor?: string
-    founded?: string
-    councillors: string[]
-    //wealth?: string
-    residents: string[]
 }
 
 // /**
@@ -270,8 +270,9 @@ export const parseNations = async(towns: SquaremapTown[]) => {
         //     raw[nationName].wealth += town.wealth
 
         // Current town is in existing nation
-        if (raw[nationName].name == nationName) 
+        if (raw[nationName].name == nationName) {
             raw[nationName].towns?.push(town.name)
+        }
 
         if (town.flags.capital) {
             if (town.wikis?.nation) raw[nationName].wiki = town.wikis.nation
@@ -317,19 +318,6 @@ export const parsePlayers = (players: SquaremapRawPlayer[]) => {
 
     return players.length > 0 ? players.map(p => editPlayerProps(p)) : []
 }
-
-//#region TESTING
-// import { endpoint, type SquaremapMapResponse } from 'src/main.js'
-
-// async function test() {
-//     const res = await endpoint.mapData<SquaremapMapResponse>('aurora')
-//     const markerset = res.find(x => x.id == "towny")
-
-//     await parseTowns(markerset)
-// }
-
-// test()
-//#endregion
 
 //#region OLD STUFF
 // export const parsePopup = (popup: string): ParsedPopup => {
