@@ -49,7 +49,7 @@ class GPS extends Emitter<GPSEvents> {
         this.#map = map
     }
 
-    playerIsOnline = (player: SquaremapPlayer) => {
+    playerIsOnline(player: SquaremapPlayer) {
         if (!player.online) this.emit('error', { 
             err: "INVALID_PLAYER", 
             msg: "Player is offline or does not exist!" 
@@ -58,11 +58,11 @@ class GPS extends Emitter<GPSEvents> {
         return player.online
     }
 
-    readonly track = async(playerName: string, interval = 3000, route = Routes.FASTEST) => {
+    async track(playerName: string, interval = 3000, route = Routes.FASTEST) {
         setInterval(async () => {
             const player: SquaremapPlayer = await this.map.Players.get(playerName).catch(e => {
                 this.emit('error', { err: "FETCH_ERROR", msg: e.message })
-                return null
+                return null 
             })
 
             if (!player) return
@@ -110,10 +110,15 @@ class GPS extends Emitter<GPSEvents> {
         return this
     }
 
-    readonly safestRoute = (loc: Point2D) => this.findRoute(loc, Routes.SAFEST)
-    readonly fastestRoute = (loc: Point2D) => this.findRoute(loc, Routes.FASTEST)
+    async safestRoute(loc: Point2D) {
+        return this.findRoute(loc, Routes.SAFEST)
+    }
 
-    readonly findRoute = async(loc: Point2D, options: Route = Routes.SAFEST) => {
+    async fastestRoute(loc: Point2D) {
+        return this.findRoute(loc, Routes.FASTEST)
+    }
+
+    async findRoute(loc: Point2D, options: Route = Routes.SAFEST) {
         if (strictFalsy(loc.x) || strictFalsy(loc.z)) {
             const obj = JSON.stringify(loc)
             throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)

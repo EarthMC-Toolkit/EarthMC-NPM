@@ -3,7 +3,8 @@ import type {
     HexString,
     Opacity,
     Prettify,
-    StrictPoint2D
+    StrictPoint2D,
+    Location
 } from '../types/index.js'
 
 export interface SquaremapPlayersResponse {
@@ -11,11 +12,11 @@ export interface SquaremapPlayersResponse {
     players: SquaremapRawPlayer[]
 }
 
-export type SquaremapRawPlayer = Prettify<Point2D & {
+export type SquaremapRawPlayer = Prettify<Location & {
     uuid: string
     name: string
     display_name: string
-    world: string
+    world: "minecraft_overworld" | "minecraft_nether" | "-some-other-bogus-world-"
     yaw: string | number
 }>
 

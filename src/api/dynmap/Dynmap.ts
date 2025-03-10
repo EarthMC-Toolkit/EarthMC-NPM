@@ -16,7 +16,7 @@ import {
     editPlayerProps
 } from '../../utils/functions.js'
 
-import { withinBounds, withinTown } from '../common.js'
+import { checkWithinBounds, checkWithinTown } from '../common.js'
 
 class Dynmap extends DataHandler {
     //#region Data classes
@@ -48,11 +48,11 @@ class Dynmap extends DataHandler {
 
     readonly withinTown = async (location: Point2D) => {
         const towns = await this.Towns.all()
-        return withinTown(location, towns)
+        return checkWithinTown(location, towns)
     }
 
     readonly isWilderness = async(location: Point2D) => !(await this.withinTown(location))
-    readonly withinBounds = (location: Point2D, bounds: TownBounds) => withinBounds(location, bounds)
+    readonly withinBounds = (location: Point2D, bounds: TownBounds) => checkWithinBounds(location, bounds)
 
     readonly onlinePlayerData = async() => {
         const pData = await this.playerData<PlayersResponse>()

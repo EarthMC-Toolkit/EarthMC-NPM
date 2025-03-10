@@ -33,6 +33,7 @@ export function formatString(str: string, removeAccents = false) {
     return removeAccents ? removeDiacritics(str) : str
 }
 
+//#region Dynmap Specific
 export function editPlayerProps(props: RawPlayer[]) {
     if (!props) throw new ReferenceError("Can't edit player props! The parameter is null or undefined.")
 
@@ -49,6 +50,7 @@ export const editPlayerProp = (player: RawPlayer): OnlinePlayer => ({
     underground: player.world != 'earth',
     world: player.world
 })
+//#endregion
 
 export const roundToNearest16 = (num: number) => Math.round(num / 16) * 16
 

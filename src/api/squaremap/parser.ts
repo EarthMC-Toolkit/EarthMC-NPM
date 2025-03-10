@@ -308,7 +308,7 @@ const editPlayerProps = (player: SquaremapRawPlayer): SquaremapOnlinePlayer => (
     x: player.x,
     z: player.z,
     yaw: player.yaw,
-    underground: player.world != 'earth',
+    underground: player.world != 'minecraft_overworld',
     world: player.world
 })
 
