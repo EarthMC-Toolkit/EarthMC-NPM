@@ -29,7 +29,7 @@ describe('[Squaremap/Aurora] Residents', () => {
 
         expect(res.name).toBe("3meraldK")
         expect(res.rank).toBe("Mayor")
-        expect(res.nation).toBe("Venice")
+        expect(res.nation).toBe("Poland")
 
         //console.log(res)
     })
