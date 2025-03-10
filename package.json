@@ -44,7 +44,7 @@
     "mojang-lib": "^1.13.2",
     "striptags": "latest",
     "tslib": "^2.6.2",
-    "undici": "5.28.4"
+    "undici": "5.28.5"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.4",
