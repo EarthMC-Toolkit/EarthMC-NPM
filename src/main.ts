@@ -24,7 +24,7 @@ export async function fetchServer(name = "play.earthmc.net") {
 export async function getServerInfo(aurora?: { numOnline: number }) {
     try {
         const serverData = await fetchServer()
-        const online = serverData.players.online
+        const online = serverData.players.online // Online across the whole server.
 
         let auroraNumOnline = aurora?.numOnline
         if (!auroraNumOnline) {
@@ -34,9 +34,14 @@ export async function getServerInfo(aurora?: { numOnline: number }) {
         }
 
         const auroraCount = auroraNumOnline < 1 ? 0 : auroraNumOnline 
-        const queue = online < 1 ? 0 : online - auroraCount
 
-        return { queue, ...serverData }
+        return { 
+            ...serverData,
+            aurora: {
+                online: auroraCount,
+                invisible: online < 1 ? 0 : online - auroraCount
+            }
+        }
     } catch (err: unknown) {
         throw new FetchError(`Error fetching server info!\n${err}`)
     }

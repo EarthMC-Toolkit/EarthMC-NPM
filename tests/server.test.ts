@@ -8,8 +8,9 @@ test("can get server info (providing num online in each map)", async () => {
     expect(serverInfo.isOnline).toBeDefined()
     expect(serverInfo.isOnline).toBeTypeOf("boolean")
 
-    expect(serverInfo.queue).toBeDefined()
-    expect(serverInfo.queue).not.toBeLessThan(0)
+    expect(serverInfo.aurora).toBeDefined()
+    expect(serverInfo.aurora.online).not.toBeLessThan(0)
+    expect(serverInfo.aurora.invisible).not.toBeLessThan(0)
     
     expect(serverInfo.players).toBeDefined()
     expect(serverInfo.players.max).toBeDefined()
