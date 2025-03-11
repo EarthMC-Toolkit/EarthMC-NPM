@@ -7,6 +7,8 @@ import Squaremap from './api/squaremap/Squaremap.js'
 import MCAPI from "mojang-lib"
 import { OAPIV3 } from './OAPI.js'
 
+import type { SquaremapPlayersResponse } from './types/index.js'
+
 export async function fetchServer(name = "play.earthmc.net") {
     const server = await MCAPI.servers.get(name)
 
@@ -19,12 +21,15 @@ export async function fetchServer(name = "play.earthmc.net") {
     }
 }
 
-export async function getServerInfo(aurora: { numOnline: number }) {
+export async function getServerInfo() {
     try {
         const serverData = await fetchServer()
         const online = serverData.players.online
 
-        const auroraCount = aurora.numOnline < 1 ? 0 : aurora.numOnline 
+        const auroraPlayersRes: SquaremapPlayersResponse = await endpoint.playerData("aurora") 
+        const auroraOpsAmt = auroraPlayersRes.players.length
+
+        const auroraCount = auroraOpsAmt < 1 ? 0 : auroraOpsAmt 
         const queue = online < 1 ? 0 : online - auroraCount
 
         return { queue, ...serverData }
