@@ -6,7 +6,10 @@ test("can get server info (providing num online in each map)", async () => {
     expect(serverInfo).toBeTruthy()
 
     expect(serverInfo.isOnline).toBeDefined()
+    expect(serverInfo.isOnline).toBeTypeOf("boolean")
+
     expect(serverInfo.queue).toBeDefined()
+    expect(serverInfo.queue).not.toBeLessThan(0)
     
     expect(serverInfo.players).toBeDefined()
     expect(serverInfo.players.max).toBeDefined()
