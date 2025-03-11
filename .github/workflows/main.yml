@@ -17,5 +17,15 @@ jobs:
           node-version: ">=20"
 
       - run: bun install --frozen-lockfile
-      - run: bun run ci
+
+      - name: "Lint"
+        run: bun run lint
+
+      - name: "Test"
+        run: bun run test
+
+      - name: "Build"
+        run: |
+          rimraf dist
+          bun run build
     
