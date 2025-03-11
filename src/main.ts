@@ -21,15 +21,19 @@ export async function fetchServer(name = "play.earthmc.net") {
     }
 }
 
-export async function getServerInfo() {
+export async function getServerInfo(aurora?: { numOnline: number }) {
     try {
         const serverData = await fetchServer()
         const online = serverData.players.online
 
-        const auroraPlayersRes: SquaremapPlayersResponse = await endpoint.playerData("aurora") 
-        const auroraOpsAmt = auroraPlayersRes.players.length
+        let auroraNumOnline = aurora?.numOnline
+        if (!auroraNumOnline) {
+            // Not supplying own aurora count, gather it.
+            const auroraPlayersRes: SquaremapPlayersResponse = await endpoint.playerData("aurora") 
+            auroraNumOnline = auroraPlayersRes.players.length
+        }
 
-        const auroraCount = auroraOpsAmt < 1 ? 0 : auroraOpsAmt 
+        const auroraCount = auroraNumOnline < 1 ? 0 : auroraNumOnline 
         const queue = online < 1 ? 0 : online - auroraCount
 
         return { queue, ...serverData }
