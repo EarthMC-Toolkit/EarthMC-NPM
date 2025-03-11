@@ -26,6 +26,6 @@ jobs:
 
       - name: "Build"
         run: |
-          rimraf dist
+          bun run clean
           bun run build
     
