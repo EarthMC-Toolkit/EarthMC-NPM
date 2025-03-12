@@ -50,8 +50,8 @@ class Towns implements EntityApi<Town | NotFoundError> {
     }
 
     readonly all = async(removeAccents = false) => {
-        let cachedTowns = this.map.getFromCache('towns')
-        if (cachedTowns) return cachedTowns as Town[]
+        let cachedTowns: Town[] = this.map.getFromCache('towns')
+        if (cachedTowns) return cachedTowns
 
         const markerset = await this.map.markerset()
         if (!markerset?.areas) {
@@ -123,8 +123,9 @@ class Towns implements EntityApi<Town | NotFoundError> {
                 }
             }
 
-            if (wikiPage)
+            if (wikiPage) {
                 currentTown['wiki'] = wikiPage
+            }
 
             townsArray.push(currentTown)
         }
@@ -151,7 +152,7 @@ class Towns implements EntityApi<Town | NotFoundError> {
             //this.map.unrefIfNode()
         }
 
-        return cachedTowns as Town[]
+        return cachedTowns
     }
 
     readonly nearby = async (location: StrictPoint2D, radius: StrictPoint2D, towns?: Town[]) => 

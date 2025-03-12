@@ -7,7 +7,7 @@ import type { EntityApi } from '../../helpers/EntityApi.js'
 
 import { 
     FetchError,
-    type NotFoundError 
+    NotFoundError 
 } from "../../utils/errors.js"
 
 import { 
@@ -103,12 +103,11 @@ class Nations implements EntityApi<Nation | NotFoundError> {
         getNearest<Nation>(location, radius, nations, this.all)
 
     readonly joinable = async (townName: string, nationless = true) => {
-        let town: Town = null
-        try {
-            town = await this.map.Towns.get(townName) as Town
-        } catch (_) {
-            throw new FetchError(`Specified town '${townName}' does not exist!`)
-        }
+        const town = await this.map.Towns.get(townName)
+            .then(obj => obj instanceof NotFoundError ? null : obj as Town)
+            .catch(() => {
+                throw new FetchError('Error fetching town ${}! Please try again.')
+            })
 
         const nations = await this.all(this.map.getFromCache('towns'))
         if (!nations) throw new FetchError('Error fetching nations! Please try again.')

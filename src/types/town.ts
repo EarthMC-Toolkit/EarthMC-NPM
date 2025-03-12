@@ -1,3 +1,4 @@
+import type { StrictPoint2D } from "./index.js"
 import type { HexString, Opacity, Prettify } from "./util.js"
 
 export interface BaseTown {
@@ -17,14 +18,14 @@ export interface BaseTown {
         fill: Opacity
         outline: Opacity
     },
-    balance?: number
-    timestamps?: {
-        joinedNation?: number
-        founded: number
-    }
-    founder?: string
-    trusted?: string[]
-    outlaws?: string[]
+    // balance?: number
+    // timestamps?: {
+    //     joinedNation?: number
+    //     founded: number
+    // }
+    // founder?: string
+    // trusted?: string[]
+    // outlaws?: string[]
 }
 
 export type SquaremapTown = Prettify<BaseTown & {
@@ -41,10 +42,7 @@ export type SquaremapTown = Prettify<BaseTown & {
         public: boolean
         capital: boolean
     }
-    points: {
-        x: number
-        z: number
-    }[]
+    points: StrictPoint2D[]
 }>
 
 export type Town = Prettify<BaseTown & {
