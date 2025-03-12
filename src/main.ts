@@ -9,7 +9,9 @@ import { OAPIV3 } from './OAPI.js'
 
 import type { SquaremapPlayersResponse } from './types/index.js'
 
-export async function fetchServer(name = "play.earthmc.net") {
+export type ServerName = `${string}.earthmc.net`
+
+export async function fetchServer(name: ServerName = "play.earthmc.net") {
     const server = await MCAPI.servers.get(name)
 
     return {
