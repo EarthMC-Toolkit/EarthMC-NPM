@@ -35,17 +35,42 @@ export type StrictPoint2D = {
     z: number
 }
 
-export type RouteInfo = {
-    distance: number
-    direction: "north" | "east" | "south" | "west"
-    nation?: {
+//#region Direction
+export type CardinalDirectionShort = "N" | "E" | "W" | "S" | "NE" | "NW" | "SE" | "SW"
+
+// Order of arrays matter, do not change.
+export const BASE_DIRECTIONS = [
+    'North', 'East', 'South', 'West'
+] as const
+
+export const DIRECTIONS = [
+    'North', 'North-East', 'East', 'South-East', 
+    'South', 'South-West', 'West', 'North-West'
+] as const
+
+export type BaseCardinalDirection = typeof BASE_DIRECTIONS[number]
+export type CardinalDirection = typeof DIRECTIONS[number]
+//#endregion
+
+export type TravelTimes = {
+    sneaking: number
+    walking: number
+    sprinting: number
+    swimming: number
+}
+
+export type RouteInfoNation = {
+    name: string
+    capital: {
         name: string
-        capital: {
-            name: string
-            x: number
-            z: number
-        }
+        x: number
+        z: number
     }
 }
 
-export type CardinalDirection = "N" | "E" | "W" | "S" | "NE" | "NW" | "SE" | "SW"
+export type RouteInfo = {
+    distance: number
+    direction: CardinalDirection
+    travelTimes: TravelTimes
+    nation?: RouteInfoNation
+}

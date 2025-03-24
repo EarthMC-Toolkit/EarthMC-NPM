@@ -166,7 +166,7 @@ class GPS extends Emitter<GPSEvents> {
         }, { distance: null, nation: null })
 
         const direction = GPS.cardinalDirection(nation.capital, loc)
-        return { nation, distance, direction } as RouteInfo
+        return { nation, distance, direction }
     }
 
     /**

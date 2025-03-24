@@ -2,7 +2,13 @@ import { Routes } from '../../types/index.js'
 import type { 
     Route, RouteInfo,
     Point2D, SquaremapNation, SquaremapPlayer,
-    StrictPoint2D
+    StrictPoint2D,
+    CardinalDirection
+} from '../../types/index.js'
+
+import { 
+    DIRECTIONS,
+    BASE_DIRECTIONS
 } from '../../types/index.js'
 
 import Emitter from '../../helpers/EventEmitter.js'
@@ -21,6 +27,13 @@ type GPSEvents = {
     }
     locationUpdate: RouteInfo
 }
+
+//#region Speed of different actions (blocks per sec)
+const SNEAK_SPEED = 0.3
+const WALK_SPEED = 0.1
+const SPRINT_SPEED = 0.5
+const SWIM_SPEED = 0.6
+//#endregion
 
 class GPS extends Emitter<GPSEvents> {
     #map: Squaremap
@@ -174,30 +187,43 @@ class GPS extends Emitter<GPSEvents> {
         }, { distance: null, nation: null })
 
         const direction = GPS.cardinalDirection(nation.capital, loc)
-        return { nation, distance, direction } as RouteInfo
+        const travelTimes = GPS.calcTravelTimes(distance)
+
+        return { nation, distance, direction, travelTimes } as RouteInfo
     }
 
     /**
      * Determines the direction to the destination from the origin.
      * 
-     * Only one of the main four directions (N, S, W, E) can be returned, no intermediates.
+     * By default, all 8 directions are allowed, including intermediates such as `North-East`.
+     * To turn this off and only allow the 4 basic cardinal directions (`North`, `East`, `South`, `West`),
+     * you must pass `false` as the `allowIntermediates` argument.
      * @param origin The location where something is currently at.
      * @param destination The location we wish to arrive at.
      */
-    static cardinalDirection(origin: Point2D, destination: Point2D) {
-        // Calculate the differences in x and z coordinates
-        const deltaX = safeParseInt(origin.x) - safeParseInt(destination.x)
-        const deltaZ = safeParseInt(origin.z) - safeParseInt(destination.z)
+    static cardinalDirection(origin: Point2D, destination: Point2D, allowIntermediates = true): CardinalDirection {
+        // Calculate the differences in x and z coordinates.
+        const deltaX = safeParseInt(destination.x) - safeParseInt(origin.x)
+        const deltaZ = safeParseInt(destination.z) - safeParseInt(origin.z)
 
-        // Calculates radians with atan2, then converted to degrees.
+        // Calc angle of the point in rads, convert to degrees.
         const angle = Math.atan2(deltaZ, deltaX) * 180 / Math.PI
- 
-        // Determine the cardinal direction
-        if (angle >= -45 && angle < 45) return "east"
-        if (angle >= 45 && angle < 135) return "north"
-        if (angle >= 135 || angle < -135) return "west"
+        const normalized = (angle + 90 + 360) % 360 // Normalize from [-180, 180] to [0, 360].
 
-        return "south"
+        // To get the correct direction from the array, we calculate the index
+        // by dividing the angle by 45 and mod by amt of directions.
+        return allowIntermediates ? 
+            DIRECTIONS[Math.round(normalized / 45) % 8] :
+            BASE_DIRECTIONS[Math.round(normalized / 90) % 4]
+    }
+
+    static calcTravelTimes(distance: number) {
+        return {
+            sneaking: Math.trunc(distance / SNEAK_SPEED),
+            walking: Math.trunc(distance / WALK_SPEED),
+            sprinting: Math.trunc(distance / SPRINT_SPEED),
+            swimming: Math.trunc(distance / SWIM_SPEED)
+        }
     }
 }
 
