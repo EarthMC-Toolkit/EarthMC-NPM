@@ -3,7 +3,8 @@ import type {
     Route, RouteInfo,
     Point2D, SquaremapNation, SquaremapPlayer,
     StrictPoint2D,
-    CardinalDirection
+    CardinalDirection,
+    TravelTimes
 } from '../../types/index.js'
 
 import { 
@@ -29,10 +30,10 @@ type GPSEvents = {
 }
 
 //#region Speed of different actions (blocks per sec)
-const SNEAK_SPEED = 0.3
-const WALK_SPEED = 0.1
-const SPRINT_SPEED = 0.5
-const SWIM_SPEED = 0.6
+const SNEAK_SPEED = 1.295
+const WALK_SPEED = 4.317
+const SPRINT_SPEED = 5.612
+const BOAT_SPEED = 8.0
 //#endregion
 
 class GPS extends Emitter<GPSEvents> {
@@ -217,12 +218,22 @@ class GPS extends Emitter<GPSEvents> {
             BASE_DIRECTIONS[Math.round(normalized / 90) % 4]
     }
 
-    static calcTravelTimes(distance: number) {
-        return {
-            sneaking: Math.trunc(distance / SNEAK_SPEED),
-            walking: Math.trunc(distance / WALK_SPEED),
-            sprinting: Math.trunc(distance / SPRINT_SPEED),
-            swimming: Math.trunc(distance / SWIM_SPEED)
+    /**
+     * Calculates the travel times (sec) for sneaking, walking, sprinting, and boating. Any decimals are truncated.\
+     * If the input distance is negative, all of the times will be 0.
+     * @param distance The amount of blocks to travel.
+     */
+    static calcTravelTimes(distance: number): TravelTimes {
+        return distance > 0 ? {
+            sneaking: ~~(distance / SNEAK_SPEED),
+            walking: ~~(distance / WALK_SPEED),
+            sprinting: ~~(distance / SPRINT_SPEED),
+            boat: ~~(distance / BOAT_SPEED)
+        } : {
+            sneaking: 0,
+            walking: 0,
+            sprinting: 0,
+            boat: 0
         }
     }
 }

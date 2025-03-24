@@ -35,7 +35,7 @@ describe('[Squaremap/Aurora] GPS', () => {
         expect(dir).toBe("West")
     })
 
-    it('can return the correct cardinal direction (with intermediates)', async () => {
+    it('can return the correct cardinal direction (with intermediates)', () => {
         const sampleOrigin = { x: 0, z: 0 }
 
         let dir = GPS.cardinalDirection(sampleOrigin, { x: 0, z: -15000 }) // Arctic
@@ -61,6 +61,21 @@ describe('[Squaremap/Aurora] GPS', () => {
 
         dir = GPS.cardinalDirection(sampleOrigin, { x: 15000, z: 15000 })
         expect(dir).toBe("South-East")
+    })
+
+    it('can return valid travel times given a distance', () => {
+        const times = GPS.calcTravelTimes(5000)
+        expect(times).toBeDefined()
+
+        expect(times.sneaking).toBeTypeOf('number')
+        expect(times.walking).toBeTypeOf('number')
+        expect(times.sprinting).toBeTypeOf('number')
+        expect(times.boat).toBeTypeOf('number')
+
+        expect(times.sneaking).toBeGreaterThanOrEqual(0)
+        expect(times.walking).toBeGreaterThanOrEqual(0)
+        expect(times.sprinting).toBeGreaterThanOrEqual(0)
+        expect(times.boat).toBeGreaterThanOrEqual(0)
     })
 
     // it('can check player is online when emitting', async () => {

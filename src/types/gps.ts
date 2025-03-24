@@ -56,7 +56,7 @@ export type TravelTimes = {
     sneaking: number
     walking: number
     sprinting: number
-    swimming: number
+    boat: number
 }
 
 export type RouteInfoNation = {
