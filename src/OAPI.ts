@@ -7,22 +7,26 @@ import type {
     RawPlayerV3, RawTownV3, RawNationV3
 } from './types/index.js'
 
-import { oapiData } from './utils/endpoint.js'
+import { oapiDataV3 } from './utils/endpoint.js'
 
 export class OAPIV3 {
-    static get = <TBody>(endpoint: string, body?: RequestBodyV3<TBody>) => oapiData(endpoint, 'v3', body)
+    static get = <TBody>(endpoint: string, body?: RequestBodyV3<TBody>) => oapiDataV3(endpoint, body)
 
     // Instead of it's own endpoint, server info lives at the base URL.
     static serverInfo = (): Promise<RawServerInfoV3> => this.get('')
-    static location = (...objs: [number, number][]): Promise<RawLocationResponseV3> => this.get('/location', { query: objs })
-    static discord = (...objs: DiscordReqObjectV3[]): Promise<DiscordResObjectV3[]> => this.get('/discord', { query: objs })
+    
+    static location = (...objs: [number, number][]): Promise<RawLocationResponseV3> => 
+        this.get('/location', { query: objs })
+    
+    static discord = (...objs: DiscordReqObjectV3[]): Promise<DiscordResObjectV3[]> => 
+        this.get('/discord', { query: objs })
 
     /**
      * Same as .discord() but passes only `discord` type for all, returning Minecraft UUIDs.
      * @param ids Discord ID string(s).
      */
     static uuidFromDiscord = async(...ids: string[]) => {
-        const objs = ids.map(id => ({ type: 'discord', target: id }) as DiscordReqObjectV3)
+        const objs = ids.map(id => ({ type: 'discord', target: id }) satisfies DiscordReqObjectV3)
         const res = await this.discord(...objs)
 
         return res.map(r => r.uuid)
@@ -33,7 +37,7 @@ export class OAPIV3 {
      * @param ids Minecraft UUID string(s).
      */
     static discordFromUUID = async(...uuids: string[]) => {
-        const objs = uuids.map(uuid => ({ type: 'minecraft', target: uuid }) as DiscordReqObjectV3)
+        const objs = uuids.map(uuid => ({ type: 'minecraft', target: uuid }) satisfies DiscordReqObjectV3)
         const res = await this.discord(...objs)
         
         return res.map(r => r.id)

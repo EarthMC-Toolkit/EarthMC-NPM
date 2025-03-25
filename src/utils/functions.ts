@@ -129,19 +129,6 @@ export const euclidean = (x1: number, z1: number, x2: number, z2: number) =>
 // Used as alternative to `!` as it considers 0 to be falsy.
 export const strictFalsy = (val: any) => val === undefined || val === null
 
-export const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-export function genRandomString(maxAmount = 20) {
-    let token = ''
-    const len = validChars.length
-
-    for (let i = 0; i < maxAmount; i++) {
-        const randomIndex = Math.floor(Math.random() * len)
-        token += validChars.charAt(randomIndex)
-    }
-  
-    return token
-}
-
 export const isInvitable = (town: BaseTown, nation: BaseNation, range: number, belonging: boolean) => {
     const val = sqr(town, nation.capital, range) && town.nation != nation.name
     return belonging ? val : val && town.nation == "No Nation"

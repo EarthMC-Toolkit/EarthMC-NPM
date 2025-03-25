@@ -3,9 +3,7 @@ import endpoints from '../endpoints.json'
 import { request, type Dispatcher } from "undici"
 import type { AnyMap, RequestBodyV3 } from "../types/index.js"
 
-import { genRandomString } from './functions.js'
-
-export type EndpointVersion = 'v2' | 'v3'
+export type EndpointVersion = 'v3'
 export type ReqOptions = { dispatcher?: Dispatcher } 
     & Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> 
     & Partial<Pick<Dispatcher.RequestOptions, 'method'>>
@@ -68,22 +66,19 @@ export const mapData = async <T>(mapName: AnyMap): Promise<T> => {
 }
 
 /**
- * Gets info from a given Official API endpoint.
+ * Gets info from a given Official API endpoint.\
+ * If `endpoint` is an empty string or not provided, it will get the base `v3/aurora` endpoint.
  * @param endpoint The endpoint not including the domain, e.g: "lists/nations"
  */
-export const oapiData = async <TBody>(
+export const oapiDataV3 = async <TBody>(
     endpoint = '',
-    version: EndpointVersion = 'v3', 
     body?: RequestBodyV3<TBody>
 ) => {
     // if (endpoint.startsWith("/")) {
     //     endpoint.replace("/", "")
     // }
-
-    if (version == "v2") {
-        const url = getEndpointUrl("towny", "v2/aurora")
-        return asJSON(`${url}${endpoint}?${genRandomString()}`)
-    }
+    
+    if (!endpoint) endpoint = ''
 
     const url = getEndpointUrl("towny", "v3/aurora")
     return body ? asJSON(`${url}${endpoint}`, {
