@@ -1,7 +1,6 @@
 import * as fn from '../../utils/functions.js'
 
 import type Dynmap from "./Dynmap.js"
-//import OfficialAPI from "../OAPI.js"
 
 import type { 
     Resident, Town 
@@ -31,12 +30,6 @@ class Residents implements EntityApi<Resident | NotFoundError> {
 
         return await this.get(...town.residents)
     }
-    
-    /** @internal */
-    // private mergeIfAurora = async (res: Resident) => this.map.name === 'aurora' ? { 
-    //     ...await OfficialAPI.resident(res.name), 
-    //     ...res 
-    // } : res
 
     readonly get = async(...names: string[]) => {
         const residents = await this.all()

@@ -35,12 +35,6 @@ class Towns implements EntityApi<Town | NotFoundError> {
         return await this.get(...nation.towns)
     }
 
-    /** @internal */
-    // private mergeIfAurora = async (town: any) => this.map.name === 'aurora' ? { 
-    //     ...await OfficialAPI.town(town.name),
-    //     ...town
-    // } : town
-
     readonly get = async(...townList: string[]) => {
         const towns = await this.all()
         if (!towns) throw new FetchError('Error fetching towns! Please try again.')

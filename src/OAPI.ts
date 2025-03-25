@@ -7,14 +7,10 @@ import type {
     RawPlayerV3, RawTownV3, RawNationV3
 } from './types/index.js'
 
-import { townyData } from './utils/endpoint.js'
-//import { FetchError } from './utils/errors.js'
-
-// const ParamErr = () => new SyntaxError(`Parameter 'name' is invalid. Must be of type string!`)
-// const FetchErr = (type: string, name: string) => new FetchError(`Could not fetch ${type} '${name}'. Invalid response received!`)
+import { oapiData } from './utils/endpoint.js'
 
 export class OAPIV3 {
-    static get = <T>(endpoint: string, body?: RequestBodyV3<T>) => townyData(endpoint, 'v3', body)
+    static get = <TBody>(endpoint: string, body?: RequestBodyV3<TBody>) => oapiData(endpoint, 'v3', body)
 
     // Instead of it's own endpoint, server info lives at the base URL.
     static serverInfo = (): Promise<RawServerInfoV3> => this.get('')
@@ -55,112 +51,6 @@ export class OAPIV3 {
     static nations = (...ids: string[]): Promise<RawNationV3[]> => this.get(`/nations`, { query: ids })
     static nationList = (): Promise<RawEntityV3[]> => this.get('/nations')
 }
-
-// export class OAPIV2 {
-//     static #parseResident = (res: RawResident) => {
-//         const obj = {} as OAPIResident
-        
-//         if (res.status)
-//             obj.status = res.status
-    
-//         if (res.stats?.balance) 
-//             obj.balance = res.stats.balance
-    
-//         if (res.timestamps) 
-//             obj.timestamps = res.timestamps
-    
-//         if (res.name) obj.name = res.name
-//         if (res.uuid) obj.uuid = res.uuid
-//         if (res.title) obj.title = res.title
-//         if (res.surname) obj.surname = res.surname
-    
-//         if (res?.town) obj.town = res.town
-//         if (res?.nation) obj.nation = res.nation
-    
-//         if (res.ranks?.townRanks) obj.townRanks = res.ranks.townRanks
-//         if (res.ranks?.nationRanks) obj.nationRanks = res.ranks.nationRanks
-    
-//         if (res.perms) {
-//             const perms = res.perms
-//             const rnaoPerms = perms.rnaoPerms
-    
-//             obj.perms = {
-//                 build: rnaoPerms.buildPerms,
-//                 destroy: rnaoPerms.destroyPerms,
-//                 switch: rnaoPerms.switchPerms,
-//                 itemUse: rnaoPerms.itemUsePerms,
-//                 flags: perms.flagPerms
-//             }
-//         }
-    
-//         if (res.friends) 
-//             obj.friends = res.friends
-    
-//         return obj
-//     }
-    
-//     static #parseTown = (town: RawTown) => {
-//         const rnao = town.perms.rnaoPerms
-//         const obj: any = {
-//             ...town,
-//             created: town.timestamps?.registered,
-//             joinedNation: town.timestamps?.joinedNationAt,
-//             perms: {
-//                 build: rnao.buildPerms,
-//                 destroy: rnao.destroyPerms,
-//                 switch: rnao.switchPerms,
-//                 itemUse: rnao.itemUsePerms,
-//                 flags: town.perms.flagPerms
-//             }
-//         }
-    
-//         delete obj.timestamps
-//         delete obj.perms.rnaoPerms
-//         delete obj.perms.flagPerms
-
-//         return obj as OAPITown
-//     }
-    
-//     static #parseNation = (nation: RawNation) => {
-//         const obj: any = {
-//             ...nation,
-//             created: nation.timestamps.registered
-//         }
-    
-//         delete obj.timestamps
-
-//         return obj as OAPINation
-//     }
-
-//     static serverInfo = (): Promise<RawServerInfoV2> => townyData('', 'v2')
-
-//     static resident = async(name: string) => {
-//         if (!name) throw ParamErr()
-
-//         const res = await townyData(`/residents/${name}`, 'v2') as RawResident
-//         if (!res) throw FetchErr('resident', name)
-
-//         return this.#parseResident(res)
-//     }
-
-//     static town = async(name: string) => {
-//         if (!name) throw ParamErr()
-
-//         const town = await townyData(`/towns/${name}`, 'v2') as RawTown
-//         if (!town) throw FetchErr('town', name)
-
-//         return this.#parseTown(town)
-//     }
-
-//     static nation = async(name: string) => {
-//         if (!name) throw ParamErr()
-
-//         const nation = await townyData(`/nations/${name}`, 'v2') as RawNation
-//         if (!nation) throw FetchErr('nation', name)
-
-//         return this.#parseNation(nation)
-//     }
-// }
 
 export {
     OAPIV3 as default

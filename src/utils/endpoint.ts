@@ -14,7 +14,7 @@ export type ReqOptions = { dispatcher?: Dispatcher }
  * @internal
  * Gets the appropriate endpoint from the given keys.
  */
-const get = (dataType: keyof typeof endpoints, map: string) => {
+export const getEndpointUrl = (dataType: keyof typeof endpoints, map: string) => {
     //@ts-ignore
     return (endpoints[dataType][map.toLowerCase()]) as string
 }
@@ -27,7 +27,7 @@ const get = (dataType: keyof typeof endpoints, map: string) => {
  * @param url - The full URL to send the request to.
  * @param retries - The amount of retries to attempt before erroring. Default is 3.
  */
-const asJSON = async (url: string, options: ReqOptions = null, retries = 3) => {
+export const asJSON = async (url: string, options: ReqOptions = null, retries = 3) => {
     const res = await request(url, options)
         .then(res => res.body?.json())
         .catch(async err => await retry(err, url, retries))
@@ -38,8 +38,8 @@ const asJSON = async (url: string, options: ReqOptions = null, retries = 3) => {
 const retry = (val: any, url: string, amt: number): any => amt === 1 ? val : asJSON(url, null, amt - 1)
 
 let archiveTs = 0
-const useArchive = (ts: number) => archiveTs = ts
-const getArchive = async (url: string, unixTs = Date.now()) => {
+export const useArchive = (ts: number) => archiveTs = ts
+export const getArchive = async (url: string, unixTs = Date.now()) => {
     const formattedTs = new Date(unixTs * 1000)
         .toISOString()
         .replace(/[^0-9]/g, '')
@@ -48,45 +48,46 @@ const getArchive = async (url: string, unixTs = Date.now()) => {
     return await asJSON(`https://web.archive.org/web/${formattedTs}id_/${decodeURIComponent(url)}`)
 }
 
-const configData = async <T>(mapName: AnyMap): Promise<T> => asJSON(get("config", mapName)) as T
-const playerData = async <T>(mapName: AnyMap): Promise<T> => {
-    const url = mapName.toLowerCase() == 'aurora' ? get('squaremap', 'players') : get("players", mapName)
+export const configData = async <T>(mapName: AnyMap): Promise<T> => 
+    asJSON(getEndpointUrl("config", mapName))
+
+export const playerData = async <T>(mapName: AnyMap): Promise<T> => {
+    const url = mapName.toLowerCase() == 'aurora' 
+        ? getEndpointUrl('squaremap', 'players') 
+        : getEndpointUrl("players", mapName)
+
     return asJSON(url)
 }
 
-const mapData = async <T>(mapName: AnyMap): Promise<T> => {
-    const url = mapName.toLowerCase() == 'aurora' ? get('squaremap', 'map') : get("map", mapName)
+export const mapData = async <T>(mapName: AnyMap): Promise<T> => {
+    const url = mapName.toLowerCase() == 'aurora' 
+        ? getEndpointUrl('squaremap', 'map') 
+        : getEndpointUrl("map", mapName)
+
     return !archiveTs ? asJSON(url) : getArchive(url, archiveTs)
 }
 
 /**
  * Gets info from a given Official API endpoint.
- * 
- * By "towny" we are referring to the data that we receive (balance, registration date etc).
  * @param endpoint The endpoint not including the domain, e.g: "lists/nations"
  */
-const townyData = async <T>(endpoint = '', version: EndpointVersion = 'v3', body?: RequestBodyV3<T>) => {
+export const oapiData = async <TBody>(
+    endpoint = '',
+    version: EndpointVersion = 'v3', 
+    body?: RequestBodyV3<TBody>
+) => {
     // if (endpoint.startsWith("/")) {
     //     endpoint.replace("/", "")
     // }
 
     if (version == "v2") {
-        const url = get("towny", "v2/aurora")
-        return asJSON(`${url}${endpoint}?${genRandomString()}`) as unknown
+        const url = getEndpointUrl("towny", "v2/aurora")
+        return asJSON(`${url}${endpoint}?${genRandomString()}`)
     }
 
-    const url = get("towny", "v3/aurora")
+    const url = getEndpointUrl("towny", "v3/aurora")
     return body ? asJSON(`${url}${endpoint}`, {
         method: "POST",
         body: JSON.stringify(body)
     }) : asJSON(`${url}${endpoint}`)
-}
-
-export {
-    get, asJSON, 
-    useArchive, getArchive, 
-    configData, 
-    playerData,
-    townyData,
-    mapData
 }

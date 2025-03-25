@@ -19,8 +19,6 @@ import {
     fastMergeUnique
 } from '../../utils/functions.js'
 
-//import OfficialAPI from '../OAPI.js'
-
 class Nations implements EntityApi<Nation | NotFoundError> {
     #map: Dynmap
     get map() { return this.#map }
@@ -28,12 +26,6 @@ class Nations implements EntityApi<Nation | NotFoundError> {
     constructor(map: Dynmap) {
         this.#map = map
     }
-
-    /** @internal */
-    // private mergeIfAurora = async (nation: any) => this.map.name === 'aurora' ? { 
-    //     ...await OfficialAPI.nation(nation.name),
-    //     ...nation
-    // } : nation
 
     readonly get = async(...nationList: string[]) => {
         const nations = await this.all()
