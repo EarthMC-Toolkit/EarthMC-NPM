@@ -16,6 +16,47 @@ import GPS from "./GPS.js"
 
 import { parsePlayers } from "./parser.js"
 import { checkWithinBounds, checkWithinTown } from "../common.js"
+import { safeParseInt } from "src/utils/functions.js"
+
+class SquaremapURLBuilder {
+    #url: URL = new URL(`https://map.earthmc.net/?mapname=flat`)
+
+    constructor(location?: Point2D, zoom?: number) {
+        if (location?.x) this.setX(location.x)
+        if (location?.z) this.setZ(location.z)
+        if (zoom) this.setZoom(zoom)
+    }
+
+    #setCoord(str: 'x' | 'z', val: number) {
+        return this.#url.searchParams.set(str, val.toString())
+    }
+
+    setX(num: number | string) {
+        this.#setCoord("x", safeParseInt(num))
+        return this
+    }
+
+    setZ(num: number | string) {
+        this.#setCoord("z", safeParseInt(num))
+        return this
+    }
+    
+    setZoom(zoom: number) {
+        if (zoom < 0) zoom = 0
+
+        this.#url.searchParams.set("zoom", zoom.toString())
+        return this
+    }
+
+    // Currently always overworld. This is here purely for future proofing.
+    setWorld(name = 'minecraft_overworld') {
+        this.#url.searchParams.set("world", name)
+        return this
+    }
+
+    get = () => this.#url
+    getAsString = () => this.#url.toString()
+}
 
 class Squaremap extends DataHandler {
     //#region Data classes
@@ -25,31 +66,7 @@ class Squaremap extends DataHandler {
     readonly Players: Players
     readonly GPS: GPS
 
-    URLBuilder = class {
-        #url: URL = new URL(`https://map.earthmc.net/?mapname=flat`)
-    
-        constructor(location?: Point2D) {
-            if (location?.x) this.#setCoord("x", Number(location.x))
-            if (location?.z) this.#setCoord("z", Number(location.z))
-        }
-    
-        #setCoord = (str: 'x' | 'z', val: number) => this.#url.searchParams.set(str, val.toString())
-    
-        setX = (num: number) => this.#setCoord("x", num)
-        setZ = (num: number) => this.#setCoord("z", num)
-    
-        setZoom(zoom: number) {
-            this.#url.searchParams.set("zoom", zoom.toString())
-        }
-    
-        // Currently always overworld. This is here purely for future proofing.
-        setWorld = (name = 'minecraft_overworld') => {
-            this.#url.searchParams.set("world", name)
-        }
-    
-        get = () => this.#url
-        getAsString = () => this.#url.toString()
-    }
+    URLBuilder = SquaremapURLBuilder
     //#endregion
 
     //#region Map-specific properties
