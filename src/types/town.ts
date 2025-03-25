@@ -17,21 +17,12 @@ export interface BaseTown {
     opacities?: {
         fill: Opacity
         outline: Opacity
-    },
-    // balance?: number
-    // timestamps?: {
-    //     joinedNation?: number
-    //     founded: number
-    // }
-    // founder?: string
-    // trusted?: string[]
-    // outlaws?: string[]
+    }
 }
 
 export type SquaremapTown = Prettify<BaseTown & {
     board?: string
     foundedTimestamp: number,
-    //wealth?: number
     councillors: string[]
     wikis?: {
         town?: string
