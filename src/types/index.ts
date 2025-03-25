@@ -1,4 +1,4 @@
-import type { Prettify, ValuesOf } from './util.js'
+import type { Prettify } from './util.js'
 
 export * from './gps.js'
 export * from './town.js'
@@ -12,15 +12,9 @@ export * from './squaremap.js'
 export * from './oapi.js'
 export * from './util.js'
 
-export const Maps = {
-    Squaremap: {
-        AURORA: 'aurora'
-    },
-    Dynmap: {
-        NOVA: 'nova'
-    }
-} as const
+export const SQUAREMAP_MAPS = ['aurora'] as const
+export const DYNMAP_MAPS = ['nova'] as const
 
-export type SquaremapMap = ValuesOf<typeof Maps.Squaremap>
-export type DynmapMap = ValuesOf<typeof Maps.Dynmap>
+export type SquaremapMap = typeof SQUAREMAP_MAPS[number]
+export type DynmapMap = typeof DYNMAP_MAPS[number]
 export type AnyMap = Prettify<SquaremapMap | DynmapMap>
