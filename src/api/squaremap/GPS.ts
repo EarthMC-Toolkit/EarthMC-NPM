@@ -182,7 +182,11 @@ class GPS extends Emitter<GPSEvents> {
                 distance: Math.round(dist), 
                 nation: {
                     name: nation.name,
-                    capital: nation.capital
+                    capital: {
+                        name: nation.capital.name,
+                        x: safeParseInt(nation.capital.x),
+                        z: safeParseInt(nation.capital.z)
+                    }
                 }
             }
         }, { distance: null, nation: null })
@@ -190,7 +194,7 @@ class GPS extends Emitter<GPSEvents> {
         const direction = GPS.cardinalDirection(nation.capital, loc)
         const travelTimes = GPS.calcTravelTimes(distance)
 
-        return { nation, distance, direction, travelTimes } as RouteInfo
+        return { nation, distance, direction, travelTimes } satisfies RouteInfo
     }
 
     /**

@@ -51,7 +51,7 @@ class Nations implements EntityApi<SquaremapNation | NotFoundError> {
         return nations.filter(n => {
             const joinable = sqr(n.capital, town, this.map.inviteRange)
             return nationless ? joinable && town.nation == "No Nation" : joinable
-        }) as SquaremapNation[]
+        }) satisfies SquaremapNation[]
     }
 }
 
