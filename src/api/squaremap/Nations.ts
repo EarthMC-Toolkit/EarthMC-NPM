@@ -25,7 +25,7 @@ class Nations implements EntityApi<SquaremapNation | NotFoundError> {
         return existing.length > 1 ? Promise.all(existing): Promise.resolve(existing[0])
     }
     
-    readonly all = async(towns?: SquaremapTown[]) => {
+    readonly all = async(towns?: SquaremapTown[]): Promise<SquaremapNation[]> => {
         if (!towns) {
             towns = await this.map.Towns.all()
             if (!towns) throw new Error('Error getting nations: Could not fetch towns.')

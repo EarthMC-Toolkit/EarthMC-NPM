@@ -132,7 +132,12 @@ class GPS extends Emitter<GPSEvents> {
         return this.findRoute(loc, Routes.FASTEST)
     }
 
-    async findRoute(loc: Point2D, options: Route = Routes.SAFEST) {
+    /**
+     * Gets the route to destination from the current location, including the closest nation.
+     * @param loc The coordinates of the destination.
+     * @param options Whether we should avoid PVP and/or public nations.
+     */
+    async findRoute(loc: Point2D, options: Route = Routes.SAFEST): Promise<RouteInfo> {
         if (strictFalsy(loc.x) || strictFalsy(loc.z)) {
             const obj = JSON.stringify(loc)
             throw new Error(`Cannot calculate route! One or more inputs are invalid:\n${obj}`)
@@ -140,7 +145,9 @@ class GPS extends Emitter<GPSEvents> {
 
         // Scan all nations for closest match.
         // Computationally more expensive to include PVP disabled nations.
-        const [towns, nations] = await Promise.all([this.map.Towns.all(), this.map.Nations.all()])
+        const towns = await this.map.Towns.all() // TODO: Throw if couldn't get towns
+        const nations = await this.map.Nations.all(towns) // TODO: Throw if couldn't get nations
+        
         const townsMap = new Map(towns.map(t => [t.name, t]))
 
         const len = nations.length
@@ -169,12 +176,11 @@ class GPS extends Emitter<GPSEvents> {
             filtered.push(nation)
         }
 
+        const [locX, locZ] = [safeParseInt(loc.x), safeParseInt(loc.z)]
+
         // Use reduce to find the minimum distance and corresponding nation
         const { distance, nation } = filtered.reduce((acc: RouteInfo, nation: SquaremapNation) => {
-            const dist = manhattan(
-                safeParseInt(nation.capital.x), safeParseInt(nation.capital.z), 
-                safeParseInt(loc.x), safeParseInt(loc.z)
-            )
+            const dist = manhattan(safeParseInt(nation.capital.x), safeParseInt(nation.capital.z), locX, locZ)
 
             // Update acc if this nation is closer
             const closer = !acc.distance || dist < acc.distance
@@ -194,7 +200,7 @@ class GPS extends Emitter<GPSEvents> {
         const direction = GPS.cardinalDirection(nation.capital, loc)
         const travelTimes = GPS.calcTravelTimes(distance)
 
-        return { nation, distance, direction, travelTimes } satisfies RouteInfo
+        return { nation, distance, direction, travelTimes }
     }
 
     /**

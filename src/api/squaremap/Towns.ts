@@ -45,7 +45,7 @@ class Towns implements EntityApi<SquaremapTown | NotFoundError> {
         if (cachedTowns) return cachedTowns
 
         const markerset = await this.map.markerset()
-        const towns = await parseTowns(markerset)
+        const towns = parseTowns(markerset)
 
         if (towns.length > 0) {
             this.map.putInCache('towns', towns)

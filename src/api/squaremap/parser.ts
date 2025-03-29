@@ -150,7 +150,7 @@ const isCapital = (marker: SquaremapArea) => {
     return tooltipBracketContent?.startsWith("Capital of") ?? false
 }
 
-export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) => {
+export const parseTowns = (res: SquaremapMarkerset, removeAccents = false): SquaremapTown[] => {
     if (res.id == "chunky") throw new Error("Error parsing towns: Chunky markerset detected, pass a towny markerset instead.")
     if (!res?.markers) throw new ReferenceError('Error parsing towns: Missing or invalid markers!')
 
@@ -234,7 +234,7 @@ export const parseTowns = async(res: SquaremapMarkerset, removeAccents = false) 
     return towns
 }
 
-export const parseNations = async(towns: SquaremapTown[]) => {
+export const parseNations = (towns: SquaremapTown[]): SquaremapNation[] => {
     const raw: Record<string, SquaremapNation> = {}
     const nations: SquaremapNation[] = []
     const len = towns.length
