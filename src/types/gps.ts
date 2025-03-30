@@ -2,13 +2,13 @@ import type { Prettify } from "./util.js"
 
 const createRoute = (
     avoidPvp: boolean, 
-    avoidPublic: boolean
-) => ({ avoidPvp, avoidPublic }) as const
+    avoidPrivate: boolean
+) => ({ avoidPvp, avoidPrivate }) as const
 
 export const Routes = {
     SAFEST: createRoute(true, true),
     FASTEST: createRoute(false, false),
-    AVOID_PUBLIC: createRoute(false, true),
+    AVOID_PRIVATE: createRoute(false, true),
     AVOID_PVP: createRoute(true, false)
 } as const
 

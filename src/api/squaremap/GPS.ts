@@ -133,7 +133,7 @@ class GPS extends Emitter<GPSEvents> {
     }
 
     /**
-     * Gets the route to destination from the current location, including the closest nation.
+     * Gets the route to the destination, including the closest nation given what `options` allows.
      * @param loc The coordinates of the destination.
      * @param options Whether we should avoid PVP and/or public nations.
      */
@@ -170,8 +170,8 @@ class GPS extends Emitter<GPSEvents> {
             const flags = capital.flags
 
             const PVP = options.avoidPvp && flags.pvp
-            const PUBLIC = options.avoidPublic && !flags.public
-            if (PVP || PUBLIC) continue
+            const PRIVATE = options.avoidPrivate && !flags.public
+            if (PVP || PRIVATE) continue
 
             filtered.push(nation)
         }
@@ -184,8 +184,8 @@ class GPS extends Emitter<GPSEvents> {
 
             // Update acc if this nation is closer
             const closer = !acc.distance || dist < acc.distance
-            return !closer ? acc : { 
-                distance: Math.round(dist), 
+            return !closer ? acc : {
+                distance: Math.round(dist),
                 nation: {
                     name: nation.name,
                     capital: {
@@ -197,8 +197,8 @@ class GPS extends Emitter<GPSEvents> {
             }
         }, { distance: null, nation: null })
 
-        const direction = GPS.cardinalDirection(nation.capital, loc)
-        const travelTimes = GPS.calcTravelTimes(distance)
+        const direction = nation ? GPS.cardinalDirection(nation.capital, loc) : null
+        const travelTimes = distance ? GPS.calcTravelTimes(distance) : null
 
         return { nation, distance, direction, travelTimes }
     }

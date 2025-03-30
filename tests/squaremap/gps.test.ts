@@ -3,20 +3,25 @@ import { Aurora } from '../../src/main'
 import { GPS } from '../../src/api/squaremap/GPS'
 
 describe('[Squaremap/Aurora] GPS', () => {
-    const sampleLoc = { x: -8000, z: 100 }
-
     it('can find the safest route', async () => {
+        const sampleLoc = { x: 10000, z: -2000 }
         const route = await Aurora.GPS.safestRoute(sampleLoc)
 
         expect(route).toBeDefined()
         expect(route.distance).toBeGreaterThanOrEqual(0)
+        
+        expect(route.nation).toBeDefined()
     })
 
     it('can find the fastest route', async () => {
+        const sampleLoc = { x: 10000, z: -2000 }
         const route = await Aurora.GPS.fastestRoute(sampleLoc)
 
         expect(route).toBeDefined()
         expect(route.distance).toBeGreaterThanOrEqual(0)
+
+        expect(route.nation).toBeDefined()
+        expect(route.nation.name).toBe("Socotra")
     })
 
     it('can return the correct basic cardinal direction', async () => {

@@ -141,8 +141,8 @@ class GPS extends Emitter<GPSEvents> {
             const flags = capital.flags
 
             const PVP = options.avoidPvp && flags.pvp
-            const PUBLIC = options.avoidPublic && !flags.public
-            if (PVP || PUBLIC) continue
+            const PRIVATE = options.avoidPrivate && !flags.public
+            if (PVP || PRIVATE) continue
 
             filtered.push(nation)
         }
