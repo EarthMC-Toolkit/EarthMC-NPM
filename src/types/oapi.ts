@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import type { 
     Location,
     Prettify,
@@ -252,26 +253,132 @@ export interface RawServerInfoV3 {
     }
 }
 
+// We do it this way so that the `playerStats` method will return the order
+// exactly as seen below instead of the jumbled mess from the original response.
+//
+// It can't solely be a type because it wouldn't preserve the order at runtime.
+export type RawPlayerStatsV3 = typeof rawPlayerStatsTemplate
+export const rawPlayerStatsTemplate = {
+    // PVP / PVE
+    player_kills: 0,
+    mob_kills: 0,
+    deaths: 0,
+    // Damage
+    damage_taken: 0,
+    damage_dealt: 0,
+    damage_resisted: 0,
+    damage_absorbed: 0,
+    damage_dealt_resisted: 0,
+    damage_dealt_absorbed: 0,
+    damage_blocked_by_shield: 0,
+    // Interact
+    interact_with_crafting_table: 0,
+    interact_with_smithing_table: 0,
+    interact_with_cartography_table: 0,
+    interact_with_furnace: 0,
+    interact_with_blast_furnace: 0,
+    interact_with_smoker: 0,
+    interact_with_stonecutter: 0,
+    interact_with_grindstone: 0,
+    interact_with_anvil: 0,
+    interact_with_loom: 0,
+    interact_with_lectern: 0,
+    interact_with_beacon: 0,
+    interact_with_campfire: 0,
+    interact_with_brewingstand: 0,
+    // Inspect
+    inspect_dispenser: 0,
+    inspect_dropper: 0,
+    inspect_hopper: 0,
+    // Open
+    open_enderchest: 0,
+    open_chest: 0,
+    open_barrel: 0,
+    open_shulker_box: 0,
+    // Villager
+    traded_with_villager: 0,
+    talked_to_villager: 0,
+    // Times
+    total_world_time: 0,
+    play_time: 0,
+    sneak_time: 0,
+    time_since_rest: 0,
+    time_since_death: 0,
+    // Raid
+    raid_win: 0,
+    raid_trigger: 0,
+    // Movement
+    walk_one_cm: 0,
+    sprint_one_cm: 0,
+    boat_one_cm: 0,
+    swim_one_cm: 0,
+    fall_one_cm: 0,
+    walk_on_water_one_cm: 0,
+    walk_under_water_one_cm: 0,
+    horse_one_cm: 0,
+    minecart_one_cm: 0,
+    aviate_one_cm: 0,
+    crouch_one_cm: 0,
+    climb_one_cm: 0,
+    pig_one_cm: 0,
+    fly_one_cm: 0,
+    strider_one_cm: 0,
+    // Clean
+    clean_banner: 0,
+    clean_shulker_box: 0,
+    clean_armor: 0,
+    // Mobs
+    animals_bred: 0,
+    fish_caught: 0,
+    // Music/Play
+    play_record: 0,
+    play_noteblock: 0,
+    tune_noteblock: 0,
+    // Misc
+    jump: 0,
+    bell_ring: 0,
+    eat_cake_slice: 0,
+    sleep_in_bed: 0,
+    trigger_trapped_chest: 0,
+    fill_cauldron: 0,
+    use_cauldron: 0,
+    target_hit: 0,
+    drop_count: 0,
+    pot_flower: 0,
+    leave_game: 0,
+    enchant_item: 0
+} as const
+
 export interface RawQuarterResponseV3 {
+    name: string
     uuid: string
     type: "APARTMENT" | "INN" | "STATION"
+    creator: string // UUID
     owner?: Partial<RawEntityV3>
     town: RawEntityV3
+    nation: RawEntityV3
     timestamps: {
         registered: number
         claimedAt?: number
     }
     status: {
         isEmbassy: boolean
+        isForSale: boolean
     }
     stats: {
         price?: number
         volume: number
         numCuboids: number
+        particleSize?: number
     }
-    color: ArrNums<3>
+    color: ArrNums<4> // RGBA
     trusted: RawEntityV3[]
-    cuboids: { [key: string]: ArrNums<3> }[]
+    cuboids: QuarterCuboidV3[]
+}
+
+export interface QuarterCuboidV3 {
+    cornerOne: ArrNums<3>
+    cornerTwo: ArrNums<3>
 }
 
 export interface DiscordReqObjectV3 {
@@ -285,10 +392,10 @@ export interface DiscordResObjectV3 {
 }
 
 export interface RawLocationResponseV3 {
-    isWilderness: boolean
     location: Partial<StrictPoint2D>
-    town?: RawEntityV3
-    nation?: RawEntityV3
+    isWilderness: boolean
+    town?: Partial<RawEntityV3>
+    nation?: Partial<RawEntityV3>
 }
 
 export interface RawPlayerV3 extends RawEntityV3 {
@@ -320,12 +427,7 @@ export interface RawPlayerV3 extends RawEntityV3 {
         destroy: ArrBools<4>
         switch: ArrBools<4>
         itemUse: ArrBools<4>
-        flags: {
-            pvp: boolean
-            explosion: boolean
-            fire: boolean
-            mobs: boolean
-        }
+        flags: RawFlagPerms
     }
     ranks?: {
         townRanks: string[]
@@ -336,8 +438,8 @@ export interface RawPlayerV3 extends RawEntityV3 {
 
 export interface RawTownV3 extends RawEntityV3 {
     board: string
-    wiki?: string // The URL to this town's wiki page.
     founder: string
+    wiki?: string // The URL to this town's wiki page.
     mayor: RawEntityV3
     nation?: Partial<RawEntityV3>
     timestamps: {
@@ -365,10 +467,10 @@ export interface RawTownV3 extends RawEntityV3 {
         forSalePrice?: number
     }
     perms: {
-        build: RawTownPerms
-        destroy: RawTownPerms
-        switch: RawTownPerms
-        itemUse: RawTownPerms
+        build: ArrBools<4>
+        destroy: ArrBools<4>
+        switch: ArrBools<4>
+        itemUse: ArrBools<4>
         flags: RawFlagPerms
     }
     coordinates: {
@@ -376,19 +478,19 @@ export interface RawTownV3 extends RawEntityV3 {
         homeBlock: ArrNums<2> // First num is X, second is Z.
         townBlocks: ArrNums<2>[] // Array of blocks. Multiply by 16 to get actual coordinate.
     }
-    quarters: string[] // Includes UUID of every quarter in the town.
     residents: RawEntityV3[]
     trusted: RawEntityV3[]
     outlaws: RawEntityV3[]
+    quarters: RawEntityV3[]
     ranks: {
-        Councillor: string[]
-        Builder: string[]
-        Recruiter: string[]
-        Police: string[]
-        'Tax-exempt': string[]
-        Treasurer: string[]
-        Realtor: string[]
-        Settler: string[]
+        Councillor: RawEntityV3[]
+        Builder: RawEntityV3[]
+        Recruiter: RawEntityV3[]
+        Police: RawEntityV3[]
+        'Tax-exempt': RawEntityV3[]
+        Treasurer: RawEntityV3[]
+        Realtor: RawEntityV3[]
+        Settler: RawEntityV3[]
     }
 }
 
@@ -420,9 +522,9 @@ export interface RawNationV3 extends RawEntityV3 {
     enemies: RawEntityV3[]
     sanctioned: RawEntityV3[]
     ranks: {
-        Chancellor: string[]
-        Colonist: string[]
-        Diplomat: string[]
+        Chancellor: RawEntityV3[]
+        Colonist: RawEntityV3[]
+        Diplomat: RawEntityV3[]
     }
 }
 //#endregion

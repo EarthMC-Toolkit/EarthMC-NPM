@@ -1,10 +1,12 @@
-import type {
-    RequestBodyV3,
-    RawServerInfoV3,
-    RawLocationResponseV3,
-    RawQuarterResponseV3, RawEntityV3,
-    DiscordReqObjectV3, DiscordResObjectV3,
-    RawPlayerV3, RawTownV3, RawNationV3
+import {
+    type RequestBodyV3,
+    type RawServerInfoV3,
+    type RawLocationResponseV3,
+    type RawQuarterResponseV3, type RawEntityV3,
+    type DiscordReqObjectV3, type DiscordResObjectV3,
+    type RawPlayerV3, type RawTownV3, type RawNationV3,
+    type RawPlayerStatsV3,
+    rawPlayerStatsTemplate
 } from './types/index.js'
 
 import { oapiDataV3 } from './utils/endpoint.js'
@@ -14,6 +16,13 @@ export class OAPIV3 {
 
     // Instead of it's own endpoint, server info lives at the base URL.
     static serverInfo = (): Promise<RawServerInfoV3> => this.get('')
+    static playerStats = async(): Promise<RawPlayerStatsV3> => {
+        const pStats = await this.get('/player-stats')
+        const keys = Object.keys(rawPlayerStatsTemplate)
+
+        // Order the object according to the template.
+        return Object.fromEntries(keys.map(key => [key, pStats[key] ?? 0])) as RawPlayerStatsV3
+    }
     
     static location = (...objs: [number, number][]): Promise<RawLocationResponseV3> => 
         this.get('/location', { query: objs })

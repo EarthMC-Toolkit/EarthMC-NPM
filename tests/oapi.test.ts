@@ -9,7 +9,8 @@ import {
     RawPlayerV3,
     RawTownV3,
     RawEntityV3,
-    RawNationV3
+    RawNationV3,
+    RawPlayerStatsV3
 } from '../src/types'
 
 describe('[v3] OfficialAPI', async() => {
@@ -26,6 +27,23 @@ describe('[v3] OfficialAPI', async() => {
         expect(info.stats.maxPlayers).toBeGreaterThan(0)
         expect(info.stats.numTowns).toBeGreaterThanOrEqual(1000)
         expect(info.stats.numNations).toBeGreaterThanOrEqual(100)
+    }, 10000)
+
+    it('can get player stats info (with correct order)', async () => {
+        const pStats = await OfficialAPI.V3.playerStats()
+        
+        expect(pStats).toBeDefined()
+        assertType<RawPlayerStatsV3>(pStats)
+
+        const keys = Object.keys(pStats)
+
+        // Ensure its not empty or just an error object.
+        expect(keys.length).toBeGreaterThan(10)
+
+        // Ensure our custom order is correct
+        expect(keys[0]).toBe("player_kills")
+        expect(keys[1]).toBe("mob_kills")
+        expect(keys[2]).toBe("deaths")
     }, 10000)
 
     it('can get UUID from Discord ID', async() => {
