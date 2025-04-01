@@ -44,6 +44,11 @@ describe('[v3] OfficialAPI', async() => {
         expect(keys[0]).toBe("player_kills")
         expect(keys[1]).toBe("mob_kills")
         expect(keys[2]).toBe("deaths")
+
+        // Ensure we got the values and not our default ones.
+        expect(pStats["player_kills"]).not.toBe(0)
+        expect(pStats["mob_kills"]).not.toBe(0)
+        expect(pStats["deaths"]).not.toBe(0)
     }, 10000)
 
     it('can get UUID from Discord ID', async() => {
