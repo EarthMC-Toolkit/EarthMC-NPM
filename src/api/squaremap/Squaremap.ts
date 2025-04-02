@@ -16,7 +16,7 @@ import GPS from "./GPS.js"
 
 import { parsePlayers } from "./parser.js"
 import { checkWithinBounds, checkWithinTown } from "../common.js"
-import { safeParseInt } from "src/utils/functions.js"
+import { safeParseInt } from "../../../src/utils/functions.js"
 
 class SquaremapURLBuilder {
     #url: URL = new URL(`https://map.earthmc.net/?mapname=flat`)
