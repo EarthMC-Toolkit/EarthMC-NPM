@@ -51,6 +51,8 @@ describe('[v3] OfficialAPI', async() => {
         expect(pStats["deaths"]).not.toBe(0)
     }, 10000)
 
+    // TODO: Add test for location
+
     it('can get UUID from Discord ID', async() => {
         const res = await OfficialAPI.V3.uuidFromDiscord("394828201215393794")
 
