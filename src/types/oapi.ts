@@ -391,7 +391,9 @@ export interface DiscordResObjectV3 {
     uuid: string
 }
 
-export interface RawLocationResponseV3 {
+export type LocationReqObjectV3 = [number, number] | number[]
+
+export interface LocationResObjectV3 {
     location: Partial<StrictPoint2D>
     isWilderness: boolean
     town?: Partial<RawEntityV3>

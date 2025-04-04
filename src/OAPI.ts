@@ -1,9 +1,9 @@
 import {
     type RequestBodyV3,
     type RawServerInfoV3,
-    type RawLocationResponseV3,
     type RawQuarterResponseV3, type RawEntityV3,
     type DiscordReqObjectV3, type DiscordResObjectV3,
+    type LocationReqObjectV3, type LocationResObjectV3,
     type RawPlayerV3, type RawTownV3, type RawNationV3,
     type RawPlayerStatsV3,
     rawPlayerStatsTemplate
@@ -24,7 +24,7 @@ export class OAPIV3 {
         return Object.fromEntries(keys.map(key => [key, pStats[key] ?? 0])) as RawPlayerStatsV3
     }
     
-    static location = (...objs: [number, number][]): Promise<RawLocationResponseV3> => 
+    static location = (...objs: LocationReqObjectV3[]): Promise<LocationResObjectV3[]> => 
         this.get('/location', { query: objs })
     
     static discord = (...objs: DiscordReqObjectV3[]): Promise<DiscordResObjectV3[]> => 
