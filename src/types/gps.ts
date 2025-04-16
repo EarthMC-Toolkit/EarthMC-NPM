@@ -22,6 +22,7 @@ export type Location = Prettify<Point2D & {
 }>
 
 export type SquaremapLocation = Prettify<Point2D & {
+    y?: number | string
     yaw?: number | string
 }>
 

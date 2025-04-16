@@ -16,8 +16,10 @@ export type SquaremapRawPlayer = Prettify<Location & {
     uuid: string
     name: string
     display_name: string
-    world: "minecraft_overworld" | "minecraft_nether" | "-some-other-bogus-world-"
     yaw: string | number
+    world: 
+        "minecraft_overworld" | "minecraft_nether" |
+        "-some-other-bogus-world-" | "some-other-bogus-world"
 }>
 
 export type SquaremapMapResponse = SquaremapMarkerset[]

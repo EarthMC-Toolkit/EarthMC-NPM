@@ -17,28 +17,30 @@ import { manhattan, safeParseInt, strictFalsy } from '../../utils/functions.js'
 
 import type Squaremap from './Squaremap.js'
 
-type GPSEvents = {
+export type GPSEvents = {
+    locationUpdate: RouteInfo
+    hidden: string | {
+        lastLocation: StrictPoint2D, 
+        routeInfo: RouteInfo
+    }
     error: {
         err: string
         msg: string
     }
-    underground: string | {
-        lastLocation: StrictPoint2D, 
-        routeInfo: RouteInfo
-    }
-    locationUpdate: RouteInfo
 }
 
 //#region Speed of different actions (blocks per sec)
-const SNEAK_SPEED = 1.295
-const WALK_SPEED = 4.317
-const SPRINT_SPEED = 5.612
-const BOAT_SPEED = 8.0
+export const ACTION_SPEEDS = {
+    SNEAK: 1.295,
+    WALK: 4.317,
+    SPRINT: 5.612,
+    BOAT: 8.0
+} as const
 //#endregion
 
 class GPS extends Emitter<GPSEvents> {
     #map: Squaremap
-    #emittedUnderground = false
+    #emittedHidden = false
     #lastLoc: undefined | {
         x: number
         z: number
@@ -46,9 +48,9 @@ class GPS extends Emitter<GPSEvents> {
 
     get map() { return this.#map }
 
-    get emittedUnderground() { return this.#emittedUnderground }
-    protected set emittedUnderground(val: boolean) {
-        this.#emittedUnderground = val
+    get emittedHidden() { return this.#emittedHidden }
+    protected set emittedHidden(val: boolean) {
+        this.#emittedHidden = val
     }
 
     get lastLoc() { return this.#lastLoc }
@@ -63,7 +65,7 @@ class GPS extends Emitter<GPSEvents> {
         this.#map = map
     }
 
-    playerIsOnline(player: SquaremapPlayer) {
+    #playerIsOnline(player: SquaremapPlayer) {
         if (!player.online) this.emit('error', { 
             err: "INVALID_PLAYER", 
             msg: "Player is offline or does not exist!" 
@@ -72,6 +74,13 @@ class GPS extends Emitter<GPSEvents> {
         return player.online
     }
 
+    /**
+     * @deprecated 
+     * Due to changes to the structure of the players endpoint, this method is likely to be 
+     * broken or inaccurate and may be removed in future.\
+     * It is suggested you implement tracking manually instead and use a 'best guess' system 
+     * to determine whether the player is offline/underground etc.
+     */
     async track(playerName: string, interval = 3000, route = Routes.FASTEST) {
         setInterval(async () => {
             const player: SquaremapPlayer = await this.map.Players.get(playerName).catch(e => {
@@ -80,20 +89,19 @@ class GPS extends Emitter<GPSEvents> {
             })
 
             if (!player) return
-            if (!this.playerIsOnline(player)) return
 
-            if (player.underground) {
-                if (!this.emittedUnderground) {
-                    this.emittedUnderground = true
+            if (!this.#playerIsOnline(player)) {
+                if (!this.emittedHidden) {
+                    this.emittedHidden = true
 
                     if (!this.lastLoc) {
-                        this.emit("underground", "No last location. Waiting for this player to show.")
+                        this.emit("hidden", "No last location. Waiting for this player to show.")
                         return
                     }
                     
                     try {
                         const routeInfo = await this.findRoute(this.lastLoc, route)
-                        this.emit('underground', { 
+                        this.emit('hidden', {
                             lastLocation: this.lastLoc, 
                             routeInfo: routeInfo
                         })
@@ -235,10 +243,10 @@ class GPS extends Emitter<GPSEvents> {
      */
     static calcTravelTimes(distance: number): TravelTimes {
         return distance > 0 ? {
-            sneaking: ~~(distance / SNEAK_SPEED),
-            walking: ~~(distance / WALK_SPEED),
-            sprinting: ~~(distance / SPRINT_SPEED),
-            boat: ~~(distance / BOAT_SPEED)
+            sneaking: ~~(distance / ACTION_SPEEDS.SNEAK),
+            walking: ~~(distance / ACTION_SPEEDS.WALK),
+            sprinting: ~~(distance / ACTION_SPEEDS.SPRINT),
+            boat: ~~(distance / ACTION_SPEEDS.BOAT)
         } : {
             sneaking: 0,
             walking: 0,

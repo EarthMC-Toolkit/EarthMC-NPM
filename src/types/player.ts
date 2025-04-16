@@ -15,7 +15,14 @@ export type Player = Prettify<Resident & Partial<OnlinePlayer> & {
     online: boolean
 }>
 
-export type SquaremapOnlinePlayer = Prettify<ParsedPlayer & SquaremapLocation>
+export type SquaremapParsedPlayer = {
+    uuid: string
+    name: string
+    nickname?: string
+    world?: string
+}
+
+export type SquaremapOnlinePlayer = Prettify<SquaremapParsedPlayer & SquaremapLocation>
 export type SquaremapPlayer = Prettify<Resident & Partial<SquaremapOnlinePlayer> & {
     online: boolean
 }>

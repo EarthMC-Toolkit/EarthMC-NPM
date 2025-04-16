@@ -303,12 +303,13 @@ export const parseResidents = (towns: SquaremapTown[]) => towns.reduce((acc: Res
 }, [])
 
 const editPlayerProps = (player: SquaremapRawPlayer): SquaremapOnlinePlayer => ({
+    uuid: player.uuid,
     name: player.name,
     nickname: striptags(formatString(player.display_name)),
     x: player.x,
+    y: player.y,
     z: player.z,
     yaw: player.yaw,
-    underground: player.world != 'minecraft_overworld',
     world: player.world
 })
 
