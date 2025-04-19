@@ -63,4 +63,4 @@ export {
 
 export * from "./types/index.js"
 export * from "./utils/errors.js"
-export { formatString } from './utils/functions.js'
+export * from './utils/functions.js'

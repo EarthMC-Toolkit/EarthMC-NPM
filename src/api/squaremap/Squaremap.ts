@@ -16,9 +16,10 @@ import GPS from "./GPS.js"
 
 import { parsePlayers } from "./parser.js"
 import { checkWithinBounds, checkWithinTown } from "../common.js"
-import { safeParseInt } from "../../../src/utils/functions.js"
 
-class SquaremapURLBuilder {
+import { FetchError, safeParseInt } from "../../main.js"
+
+export class SquaremapURLBuilder {
     #url: URL = new URL(`https://map.earthmc.net/?mapname=flat`)
 
     constructor(location?: Point2D, zoom?: number) {
@@ -92,30 +93,19 @@ class Squaremap extends DataHandler {
         return checkWithinTown(location, towns)
     }
 
-    readonly isWilderness = async(location: Point2D) => !(await this.withinTown(location))
+    readonly isWilderness = async (location: Point2D) => !(await this.withinTown(location))
     readonly withinBounds = (location: Point2D, bounds: TownBounds) => checkWithinBounds(location, bounds)
 
-    readonly onlinePlayerData = async() => {
+    readonly onlinePlayerData = async () => {
         const res = await this.playerData<SquaremapPlayersResponse>()
+        if (!res) throw new FetchError('Error fetching online players!')
+
         return parsePlayers(res.players)
     }
 
-    readonly markerset = async() => {
+    readonly markerset = async () => {
         const res = await this.mapData<SquaremapMapResponse>()
         return res.find(x => x.id == "towny")
-    }
-
-    /**
-     * @deprecated May be removed in future. Prefer {@link URLBuilder} instead. 
-     */
-    readonly buildMapLink = (location?: Point2D, zoom?: number): URL => {
-        const url = new URL(`https://map.earthmc.net/?mapname=flat`)
-        if (zoom) url.searchParams.append("zoom", zoom.toString())
-
-        if (location?.x) url.searchParams.append("x", location.x.toString())
-        if (location?.z) url.searchParams.append("z", location.z.toString())
-
-        return url
     }
 }
 
