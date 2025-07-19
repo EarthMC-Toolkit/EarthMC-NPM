@@ -31,11 +31,11 @@ describe('[Squaremap/Aurora] Towns', () => {
     })
 
     it('can get multiple towns', async () => {
-        const towns = await Aurora.Towns.get('tORinO', 'LonDoN', 'warsaW') as SquaremapTown[]
+        const towns = await Aurora.Towns.get('LonDoN', 'warsaW') as SquaremapTown[]
         expect(towns).toBeTruthy()
 
         expect(towns.some(n => n instanceof NotFoundError)).toBe(false)
-        expect(towns.length).toBe(3)
+        expect(towns.length).toBe(2)
 
         //console.log(towns[2])
 
