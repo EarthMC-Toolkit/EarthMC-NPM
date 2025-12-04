@@ -68,21 +68,20 @@ export const mapData = async <T>(mapName: AnyMap): Promise<T> => {
 /**
  * Gets info from a given Official API endpoint.\
  * If `endpoint` is an empty string or not provided, it will get the base `v3/aurora` endpoint.
- * @param endpoint The endpoint not including the domain, e.g: "lists/nations"
+ * @param endpoint The endpoint not including the domain, e.g: "/nations"
  */
-export const oapiDataV3 = async <TBody>(
-    endpoint = '',
-    body?: RequestBodyV3<TBody>
+export const oapiDataV3 = async <TQuery>(
+    endpoint?: string,
+    body?: RequestBodyV3<TQuery>
 ) => {
-    // if (endpoint.startsWith("/")) {
-    //     endpoint.replace("/", "")
-    // }
-    
+    // make sure null/undefined is string
     if (!endpoint) endpoint = ''
 
     const url = getEndpointUrl("towny", "v3/aurora")
-    return body ? asJSON(`${url}${endpoint}`, {
+    
+    if (!body) return asJSON(`${url}${endpoint}`)
+    return asJSON(`${url}${endpoint}`, {
         method: "POST",
         body: JSON.stringify(body)
-    }) : asJSON(`${url}${endpoint}`)
+    })
 }
