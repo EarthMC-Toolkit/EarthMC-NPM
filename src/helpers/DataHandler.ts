@@ -3,7 +3,7 @@ import * as endpoint from '../utils/endpoint.js'
 import { Mutex } from 'async-mutex'
 import type { AnyMap } from '../types/index.js'
 
-import TTLCache from '@isaacs/ttlcache'
+import { TTLCache } from '@isaacs/ttlcache'
 
 class DataHandler {
     #map: AnyMap
@@ -13,11 +13,8 @@ class DataHandler {
     #cacheTTL: number
     #cacheLock: Mutex
 
-    //#isNode = true
-
     constructor(mapName: AnyMap, cacheTTL: number) {
         this.#map = mapName
-        //this.#isNode = globalThis.process?.release?.name == 'node'
 
         this.#cacheLock = new Mutex()
         this.#cacheTTL = cacheTTL < 1000 ? 1000 : cacheTTL
